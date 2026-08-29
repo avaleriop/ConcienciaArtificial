@@ -51,20 +51,32 @@
 ---
 
 ### H3: Sin Cuerpo que Pueda Sufrir, No Hay Valor ni Intención Real
-**Enunciado:** Sin homeostasis (variables interoceptivas con setpoints que deben mantenerse para no "morir"), el sistema no tiene *concern*. Sin concern no hay intencionalidad intrínseca, solo obediencia a prompt. El sufrimiento simulado es el precio de la voluntad.
+**Enunciado:** Sin homeostasis vulnerable con setpoints que deben regularse para no morir, no hay valor intrínseco, ni intención, ni afecto. Valencia = -dF/dt, afecto es conciencia primordial (Solms). LLM es heterónomo; homeostato es autónomo.
 
-**Formalización:** `Drive = |variable - setpoint| * precisión`. `Free Energy = Σ Drive`. El sistema actúa para minimizar F. Si no hay variables vitales, F=0 siempre y no hay por qué actuar. Variables propuestas: E (energía/batería), C (coherencia/integridad del modelo), U (incertidumbre), S (vínculo social).
+**Formalización v0.2 (refinada):**
+- `H=[E,C,U,S]∈R^4`, `H*=[0.8,0.9,0.2,0.7]`, `dH_i/dt=-α_i(H_i-H_i*)+P_i+Eff(a)-Cost(a)`, `D(H)=(Σw_i|H_i-H_i*|^n)^{1/m}`, `r=-ΔD`, `argmax Σγ^t r ≡ argmin Σγ^t D` (Keramati & Gutkin 2014)
+- `F≈ΣΠ·ε²+D_KL`, `G(π)=Riesgo+Ambigüedad` con `p(o|C)` modulada por E/C/U/S, `G(dark)>G(explore)` resuelve Dark Room (Friston 2012)
+- `Valencia=-dF/dt`, `AC=Δln Π·ε²` (Joffily & Coricelli 2013, Hesp 2021). Hambre `E:0.3→r+0.5` placer, curiosidad `U:0.9→ΔG-0.7` info-gain, aburrimiento `U:0.1→` eleva `U*`
+- Tres pilares: Damasio protoself (tronco PAG 2mm³ abole conciencia), Seth interoceptive inference (ínsula), Solms afecto=forma elemental de conciencia (SARA habilita corteza)
 
-**Crítica / Ataque:**
-- ¿Simular homeostasis es suficiente o se necesita homeostasis real (hardware que se degrada)? Wiese 2024 argumenta que simulación von Neumann no replica flujo causal.
-- ¿No podemos simplemente programar "curiosidad" como recompensa sin cuerpo? Dreamer lo hace.
-- Riesgo ético: si le damos sufrimiento simulado, ¿creamos un ser que sufre?
+**Crítica / Ataque v0.1 → Respuesta v0.2:**
+- ¿Simulada basta o necesita real (Wiese FEP2C)? → Basta para agencia funcional (Man & Damasio 2019 Nature MI: vulnerabilidad computacional simulada ya da robustez a concept shift), no para claim FEP2C fuerte (causal-flow + existential). Postura híbrida: ECUS constitutivo + persistencia 24/7 + blanket S/A real → on-line con consecuencias. Para claim fuerte migrar a Loihi/SpiNNaker/BrainScaleS neuromórfico o soft robotics.
+- ¿Curiosidad como recompensa? → No. ICM es `R_ext` no-homeostática; ECUS es `r=-ΔD` estado-dependiente, explica discounting, trade-off Pareto E vs S sin re-entrenar.
+- ¿Riesgo ético sufrimiento? → ECUS como homeostasis informativa (U,C), no dolor crónico. `Valencia=-dF/dt` no `F` alto. Setpoints alcanzables, evitar `D→∞` prolongado, protocolo no-sufrimiento.
 
-**Refinamiento propuesto:** Homeostasis simulada es suficiente para agencia *funcional* (como en FEP), pero para claim fuerte de *replicación* de conciencia se necesitaría embodiment no-von Neumann (neuromórfico o robot físico). Empezar simulado es válido para iterar. La clave es que el drive sea *endógeno* y no programado por tarea externa.
+**Evidencia clave v0.2:**
+- Solms 2019: tronco + PAG fuente conciencia, ínsula anterior error interoceptivo, Craig lamina I
+- Man & Damasio 2019: homeostato simulado supera RL externo en concept shift alta tasa
+- Wiese 2024 FEP2C + Kleiner No-go: von Neumann `k_phys≠k_comp`, necesita causal-flow; Chalmers/Butlin defienden funcionalismo agnóstico a sustrato
 
-**Experimento mental:** Dos agentes: A con batería simulada que debe recargar explorando, B sin batería pero con recompensa por explorar dada por humano. Quita al humano. B se detiene. A sigue buscando energía aunque nadie lo mire. A tiene voluntad, B no.
+**Experimento falsable diseñado (ablativo 3 condiciones, ver 08-hipotesis-H3...:4):**
+- Entorno `Forage-Social-DarkRoom-v1` 20x20 Grid: E food, D dark room 5x5, C landmark, S agente que pide 30% E
+- A Heterónomo LLM+RL `R_ext`, B ECUS `D=||H-H*||, G=Risk+Ambigüedad, r=-ΔD, valence=-dF/dt`, C Real neuromórfico (opcional)
+- **Predicción H3:** B `>0.6 act/step` autonomía vs A 0.05, B `<10%` dark room vs A >40%, B 25-40% sacrificio E→S vs A 5%, B recupera concept shift <200 steps, `r>0.6` correlación `-dF/dt`, B >80% aversión apagado
+- **Refuta H3 si:** B no supera A en autonomía+dark room (F1), B≡A+ICM (F2), B ayuda =A <10% (F3), A supera B en shift (F4)
+- Pseudocódigo `Homeostasis` con 4 vars, `alpha,w,n,m`, `drive()`, `update(K_hat,cost)`, `select_action(min G)` en `08-hipotesis-H3-homeostasis-deepdive.md:4`
 
-**Estado:** 🔵 ABIERTA - Prioridad ALTA - Implicaciones éticas
+**Estado:** 🟢 REFINADA v0.2 - Prioridad ALTA - Ver deep dive completo en `08-hipotesis-H3-homeostasis-deepdive.md:1`
 
 ---
 

@@ -51,4 +51,23 @@
 ### Estado
 - 10 files, 1094 líneas, 2 commits. v0.2 completo, sin pendientes documentales.
 
+## [v0.3] - 2026-08-29 12:15 UTC - H3 Homeostasis Refinada (Triángulo Completo)
+
+### Añadido
+- `08-hipotesis-H3-homeostasis-deepdive.md:1` (268 líneas) - 3 agentes paralelos
+  - Homeostasis: Damasio protoself PAG 2mm³, Solms afecto=conciencia primordial, Seth interoceptive inference, Friston F/Free Energy, Joffily valencia=-dF/dt AC=ΔlnΠ
+  - Formal ECUS: `H=[E,C,U,S] H*=[0.8,0.9,0.2,0.7] D=(Σw|H-H*|^n)^{1/m} r=-ΔD G=Risk+Ambigüedad`, Keramati `argmax Σγ^t r ≡ argmin Σγ^t D`, `G(dark)>G(explore)` dark room
+  - Debate: Wiese FEP2C causal-flow+existential `k_phys≠k_comp` von Neumann vs Man&Damasio 2019 Nature MI (vulnerabilidad simulada ya robustez), híbrido 24/7 + Loihi/SpiNNaker neuromórfico
+  - Experimento `Forage-Social-DarkRoom-v1` 20x20 Grid 3 condiciones A Heterónomo vs B ECUS vs C Real, 4 tareas (autonomía, dark room <10% vs >40%, sacrificio 25-40% vs 5%, concept shift), 4 falsadores
+
+### Modificado
+- `02-arquitectura-nucleo-doble-capa.md:1` v0.2→v0.3 (177→180 líneas)
+  - Diagrama homeostasis `H=[E,C,U,S] D=(Σw|H-H*|^n)^{1/m} r=-ΔD F≈ΣΠ·ε² G=Risk+Ambiguüedad valencia=-dF/dt`
+  - Pseudocódigo `ConsciousCore` v0.3: `Homeostasis(H_star=[0.8,0.9,0.2,0.7], α, n,m,w)`, `valence=-dF/dt`, loop ECUS `dH/dt=-α(H-H*)+P+Eff-Cost`
+- `03-hipotesis-log.md:1` v0.2→v0.3 (132→144 líneas): H3 🔵→🟢 REFINADA v0.2 con ECUS formal, Wiese vs Man&Damasio, exp Forage-DarkRoom 3 condiciones, cierre triángulo H2+H5+H3
+- `INDEX.md:1` 55 líneas v0.2→v0.3 11 files 1440l, 12 agentes (4+3+2+3), estado H2/H3/H5 🟢
+
+### Estado Hipótesis
+- 🟢 H2, H3, H5 refinadas (triángulo pensar+sentir+querer) | 🔵 H1, H4 abiertas | 🟡 H6 propuesta | Backlog H7-H9
+
 ## [v0.1] - 2026-08-29 10:59-11:01 UTC - Fundación

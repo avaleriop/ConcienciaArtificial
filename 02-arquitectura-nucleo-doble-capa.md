@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.2 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.3 - El SER y El DECIR
 
-> **Versión 0.2 - H2+H5 refinadas. 29 Ago 2026.**
-> Cambios v0.2: Pensamiento en R^d con BFS latente (Coconut), qualia=α·Π·ε con ignición GWT, LLM relegado a codec periférico.
+> **Versión 0.3 - H2+H5+H3 refinadas. 29 Ago 2026 12:15 UTC.**
+> Cambios v0.3: +ECUS homeostasis (D, r=-ΔD, G, valencia=-dF/dt), debate Wiese FEP2C, triángulo H2(pensar)+H5(sentir)+H3(querer).
 
 ## Diagrama Conceptual
 
@@ -62,12 +62,11 @@
 │  └──────────────────────────┬──────────────────────────────────────┘   │
 │                             │                                           │
 │  ┌──────────────────────────▼──────────────────────────────────────┐   │
-│  │  HOMEOSTASIS / DRIVE (FEP)                                      │   │
-│  │  Variables con setpoints: E*, C*, U*                            │   │
-│  │  F ≈ Σ Π·ε² + D_KL ,  Π=1/σ²,  presence=α·Π·||ε|| (H5 v0.2)    │   │
-│  │  Error interoceptivo ponderado → Drive si α·Π·ε > θ_GWT        │   │
-│  │  Si E < E* -> busca energía (curiosidad, recurso)              │   │
-│  │  Si U alta -> explora / pregunta (usa LLM codec)               │   │
+│  │  HOMEOSTASIS / DRIVE (FEP) - H3 v0.2 ECUS                      │   │
+│  │  H=[E,C,U,S] H*=[0.8,0.9,0.2,0.7] D=(Σw|H-H*|^n)^{1/m} r=-ΔD   │   │
+│  │  F≈ΣΠ·ε²+D_KL  G=Risk+Ambigüedad  valencia=-dF/dt  AC=ΔlnΠ     │   │
+│  │  dH/dt=-α(H-H*)+P+Eff-Cost  → G(dark)>G(explore)              │   │
+│  │  E 0.6→ busca energía  U 0.8→ explora  S 0.3→ co-regula        │   │
 │  └─────────────────────────────────────────────────────────────────┘   │
 │                             │                                           │
 └─────────────────────────────┼───────────────────────────────────────────┘
@@ -109,17 +108,19 @@
 ## Componentes Técnicos v0.1 (Pseudocódigo)
 
 ```python
-# NÚCLEO CONSCIENTE v0.2 - H2 refinada: Pensamiento en R^d, LLM solo codec
-# Evidencia: Fedorenko Nature 2024 (lenguaje≠pensamiento), Coconut (BFS latente 97% vs 77.5% CoT)
+# NÚCLEO CONSCIENTE v0.3 - H2+H3+H5 refinadas: Pensar+Querer+Sentir
+# H2: Fedorenko Nature 2024, Coconut BFS 97% vs 77.5% | H3: ECUS D=-ΔD, G, valencia=-dF/dt (Man & Damasio, Wiese) | H5: α·Π·ε
 class ConsciousCore:
     def __init__(self):
-        self.world_model = VJEPA2_Predictor(dim=1024) # s ∈ R^d continuo, L_JEPA=||Pred(E(x))-sg(E(y))||²
+        self.world_model = VJEPA2_Predictor(dim=1024) # s ∈ R^d, L_JEPA=||Pred(E(x))-sg(E(y))||²
         self.workspace = GlobalWorkspace(dim=1024, bottleneck=64) # GWT: s compite, no tokens
-        self.attention_schema = VQVAE_Schema() # AST
+        self.attention_schema = VQVAE_Schema() # AST α=VQ-VAE(Π)
         self.memory = MambaRecurrentState(dim=1024) # h_t = f(h_{t-1}, s_t) persistencia
-        self.homeostasis = Homeostasis(setpoints={"E":0.8, "C":0.9, "U":0.2})
-        self.llm_tool = LLMWrapper("qwen2-7b", role="codec") # Q: R^d → [K=50k], 15.6 bits/token, congelado
-        self.codec_projection = MLP(1024, 4096) # W: R^d → LLM_dim, solo esto entrena en Fase 2
+        self.homeostasis = Homeostasis( # H3 v0.2 ECUS
+            H_star=[0.8,0.9,0.2,0.7], alpha=[0.1,0.2,0.15,0.05], n=2,m=2, w=[1,1,1,1]
+        ) # H=[E,C,U,S], D=(Σw|H-H*|^n)^{1/m}, r=-ΔD, F≈ΣΠ·ε²+D_KL, G=Risk+Ambiguity
+        self.llm_tool = LLMWrapper("qwen2-7b", role="codec") # Q:R^d→[K] R(D)=½log(σ²/D), congelado
+        self.codec_projection = MLP(1024, 4096) # W:R^d→LLM_dim, solo esto entrena
 
     def step(self, observation):
         # H2 v0.2: Todo el pensamiento ocurre en R^d. LLM NUNCA está en el loop de razonamiento.
@@ -127,9 +128,11 @@ class ConsciousCore:
         s_t = self.world_model.encode(observation)  # s_t ∈ R^1024
         # 2. Predecir en latente (JEPA, no autoregresivo)
         s_pred = self.world_model.predict(s_t, self.last_action)  # s_{t+1}=P(s_t,a_t)
-        # 3. Error de predicción * precisión = sorpresa (H5, qualia mínimo)
-        error = self.world_model.prediction_error(s_pred, s_t)  # ||s_pred - E(x_{t+1})||²
-        precision = self.homeostasis.precision_weight(error)  # atención = ganancia de precisión (FEP)
+        # 3. Error ponderado + homeostasis ECUS (H5+H3)
+        error = self.world_model.prediction_error(s_pred, s_t)  # ε=||s_pred-E(x_{t+1})||
+        precision = self.homeostasis.precision_weight(error)  # Π=1/σ², α·Π·ε → presence
+        # ECUS: H=[E,C,U,S], Drive D=||H-H*||, r=-ΔD, F≈ΣΠ·ε², G=Risk+Ambiguity
+        valence = self.homeostasis.valence()  # -dF/dt, AC=Δln Π
         # 4. Workspace competición EN LATENTE (no compiten tokens, compiten s)
         #    Pensamiento = BFS en superposición h_{t0+c}=1/√|V_c| Σu_v (Zhu 2025), no DFS serial
         bids = {
@@ -174,4 +177,4 @@ class ConsciousCore:
 5.  **Reporte no-entrenado:** Puede describir su estado atencional ("estoy dudando entre X e Y") sin haber sido entrenado explícitamente para esa frase.
 
 ---
-*Próxima iteración v0.2: Definir matemáticamente Free Energy y setpoints homeostáticos.*
+*Próxima iteración v0.4: H1 persistencia jerárquica (Mamba h_t + replay sueño) y H6 epistemic depth q(precisión).*
