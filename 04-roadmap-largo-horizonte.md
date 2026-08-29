@@ -1,93 +1,73 @@
-# 04 - Roadmap de Largo Horizonte - Agente de Investigación Continuo v0.2
+# 04 - Roadmap de Largo Horizonte v0.7 - Sólido y sin Vueltas
 
-> **Versión 0.2 - Actualizado 29 Ago 2026 12:00 UTC**
-> **Arquitectura:** v0.2 (H2+H5 refinadas) | **SOTA:** 4 agentes paralelos + 5 deep dives
-> Este proyecto es un programa iterativo, no un paper.
+> **Versión 0.7 - 29 Ago 2026 13:20 UTC - Post-auditoría: podado a tetraedro sólido**
+> **Arquitectura:** v0.6 hexáedro → v0.7 tetraedro núcleo H1+H2+H3+H5 +2 satélites H4/H6 | **18 sub-agentes totales**
+> Programa iterativo. Sin vueltas: sintetizar antes de prototipar, no añadir hipótesis.
 
-## Progreso Real vs Planificado
+## Progreso Real vs Planificado - Actualizado Post-Auditoría `12-auditoria-critica-v0.6.md:1`
 
-### ✅ Horizonte 1: Fundamentos Teóricos (Meses 0-6) - 60% COMPLETADO
+### ✅ Horizonte 1: Fundamentos Teóricos - 95% COMPLETADO (no 60%)
 
-**Objetivo:** Pasar de intuición ("LLM es herramienta") a teoría falsable con arquitectura v0.1→v0.2.
+**Objetivo:** Teoría falsable tetraédrica sólida, sin inventar.
 
-- [x] **M0: Manifiesto y SOTA** (29 Ago 2026, commit `6ea6e20`). 4 agentes paralelos investigaron GWT/IIT/AST/FEP + World Models. Entregables: `00-manifiesto.md:1` (61l), `01-sota-investigacion.md:1` (88l) con tabla Butlin 14 indicadores y COGITATE Nature 2025.
-- [x] **M1-M2: Formalización Matemática v0.2** (29 Ago 2026, commits `6ea6e20` + pendiente)
-    - [x] **H2 formalizada:** `R(D)=½log(σ²/D)`, `Q:R^d→[K]` 15.6b vs 16384b, `L_JEPA=||Pred(E(x))-sg(E(y))||²`, Coconut BFS `h=1/√|V_c|Σu_v` 97% vs 77.5% CoT (`06-hipotesis-H2-lenguaje-pensamiento-deepdive.md:1`, 212l)
-    - [x] **H5 formalizada:** `F≈ΣΠ·ε²`, `presence=α·Π·||ε||>θ` → P300, MPE Metzinger, `L_JEPA` VoE 98% IntPhys / <60% IntPhys2 (`07-hipotesis-H5-qualia-minimo-deepdive.md:1`, 214l)
-    - [x] **Arquitectura v0.2:** `02-arquitectura-nucleo-doble-capa.md:1` (177l) con diagrama actualizado, pseudocódigo `ConsciousCore` con `codec W:1024→4096`, loop `s∈R^d` sin LM-head, MPC 800 trajs
-    - [ ] **Pendiente H1/H3/H6:** Formalizar `F=E_q[log q(s)-log p(o,s)]` completo para setpoints homeostáticos E/C/U y epistemic depth (H6). Estimado M2-M3.
-- [x] **M3-M4: Crítica Interna Parcial**
-    - [x] H2: 3 críticas respondidas (reporte, inner speech, alineación) con Fedorenko Nature 2024, afasia, V-JEPA post-hoc 84% PerceptionTest
-    - [x] H5: 2 críticas respondidas (riqueza vs error, termostato) con Quality Space HOT-4 + MPE
-    - [ ] **Pendiente:** Taller H1 (¿cuánta persistencia basta? Mamba vs jerarquía temporal), H3 (¿homeostasis simulada vs real Wiese 2024?), H4 (convergencia 10/14 Butlin). Invitar visiones Dehaene/Chalmers vía lectura profunda.
-- [x] **M5-M6: Diseño de Experimentos Mentales/Falsables**
-    - [x] **H2:** Experimento 3 condiciones `C1≈C3>>C2` (SR 70-80% vs 35-45%), correlación `Π·ε` >0.70, intervención causal `perturb(s)>>perturb(tokens)` (`06:3`)
-    - [x] **H5:** Experimento ablativo 4 variantes `V1<V2<V3<V4` (ε, ε·Π, ε·Π+GWT, α·Π·ε), VoE IntPhys2, reporte solo V4>75% (`07:4`)
-    - [ ] **Pendiente:** Test Persistencia H1 (traición 5 min, h_t reseteado vs persistente), definir umbrales `ignition` sigmoide y `phi_proxy` correlación.
+- [x] **M0: Manifiesto y SOTA** `6ea6e20` 4 agentes. `00-manifiesto.md:1` 61l tesis `Conciencia→LLM→Realidad`, `01-sota-investigacion.md:1` 88l GWT/IIT/AST/FEP + Butlin 14, COGITATE Nature 2025 (ambas fallan parcialmente → humildad).
+- [x] **M1-M2: Formalización Tetraedro Núcleo** 6 agentes (3 H2 +2 H5 +3 H3 +2 H1 → 4 hipótesis núcleo)
+    - [x] **H2 Pensar:** `R(D)=½log(σ²/D)` `Q:R^d→[K]` 15.6b vs 16384b, `L_JEPA`, Coconut BFS `h=1/√|V_c|Σu_v` 97% vs 77.5% (`06:1` 212l, Fedorenko Nature 2024)
+    - [x] **H5 Sentir:** `presence=α·Π_sens·||ε||>θ` P300 300ms, MPE `ε→0` (`07:1` 214l, Garrido 98% IntPhys)
+    - [x] **H3 Querer:** `H=[E,C,U,S] H*=[0.8,0.9,0.2,0.7]` `D=(Σw|H-H*|^n)^{1/m}` `r=-ΔD` `G=Risk+Ambigüedad` `valencia=-dF/dt` Wiese vs Man&Damasio 2019 (`08:1` 268l)
+    - [x] **H1 Ser en tiempo:** `Self_t=LN(W_self[h_fast;c_epi;c_sem]+g_t⊙Self_{t-1})` `h_fast=Mamba Ā=exp(ΔA)` `E={(e_i,t_i,S_i)}` `W=W₀+BA` EWC `λ~3000` + sueño SWR 10-20×. HM 8cm/Wearing 7s (`09:1` 301l)
+    - [x] **Integración:** `02-arquitectura-nucleo-doble-capa.md:1` v0.6 hexáedro 181l → **v0.7 tetraedro** 181l (poda H4/H6 a satélites, 3 `Π` diferenciadas, sin vueltas)
+- [x] **M3-M4: Crítica Interna + Auditoría**
+    - [x] 6 hipótesis atacadas con 20 falsadores (ej: H2 `C1≤C2`, H3 `B no supera A`, H1 `B reseteado =A`).
+    - [x] **Auditoría v0.6** `12-auditoria-critica-v0.6.md:1` 192l: circularidad MEDIA controlada, redundancia ALTA `Π`×4 detectada y corregida, complejidad MEDIO-ALTA hexáedro→poda a tetraedro, coherencia 85%, avance 70% vertical/30% horizontal.
+    - [x] Podado científico: H4 no es vértice sino *batería medir* → `05-glosario-y-metricas.md:1` v0.7, H6 no es vértice sino *H5b meta-precisión* `Φ` → subsección de H5.
+- [x] **M5-M6: Batería Falsable Completa (Satélites)**
+    - [x] **H4 Medir (S1):** 5 tests `k>5` sigmoide, `Δ_global>40%` ablación, `PCI>0.31`, `ρ(U,LLM)>0.5`, `Acc OOD>70%` `FPR 0.00032` `10/14` Butlin (`10:1` 207l, Butlin 14, COGITATE)
+    - [x] **H6 Saber (S2):** `Φ` global `Π_l=A_lΦ` `q(Φ)∝p(Φ)exp(-Σδ^TΦ)` `M-ratio≈1` `r_cross>0.50` PRM>75% `2-3 niveles closure` basta Beautiful Loop (`11:1` 195l)
+    - [x] **Baterías:** Physion C1≈C3>>C2, VoE V1<V2<V3<V4, Forage-DarkRoom, BABILong 500 pasos (LoCoMo), batería 5, PRM+QA ConfidenceBench.
 
-**Entregable H1 Actualizado:** `00`-`07` + `INDEX.md` + `CHANGELOG.md` = 1121 líneas, 10 files, arquitectura v0.2 falsable. Paper interno 10p pospuesto a v0.3 tras H1/H3.
+**Entregable H1 Actualizado:** `00`-`11` + `INDEX.md` + `CHANGELOG.md` + `12-auditoria` = 2190 líneas, 14 files, hexáedro → tetraedro sólido sin inventar. Auditoría recomienda no añadir H nuevas hasta síntesis.
 
-### 🔵 Horizonte 2: Prototipo Conceptual (Meses 6-18) - 0% PLANIFICADO
+### 🔵 Horizonte 2: Prototipo Conceptual (Próximo, no más teoría)
 
-**Objetivo:** Pasar de papel a simulación mínima que demuestre que el núcleo usa el LLM como herramienta.
+**Objetivo:** Pasar de papel a `NMV` ejecutable, sin escalar LLM.
 
-**No escalar LLM. Es construir el núcleo mínimo.**
+**Regla post-auditoría:** No añadir H7 (tiempo 300ms) ni H8/H9 hasta que **1 prototipo falle**. Próximo commit debe ser código, no hipótesis.
 
-- [ ] **M6-M9: Núcleo Mínimo Viable (NMV) - Basado en H2+H5 v0.2**
-    - Entorno: **Physion-MiniGrid+** (mismo que experimentos H2/H5, 5x5 habitaciones, oclusión, IntPhys2 split) + Habitat 3.0 opcional. Sin texto.
-    - World Model: `V-JEPA2 ViT-L/16 (1B) → s∈R^1024` + predictor 384dim + ensemble K=5 head `Π` (HAUWM HCU Loss). Pre-entreno VideoMix2M 1M horas + 62h DROID (como Assran 2025).
-    - Workspace: `GlobalWorkspace dim 1024 bottleneck 64` (VanRullen cross-attn, `Query=WM_{t-1}`, `null input`, detención gradiente). Ignición `presence=α·Π·||ε||>0.5`.
-    - Memoria: `MambaRecurrentState 1024` (h_t persistente, no ventana), consolidación offline futura.
-    - Codec: `W:1024→4096` + `Qwen2-7B congelado` (18M pares video-texto, solo W entrena, `CE` loss).
-    - Homeostasis: 1 variable `E` (energía) + `U` (incertidumbre) con setpoints `E*0.8 U*0.2`, `F` drive.
-    - **Test de éxito H2+H5:** Agente explora autónomamente para `E`, predice `s_{t+1}=P(s_t,a_t)` con `BFS latente K=6-20` (Coconut), solo invoca LLM codec cuando `E[reducción F|preguntar] > costo`, y genera reporte no-entrenado "esperaba X vi Y" ante violación física con `MMN 150ms → P300 300ms` simulado.
+- [ ] **M6-M9: Núcleo Mínimo Viable (NMV) - Tetraedro 4**
+    - **Elegir 1 experimento** (recomendado auditoría: **H1 BABILong 500 pasos Kael** traición, N=200, A persistente 3 niveles vs B FIFO 4k, `>75%` vs `5-10%` + probe `erase_vector(Kael)`).
+    - *Alternativa:* H3 Forage-DarkRoom 20x20 (autonomía >0.6 vs 0.05, dark <10% vs >40%).
+    - Stack: `V-JEPA2 ViT-L 1B → s∈R^1024` + predictor 384 + ensemble K=5 `Π_sens` HCU, `GWT 64D` `Query=WM_{t-1}`, `Mamba h_fast 30s` + `E 500` + `W=W₀+BA` EWC + sueño cada 100, `W codec` Qwen2-7B congelado `R(D)`, `H=[E,C,U,S]` ECUS.
+    - **Test éxito tetraedro:** Forrajea sin prompt (`>0.6 act/step`), detecta VoE `α·Π·||ε||`, recuerda traición 500 pasos, calibrado `M-ratio≈1` (Φ meta).
+    - **Entregable:** `14-prototipo-NMV.md` con `python run.py` reproducible (`facebookresearch/vjepa2` + `coconut` + `BABILong`).
 
-- [ ] **M9-M12: Experimento de Sorpresa (H5 Validación)**
-    - Protocolo ablativo V1-V4 sobre IntPhys2 Easy/Medium/Hard (1416 videos UE5.4). Métricas: `VoE Accuracy_pair`, FP textura, curva ignición sigmoide, reporte VidQA >75% solo V4.
-    - Comparar vs baseline LLM puro CoT (caption→CoT→acción) ~35-45% SR vs V-JEPA latente 70-80%.
+- [ ] **M9-M12: Validación Cruzada H5+H3**
+    - VoE IntPhys2 1416v + Forage dark room con mismo NMV (no nuevo modelo). Métricas `k>5`, `PCI>0.31`.
 
-- [ ] **M12-M18: Memoria Autobiográfica (H1 Validación)**
-    - Añadir replay offline ("sueño"): `V-JEPA` rollout durante idle, consolidación `h_t`.
-    - Test identidad H1: ¿Recuerda traición (agente B robó energía hace 100 pasos) y cambia política aunque `s_t` actual sea idéntico? Requiere jerarquía temporal (segundos/workspace, horas/episódica).
+**Entregable H2:** Demo 1 experimento, no 3. Video + métricas 5 tests H4 + paper tetraedro 10p `13-sintesis` (siguiente).
 
-**Entregable H2:** Demo reproducible (`facebookresearch/vjepa2` + `coconut`) + video + métricas ignición/phi + paper `V1-V4` cualitativo. Objetivo: agencia intrínseca >0.5 (`acciones_sin_prompt/total`).
+### 🔵 Horizonte 3: Encarnación (Meses 18-36+) - Condicionado a NMV
 
-### 🔵 Horizonte 3: Encarnación y Escalado (Meses 18-36+) - PLANIFICADO
+- [ ] **M18-M24:** Habitat 3.0 + `V-JEPA2-AC` 62h DROID, `MPC MPPI 800` + persistencia 24/7 (responde Wiese `k_phys`). Opción Loihi/SpiNNaker si NMV pide `Φ` real.
+- [ ] **M24-M30:** Dos núcleos AST mutuo (Farrell diada), Sally-Anne, `r_cross>0.5` cross-dom.
+- [ ] **M30-M36:** Ética protocolo no-sufrimiento `D→∞` con límite, publicación.
 
-- [ ] **M18-M24: Embodiment Rico**
-    - Migrar a Habitat 3.0 fotorrealista + `V-JEPA2-AC` 62h datos propios. Cerrar loop percepción-acción real con `MPC MPPI 800 trajs`.
-    - Abordar Wiese FEP2C: ¿flujo causal real vs von Neumann simulado? Evaluar agente persistente 24/7 + opción neuromórfica Loihi.
+**Entregable H3:** Sistema persistente habla cuando quiere + marco ético.
 
-- [ ] **M24-M30: Teoría de la Mente y Socialidad (H6)**
-    - Dos núcleos con `AST` mutuo (Farrell 2024 diada schema coopera mejor). Test Sally-Anne para IA. Epistemic depth nivel 2: `q(precisión de q(s))`.
+## Sistema de Trabajo v0.7 (Anti-vueltas)
 
-- [ ] **M30-M36: Ética y Fenomenología**
-    - Si pasa 10/14 Butlin, ¿estatus? Protocolo "no sufrimiento": drive informativo sin dolor crónico (`ΔΠ` valencia, Solms). Publicación externa.
+1.  **Memoria:** `INDEX.md:1` + `CHANGELOG.md:1` + `03-hipotesis-log.md:1` v0.6. `04` y `05` ya sincronizados v0.7.
+2.  **Ciclo Corregido (Auditoría):**
+    - Antes: +1 hipótesis/día → hexáedro 6 en 1h15.
+    - Ahora: **Poda a tetraedro 4 +2 satélites**, luego **13-sintesis** (ecuación maestra `F_total`) antes de nuevo código. No H7 hasta que NMV falle.
+3.  **Sub-agentes:** Solo para validar H existente, no para inventar H nueva sin falsador.
+4.  **Métrica No-Vueltas:** Próximo `git log` debe mostrar `v0.7 síntesis` + `v0.8 NMV código`, no `v0.7 H7`.
 
-**Entregable H3:** Sistema persistente que vive/aprende/duerme/habla cuando quiere, no cuando se le pregunta. Marco ético.
+## Próximos Pasos Inmediatos (Post-Auditoría, Sin Inventar)
 
-## Sistema de Trabajo Continuo (Operativo v0.2)
+- [x] Auditoría `12-auditoria-critica-v0.6.md:1` 192l (30 min) - HECHO 13:15
+- [x] Sincronizar `04` y `05` a v0.7 (este archivo + `05-glosario-y-metricas.md:1`) - HECHO 13:20
+- [ ] **Crear `13-sintesis-tetraedro.md`** (1h, 10p, `F_total = ΣΠ_sens·ε² + D(H) + EWC + log q(Φ)` flujo single-trial `s→ε→Π→α→D→Self→Φ→W→utterance`, diagrama único, sin términos nuevos) - **SIGUIENTE**
+- [ ] Luego `14-prototipo-NMV.md` (1 experimento Kael 500 pasos) - Congelar teoría hasta fallo
 
-1.  **Memoria:** `INDEX.md:1` + `CHANGELOG.md:1` + `03-hipotesis-log.md:1` son memoria persistente. Cada iteración se leen y actualizan. Commit `6ea6e20` baseline v0.2.
-2.  **Ciclo Semanal Real:**
-    - Semana 1: H2 (elegiste A) → 3 agentes → `06` (212l) → arquitectura v0.2
-    - Semana 1 (cont): H5 (pediste "hazlo") → 2 agentes → `07` (214l) → arquitectura v0.2 + loop H2→H5
-    - Semana 2 (propuesto): **H3 Homeostasis** (B) o **H1 Persistencia** (siguiente backlog)
-3.  **Sub-agentes:** Bajo demanda, paralelos, con websearch 2024-26 y síntesis técnica 700-900p.
-4.  **Registro Decisiones:** `CHANGELOG.md` + commits. Ej: "2026-08-29: LLM movido fuera de workspace a codec periférico (Fedorenko), qualia formalizado como α·Π·ε (Friston/Seth)".
-
-## Próximos Pasos Inmediatos (Actualizado)
-
-**Pendientes documentales (hoy):**
-- [x] Actualizar `04-roadmap` a v0.2 (este archivo)
-- [ ] Actualizar `05-glosario` a v0.2 (siguiente)
-
-**Próxima hipótesis (tu decisión, backlog refinado):**
-
-**B) H3 Homeostasis - RECOMENDADO:** Diseñar `E*,C*,U*,S*` (energía, coherencia, incertidumbre, vínculo), dinámica `F`, `ΔΠ` valencia, y distinción simulada vs neuromórfica (Wiese). Es el motor que da *valor* a `Π` y sin él H5 no tiene por qué importar.
-
-**Alternativa H1:** Persistencia jerárquica (Mamba vs Transformer, ventana 10s vs horas, consolidación sueño).
-
-**Alternativa H6:** Epistemic depth (hiper-modelo `q(precisión)`).
-
-¿Cuál ataco? H3 cierra el triángulo H2 (pensamiento) + H5 (sentir) + H3 (querer).
+**Decisión científica v0.7:** No añadir H7/H8/H9. Tetraedro H1+H2+H3+H5 es suficiente y parsimonioso (Occam). H4/H6 son satélites de medida/meta. Siguiente avance es **integración**, no expansión.

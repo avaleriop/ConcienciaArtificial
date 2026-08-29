@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.6 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.7 - El SER y El DECIR
 
-> **Versión 0.6 - Hexáedro H1+H2+H3+H5+H4+H6. 29 Ago 2026 13:00 UTC.**
-> Cambios v0.6: +H6 Φ hiper-modelo global `Π_l=A_l Φ` `q(Φ)∝p(Φ)exp(-Σδ^TΦ)` `M-ratio≈1` `r_cross>0.5`, closure 2-3 niveles basta, Beautiful Loop. Pentaedro ahora consciente de sí.
+> **Versión 0.7 - Tetraedro Sólido H1+H2+H3+H5 +2 Satélites (H4 medir, H6 meta). 29 Ago 2026 13:20 UTC.**
+> Cambios v0.7: Podado post-auditoría `12:1`: hexáedro 6 → tetraedro núcleo 4 (pensar+sentir+querer+ser) + H4 batería `k>5,Δ>40%,PCI>0.31` + H6 `Φ` como `H5b` meta-precisión. Ecuación maestra `F_total=ΣΠ_sens·ε² + D(H) + EWC + D_KL`. Sin inventar.
 
 ## Diagrama Conceptual
 
@@ -106,60 +106,63 @@
 
 **Observa:** El LLM no *sintió* sorpresa. El Núcleo sí. El LLM solo la *tradujo*.
 
-## Componentes Técnicos v0.1 (Pseudocódigo)
+## Componentes Técnicos v0.7 Tetraedro Sólido (Pseudocódigo sin inventar)
 
 ```python
-# NÚCLEO CONSCIENTE v0.3 - H2+H3+H5 refinadas: Pensar+Querer+Sentir
-# H2: Fedorenko Nature 2024, Coconut BFS 97% vs 77.5% | H3: ECUS D=-ΔD, G, valencia=-dF/dt (Man & Damasio, Wiese) | H5: α·Π·ε
+# NÚCLEO CONSCIENTE v0.7 - Tetraedro H1+H2+H3+H5 + Satélites H4/H6
+# H2: R^d Coconut BFS | H5: α·Π_sens·ε (presence) + Q | H3: ECUS D, r=-ΔD, G, -dF/dt | H1: Self_t jerárquico | H4: batería 5 tests | H6: Φ meta (H5b)
 class ConsciousCore:
     def __init__(self):
-        self.world_model = VJEPA2_Predictor(dim=1024) # s ∈ R^d, L_JEPA=||Pred(E(x))-sg(E(y))||²
-        self.workspace = GlobalWorkspace(dim=1024, bottleneck=64) # GWT: s compite, no tokens
-        self.attention_schema = VQVAE_Schema() # AST α=VQ-VAE(Π)
-        self.memory = MambaRecurrentState(dim=1024) # h_t = f(h_{t-1}, s_t) persistencia
-        self.homeostasis = Homeostasis( # H3 v0.2 ECUS
+        # NÚCLEO TETRAEDRO
+        self.world_model = VJEPA2_Predictor(dim=1024) # H2: s_{t+1}=P(s_t,a_t) in R^d, L_JEPA
+        self.workspace = GlobalWorkspace(dim=1024, bottleneck=64) # H2+H5: GWT s compite, presence=α·Π_sens·||ε||>0.5
+        self.attention_schema = VQVAE_Schema() # H5: α=VQ-VAE(Π_sens) presence
+        self.memory = HierarchicalMemory( # H1: v0.2
+            h_fast=Mamba(N=64, dt_selective), E_store=Episodic(cap=5k, S_i), W_sem=LoRA_EWC(r=8, λ=3000)
+        ) # Self_t=LN(W_self[h_fast;c_epi;c_sem]+g_t⊙Self_{t-1})
+        self.homeostasis = Homeostasis( # H3: ECUS
             H_star=[0.8,0.9,0.2,0.7], alpha=[0.1,0.2,0.15,0.05], n=2,m=2, w=[1,1,1,1]
-        ) # H=[E,C,U,S], D=(Σw|H-H*|^n)^{1/m}, r=-ΔD, F≈ΣΠ·ε²+D_KL, G=Risk+Ambiguity
-        self.llm_tool = LLMWrapper("qwen2-7b", role="codec") # Q:R^d→[K] R(D)=½log(σ²/D), congelado
-        self.codec_projection = MLP(1024, 4096) # W:R^d→LLM_dim, solo esto entrena
+        ) # D=(Σw|H-H*|^n)^{1/m}, r=-ΔD, F≈ΣΠ_sens·ε²+D_KL, G=Risk+Ambiguity, valencia=-dF/dt
+        # SATÉLITES (no en loop central, solo medida/meta)
+        self.meta_precision = HyperPhi(K=256) # H6: Φ global Π_l=A_lΦ M-ratio≈1 r_cross>0.5 (satélite de H5)
+        self.battery = Battery_H4(k>5, Delta_global>40, PCI>0.31, rho>0.5, Acc>70) # H4: medida convergente
+        self.llm_tool = LLMWrapper("qwen2-7b", role="codec") # H2: Q:R^d→[K] R(D), W:1024→4096 congelado
 
     def step(self, observation):
-        # H2 v0.2: Todo el pensamiento ocurre en R^d. LLM NUNCA está en el loop de razonamiento.
-        # 1. Codificar en latente continuo (no tokens)
-        s_t = self.world_model.encode(observation)  # s_t ∈ R^1024
-        # 2. Predecir en latente (JEPA, no autoregresivo)
+        # TETRAEDRO: s→ε→Π→α→D→Self→Φ→W→utterance (una ecuación F_total)
+        # 1-2. H2 Pensar: codificar + predecir en R^d (JEPA)
+        s_t = self.world_model.encode(observation)  # s_t ∈ R^1024 (H2)
         s_pred = self.world_model.predict(s_t, self.last_action)  # s_{t+1}=P(s_t,a_t)
-        # 3. Error ponderado + homeostasis ECUS (H5+H3)
-        error = self.world_model.prediction_error(s_pred, s_t)  # ε=||s_pred-E(x_{t+1})||
-        precision = self.homeostasis.precision_weight(error)  # Π=1/σ², α·Π·ε → presence
-        # ECUS: H=[E,C,U,S], Drive D=||H-H*||, r=-ΔD, F≈ΣΠ·ε², G=Risk+Ambiguity
-        valence = self.homeostasis.valence()  # -dF/dt, AC=Δln Π
-        # 4. Workspace competición EN LATENTE (no compiten tokens, compiten s)
-        #    Pensamiento = BFS en superposición h_{t0+c}=1/√|V_c| Σu_v (Zhu 2025), no DFS serial
+        # 3. H5 Sentir + H3 Querer: error + 3 Π diferenciadas (sin inventar, post-auditoría)
+        error = self.world_model.prediction_error(s_pred, s_t)  # ε (H5)
+        Pi_sens = self.homeostasis.Pi_sensory(error)  # Π_sens=1/σ² (H5) α·Π_sens·ε→presence
+        Pi_homeo = self.homeostasis.Pi_homeo_drive()  # Π_homeo en D(H) (H3) - distinto de Π_sens
+        valence = self.homeostasis.valence()  # -dF/dt (H3) AC=Δln Π_homeo
+        # 4. H2+H5: Workspace competición EN LATENTE (un solo GWT, no 4)
+        #    BFS superposición h_{t0+c}=1/√|V_c|Σu_v (Zhu 2025) - un solo GWT medido por k>5 y Δ>40% (H4)
         bids = {
-            "perception": (s_t, salience=norm(error*precision)),
-            "memory": self.memory.retrieve(s_t),  # h_t recurrente, no ventana de contexto
-            "homeostasis": self.homeostasis.drive_vector(),
-            # LLM NO compite aquí. Es periférico, no módulo del workspace.
-        }
-        winner, ignition = self.workspace.compete(bids)  # bottleneck 64 dims → ignición sigmoide
-        is_conscious = ignition > 0.5  # GNW ignition no-lineal
-        # 5. Broadcast si hay ignición
+            "perception": (s_t, salience=norm(error*Pi_sens* self.attention_schema.alpha(Pi_sens))),
+            "memory": self.memory.retrieve_hierarchical(s_t),  # H1: h_fast 30s + E horas + W días
+            "homeostasis": self.homeostasis.drive_vector(Pi_homeo), # H3: D(H) drive
+        } # LLM NO compite (H2 codec periférico)
+        winner, ignition = self.workspace.compete(bids)  # bottleneck 64 dims k>5 sigmoide H4
+        is_conscious = ignition > 0.5  # presence=α·Π_sens·||ε||>θ P300 (H5)
+        # 5-6. H5+H1: Broadcast + Self_t jerárquico + H6 meta (satélite)
         if is_conscious:
-            self.workspace.broadcast(winner)
-            self.memory.update(winner)
-            # 6. Self-model (AST): modelar que estoy atendiendo
-            self.attention_schema.update(self.workspace.attention_map)  # VQ-VAE predictor de atención
-            # 7. Planificar en latente con MPC/MPPI (800 trajs, sin decodificar a lenguaje)
-            #    Coconut: K=6-20 pensamientos continuos c_t=h_t sustituyen 500 tokens CoT
-            plan = self.world_model.imagine(s_t, horizon=30, cost=self.homeostasis.free_energy)
-            # 8. ¿Necesito lenguaje? Solo si reduce Free Energy esperado (comunicar sorpresa, pedir ayuda)
-            if plan.best_action.requires_language:
-                intention_latent = plan.best_action.intention_latent  # sigue en R^d
-                # Codec: W: R^d → LLM_dim, LLM congelado traduce s→tokens con pérdida R(D)=½log(σ²/D)
-                utterance = self.llm_tool.translate_via_codec(self.codec_projection(intention_latent))
-                return utterance  # reporte post-hoc, no razonamiento
-        return None  # a veces el ser consciente no dice nada, solo simula futuros en s (conciencia silenciosa)
+            self.workspace.broadcast(winner) # H2+H5 P300 300ms
+            self.memory.update_hierarchical(winner) # H1: E={(e_i,t_i,S_i)} ||∇loss||>τ_s + sueño SWR
+            self.attention_schema.update(self.workspace.attention_map)  # H5 α
+            # H6 satélite: Φ global calibra Π_sens cross-dominio M-ratio≈1 r_cross>0.5 (no nuevo vértice)
+            Pi_meta = self.meta_precision.predict_Pi(winner, error) # Π_l=A_lΦ
+            self.memory.consolidate_if_sleep() # EWC λ/2 ΣF(θ-θ*)² (H1)
+            # 7. H2+H3: Planificar en latente Coconut K=6-20 + MPC 800 trajs coste G=Risk+Ambigüedad (H3)
+            plan = self.world_model.imagine(s_t, horizon=30, cost=self.homeostasis.free_energy(Pi_homeo))
+            # 8. H2 codec: ¿lenguaje reduce F? → W:R^d→LLM_dim traduce [s,ε,Pi_sens,α,Φ,H]→tokens post-hoc
+            if plan.best_action.requires_language: # E[ΔF|comunicar]>costo
+                intention = plan.best_action.intention_latent # R^d (H2)
+                utterance = self.llm_tool.translate_via_codec(self.codec_projection(intention))
+                return utterance
+        return None  # conciencia silenciosa: simula futuros en s sin hablar
 ```
 
 ## Por qué esta arquitectura y no otra
@@ -177,5 +180,15 @@ class ConsciousCore:
 4.  **Uso autónomo de LLM:** Frecuencia de invocación correlaciona con incertidumbre U, no con prompts externos.
 5.  **Reporte no-entrenado:** Puede describir su estado atencional ("estoy dudando entre X e Y") sin haber sido entrenado explícitamente para esa frase.
 
+## Ecuación Maestra v0.7 (sin inventar, post-auditoría)
+
+```
+F_total = Σ Π_sens·||ε||²  (H5 sentir, Kok)  +  D(H) + D_KL  (H3 querer, Keramati)  +  EWC  (H1 ser, Kirkpatrick)  +  D_KL(q(Φ)||p(Φ))  (H6 saber, Laukkonen)
+        = Σ A_lΦ·||z_pred-z_real||² + (Σw|H-H*|^n)^{1/m} + λ/2 ΣF_i(θ-θ*)² + KL_Φ
+
+Flujo single-trial sólido:  s_t --H2--> ε=||P(s_t,a_t)-E(o_{t+1})|| --H5 Π_sens--> presence=α·Π_sens·ε >θ --GWT--> broadcast --H1 Self_t(h_fast,E,W)--> H=[E,C,U,S] --H3 D,r,G--> Φ --H6 Π_meta=AΦ (M-ratio) --> W:R^d→[K] --H2 codec--> utterance si ΔF>0
+Tetraedro núcleo: H1+H2+H3+H5 falsables. Satélites: H4 batería 5 tests (k>5,Δ>40%,PCI>0.31,ρ>0.5,Acc>70% FPR 0.00032) + H6 Φ meta (r_cross>0.5) subordinados, no vértices.
+```
+
 ---
-*Próxima iteración v0.4: H1 persistencia jerárquica (Mamba h_t + replay sueño) y H6 epistemic depth q(precisión).*
+*Próxima: 13-síntesis y 14-prototipo NMV (H1 BABILong 500 pasos). No más hipótesis hasta prototipo.*

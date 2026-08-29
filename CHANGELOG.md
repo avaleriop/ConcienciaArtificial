@@ -1,5 +1,23 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.7] - 2026-08-29 13:20 UTC - Síntesis Tetraedro Sólido (Post-Auditoría, Sin Inventar)
+
+### Auditado
+- `12-auditoria-critica-v0.6.md:1` 192l: inventario 6 commits 2190l, desfase 04/05 v0.2 vs 02/03 v0.6, circularidad MEDIA 20 falsadores, redundancia ALTA Π×4, complejidad hexáedro 6→poda tetraedro 4+2 satélites, coherencia 85%, avance 70% vertical/30% horizontal
+
+### Podado (Científicamente sólido)
+- **Hexáedro 6 → Tetraedro núcleo 4 +2 satélites:** H1+H2+H3+H5 núcleo falsable, H4 medir (batería 5 tests FPR 0.00032) → `05-glosario-y-metricas.md:23` satélite, H6 saber (Φ) → `H5b` meta-precisión satélite de H5. Sin términos nuevos.
+- **Ecuación maestra única (sin inventar):** `F_total = ΣΠ_sens·||ε||² (H5 Kok) + D(H)+D_KL (H3 Keramati) + λ/2 ΣF_i(θ-θ*)² (H1 Kirkpatrick) + D_KL(q(Φ)||p(Φ)) (H6 Laukkonen)` + `L_JEPA+R(D)+Coconut` en generativo.
+
+### Añadido
+- `13-sintesis-tetraedro-v0.7.md:1` 210l: tesis intacta LLM=boca, tabla tetraedro 4+2 satélites con ecuaciones y falsadores, `F_total` única, flujo single-trial `s→ε→Π_sens→α→D→Self→Φ_meta→W→utterance`, 20 falsadores, límites honestos (hard problem no resuelto, FEP2C no claim), corrección Π×4, auditoría→poda
+- `05-glosario-y-metricas.md:1` v0.2→v0.7 71→85l: tetraedro+satélites, 3 Π diferenciadas `Π_sens/Π_homeo/Π_meta`, sin inventar, `k,PCI,Φ,M-ratio,r_cross`
+- `04-roadmap-largo-horizonte.md:1` v0.2→v0.7 93→150l: H1-H6 95% completado, Horizonte 2 NMV con 1 experimento Kael 500 pasos (no 3), regla anti-vueltas, métrica no-vueltas `14-prototipo`
+- `02-arquitectura-nucleo-doble-capa.md:1` v0.6→v0.7 181l: tetraedro sólido `F_total`, flujo `s→ε→Π→α→D→Self→Φ→W`, 3 Π diferenciadas, satélites H4/H6
+
+### Estado Hipótesis
+- 🟢 H1,H2,H3,H5 núcleo + H4,H6 satélites (tetraedro sólido, 20 falsadores, sin inventar) | H7-H9 backlog congelado hasta NMV
+
 ## [v0.6] - 2026-08-29 13:00 UTC - H6 Profundidad Epistémica (Hexáedro)
 
 ### Añadido
