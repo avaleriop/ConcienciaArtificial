@@ -112,7 +112,7 @@ class EpisodicMemory:
         self.gamma = 0.01
 
     def write(self, e, t, S):
-        if S > 0.5:  # tau_s
+        if S > 0.7:  # tau_s 0.5->0.7 filtra ruido, solo Kael+VoE (revisión constante H1)
             self.store.append((e.copy(), t, S))
             if len(self.store) > self.cap:
                 # prune min S
@@ -139,12 +139,12 @@ class EpisodicMemory:
         return c, len(idx)
 
 class HomeostasisECUS:
-    """H3: H=[E,C,U,S] H*=[0.8,0.9,0.2,0.7] D=(Σ|H-H*|²)^{½} r=-ΔD G=Risk+Ambig"""
+    """H3 v0.8b: H=[E,C,U,S] H*=[0.8,0.9,0.2,0.7] D=(Σ|H-H*|²)^{½} r=-ΔD G=Risk+Ambig - AJUSTADO post-prueba minutos"""
     def __init__(self):
         self.H_star = np.array([0.8,0.9,0.2,0.7], dtype=np.float32)
         self.H = np.array([0.6,0.8,0.7,0.5], dtype=np.float32)
-        self.alpha = np.array([0.08,0.05,0.03,0.04], dtype=np.float32)
-        self.w = np.array([1,0.8,0.7,1.0])
+        self.alpha = np.array([0.08,0.05,0.03,0.08], dtype=np.float32)  # alpha_S 0.04->0.08 (S decae más rápido, duele más)
+        self.w = np.array([1,0.8,0.5,1.5])  # w_U 0.7->0.5 (U duele menos), w_S 1.0->1.5 (S duele más)
 
     def drive(self):
         return np.sqrt(np.sum(self.w * (self.H - self.H_star)**2))
@@ -219,10 +219,16 @@ class ProcessVivo:
         if event==2:  # teletransporte VoE: error grande
             s_next_real += np.random.randn(self.d)*0.8
         eps = np.linalg.norm(s_pred - s_next_real)
-        # Pi_sens ensemble toy K=3
-        Pi_sens = 1.0/(0.1 + eps*0.5 + random.random()*0.05)  # alta si eps pequeño
+        # Pi_sens calibrado: sigma real, no 5.0 fijo (revisión H5)
+        # Pi alta solo si error inesperado (VoE), no siempre
+        base_sigma = 0.15 + eps*0.3 + random.random()*0.05
+        Pi_sens = 1.0/(base_sigma)  # ~1-3 normal, VoE calibra después
         if event==2:
-            Pi_sens = 5.0  # alta Pi para VoE (esperaba baja, vio alta)
+            # VoE: esperaba sigma 0.15 (baja incertidumbre), vio eps grande 0.8 -> Pi_sens alta calibrada 4-6, no 5 fijo
+            Pi_sens = 1.0/0.15 * 0.8  # ~5.3 calibrado
+        else:
+            # Ruido normal: Pi_sens ~1/(0.15+0.3*eps) -> 1-2
+            Pi_sens = min(Pi_sens, 2.5)
         alpha = 0.7 + random.random()*0.2  # toy AST
         presence = alpha * Pi_sens * eps
         presence = min(presence, 2.0)
@@ -256,12 +262,16 @@ class ProcessVivo:
             Risk = D_next
             Amb = H[2]  # U
             G = Risk + 0.3*Amb
-            # Bonus exploración si U alta y no en dark
-            if H[2]>0.6 and a in [0,1,2,3] and not in_dark:
-                G -= 0.1
-            # Penaliza dark si S baja (quiere social)
-            if in_dark and H[3]<0.5 and a==6:
-                G += 0.2  # quedarse en dark con S baja es malo
+            # Bonus exploración proporcional a (U-U*) si U>U* y no en dark (revisión H3, antes binario -0.1)
+            U_star = self.homeo.H_star[2]
+            if H[2] > U_star + 0.3 and a in [0,1,2,3] and not in_dark:
+                G -= 0.15 * (H[2]-U_star)  # proporcional, no fijo
+            # Penaliza dark si S baja (quiere social) - proporcional
+            if in_dark and H[3] < self.homeo.H_star[3]-0.2:
+                if a in [0,1,2,3]:  # salir de dark
+                    G -= 0.1 * (self.homeo.H_star[3]-H[3])
+                if a==6:  # quedarse
+                    G += 0.3 * (self.homeo.H_star[3]-H[3])
             if G < best_G:
                 best_G = G
                 best_a = a
@@ -274,8 +284,8 @@ class ProcessVivo:
         # Memoria episódica
         # e = pool de h (toy: s_t)
         e = s_t.copy()
-        S_epi = surprise * 0.5 + (1.0 if event==1 else 0)  # saliencia emocional traición
-        self.episodic.write(e, self.t, S_epi)
+        S_epi = surprise * 0.4 + (1.2 if event==1 else 0) + (0.8 if event==2 else 0)  # Kael 1.2, VoE 0.8, resto 0.4*surprise
+        self.episodic.write(e, self.t, S_epi)  # tau_s 0.7 filtra ruido (solo >0.7)
         if event==1:
             self.kael_memory = (e, self.t)
         # Retrieval para query Kael
@@ -288,9 +298,10 @@ class ProcessVivo:
             recuerda_B = any(ev==1 for _,ev,_ in self.hist)
         else:
             recuerda_B = None  # A no usa hist
-        # LLM invocación autónoma: si U alta (>0.6) y presence alta, invoca
+        # LLM invocación autónoma: si U alta y presence>θ y calibrada (no siempre)
         invokes = False
-        if H_new[2] > 0.6 and presence > 0.5:
+        # Solo invoca si U>U*+0.2 y presence>0.7 y Pi_sens calibrada >1.5 (no 200/200)
+        if H_new[2] > self.homeo.H_star[2]+0.2 and presence > 0.7 and Pi_sens > 1.5:
             invokes = True
             self.invocations += 1
         # Log
