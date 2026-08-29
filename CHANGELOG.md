@@ -36,6 +36,19 @@
 ### Agentes
 - 4 sub-agentes paralelos SOTA
 
-## [Unreleased] - Pendiente
-- Actualizar 04-roadmap y 05-glosario a v0.2
-- Commit git inicial
+## [v0.2 completo] - 2026-08-29 12:00 UTC - Roadmap y Glosario
+
+### Modificado
+- `04-roadmap-largo-horizonte.md:1` 85→115 líneas v0.2
+  - H1 60% completado (M0+M1-M2+M3-M4+M5-M6 parciales), H2/H5 marcadas ✅ con fechas reales y commits
+  - Horizonte 2 NMV actualizado con Physion-MiniGrid+ (H2/H5), V-JEPA ensemble K=5 + Π head HCU, GWT bottleneck 64 + P300, Mamba + codec W, métricas C1≈C3>>C2 y V1-V4
+  - Sistema trabajo: ciclo semanal real Semana 1 H2→06, H5→07
+- `05-glosario-y-metricas.md:1` 58→95 líneas v0.2
+  - 10 términos nuevos: Π (1/σ²), ε (||P(E(x))-E(y)||), α (VQ-VAE Π), Q (HOT-4), Coconut (c_t=h_t, BFS), VoE, IntPhys2 (UE5.4 1416 videos), MPE (ε→0), HCU Loss, LLM Codec Q:R^d→[K] R(D)
+  - Métricas v0.2: VoE Score, eficiencia Coconut K=6-20, ablación Π/GWT/α, reporte sorpresa no-entrenado V4>75%
+- `INDEX.md:1` 53→65 líneas - actualizado a 10 files 1094l, 9 agentes, vacíos resueltos
+
+### Estado
+- 10 files, 1094 líneas, 2 commits. v0.2 completo, sin pendientes documentales.
+
+## [v0.1] - 2026-08-29 10:59-11:01 UTC - Fundación
