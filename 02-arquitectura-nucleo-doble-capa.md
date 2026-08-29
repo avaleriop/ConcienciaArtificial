@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.3 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.4 - El SER y El DECIR
 
-> **Versión 0.3 - H2+H5+H3 refinadas. 29 Ago 2026 12:15 UTC.**
-> Cambios v0.3: +ECUS homeostasis (D, r=-ΔD, G, valencia=-dF/dt), debate Wiese FEP2C, triángulo H2(pensar)+H5(sentir)+H3(querer).
+> **Versión 0.4 - Tetraedro H2+H5+H3+H1. 29 Ago 2026 12:30 UTC.**
+> Cambios v0.4: +H1 jerarquía temporal (h_fast Mamba 30s + E episódico + W semántico EWC-LoRA + sueño SWR), Self_t distribuido, sin H1 el triángulo es instante sin historia (Wearing 7s).
 
 ## Diagrama Conceptual
 
@@ -55,10 +55,11 @@
 │  └──────────────────────────┬──────────────────────────────────────┘   │
 │                             │                                           │
 │  ┌──────────────────────────▼──────────────────────────────────────┐   │
-│  │  MEMORIA AUTOBIOGRÁFICA (Mamba/RSSM)                            │   │
-│  │  h_t = f(h_{t-1}, z_t, a_{t-1}) // estado recurrente persistente│   │
-│  │  No es ventana de contexto. Es consolidación lenta, reconsoli- │   │
-│  │  dación, olvido. Identidad narrativa.                           │   │
+│  │  MEMORIA JERÁRQUICA AUTOBIOGRÁFICA (H1 v0.2)                    │   │
+│  │  L1 h_fast=Mamba 30s O(1) Ā=exp(ΔA) B̄=ΔB selectivo             │   │
+│  │  L2 E={(e_i,t_i,S_i)} horas escritura ||∇loss||>τ_s retrieval  │   │
+│  │  L3 W=W₀+BA r=8-16 días EWC λ/2 ΣF(θ-θ*)² + sueño SWR 10-20×  │   │
+│  │  Self_t=LN(W_self[h_fast;c_epi;c_sem]+g_t⊙Self_{t-1})          │   │
 │  └──────────────────────────┬──────────────────────────────────────┘   │
 │                             │                                           │
 │  ┌──────────────────────────▼──────────────────────────────────────┐   │

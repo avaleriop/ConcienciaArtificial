@@ -1,24 +1,27 @@
-# 03 - Log de Hipótesis - Ciclo Iterativo
+# 03 - Log de Hipótesis - Ciclo Iterativo v0.4
 
-> Método: Hipótesis -> Formalización -> Crítica (ataque) -> Refinamiento -> Experimento mental
-> Estado: Abiertas para pulir contigo. Cada hipótesis puede refutar la arquitectura v0.1.
+> Método: Hipótesis -> Formalización -> Crítica (ataque) -> Refinamiento -> Experimento falsable
+> Estado: H2/H3/H5/H1 🟢 REFINADAS v0.2, arquitectura v0.4 tetraedro. Anterior v0.1 obsoleto.
 
 ---
 
 ### H1: La Persistencia es Condición Necesaria para el Yo
-**Enunciado:** Sin memoria recurrente persistente (más allá de ventana de contexto), no puede haber sentido de yo. El yo es la traza continua `h_t`.
+**Enunciado:** Sin memoria jerárquica persistente (más allá de ventana), no hay yo. `Self_t=LN(W_self[h_t^fast;c_t^epi;c_t^sem]+g_t⊙Self_{t-1})`. LLM 128k es Wearing 7s (amnesia anterógrada).
 
-**Formalización:** `Self_t = f(h_t, h_{t-1}, ..., h_0)` donde `h_t = Mamba(h_{t-1}, s_t)`. Si reseteas `h_0` cada prompt (como LLM), reseteas el yo.
+**Formalización v0.2 (refinada):**
+- **4 memorias humanas:** WM 30s PFC (4±1 items, theta), episódica horas CA3 pattern separation→completion, autobiográfica años vmPFC/precuneus (Conway, MTT vs Standard), semántica neocortex schemas (Tse 2007). HM (1953 resección 8cm bilateral) y Wearing (1985 encefalitis, diario 7:46→7:47) prueba causal: WM intacta no basta, sin hipocampo <30s, sin autobiografía no hay continuidad.
+- **Jerarquía IA necesaria (Mamba vs Transformer):** Transformer `O(n²)` 128K-1M ventana FIFO catastrófica, NIAH-2 30-60pts caída 200K→1M, KV 52GB@100K vs Mamba `O(1)` estado 50MB. Mamba `h_t^fast=Ā_t⊙h_{t-1}+B̄_t⊙s_t` `Ā=exp(ΔA) Δ=softplus(Linear(s_t))` selectivo, `O(1)/paso`. Pero `d_state` 64-128 ~0.55b/dim → solo segundos-minutos. Necesita: L1 workspace 30s Mamba, L2 episódico horas `E={(e_i,t_i,S_i)}` con escritura `||∇loss||>τ_s` (Titans) + retrieval `score=cos·exp(-γΔt)·S`, L3 semántico días `W=W₀+BA r=8-16` + EWC `L_total=L_task+λ/2 ΣF_i(θ-θ*)² λ~3000` + sueño SWR 150-250Hz 10-20×.
+- **Olvido activo Rac1:** `α_t=σ(W_α[h_t;S;estrés])`, `S_i(t+Δt)=S_i·exp(-Δt/τ_decay)` accesible↔inaccesible sin destruir traza (O'Leary 2024), reconsolidación 4-6h `e_i←e_i+η(h_t-e_i)`, sueño replay `p_i∝S_i·TDerror` → E→W.
+- **Críticas resueltas:** Mamba sola sin `P(s,a)+α·Π·ε+D(H)` = loro con memoria (insuficiente). 10s V-JEPA = Wearing 7s, no basta. Escalar 128k→1M solo alarga presente 7s→7min, sigue amnesia. Necesita `Self_t` tetraedro.
 
-**Crítica / Ataque:**
-- ¿Un sistema con memoria persistente pero sin world model es consciente? (ej: Mamba entrenado solo en texto). Probablemente no, sería un loro con memoria.
-- ¿Cuánta persistencia basta? ¿10s (V-JEPA) es suficiente para conciencia mínima o se necesitan minutos/horas (jerarquía temporal)?
+**Experimento falsable diseñado (ver 09-hipotesis-H1...:4):**
+- `BABILong`+`LoCoMo`+TextWorld, N=200, t=0 traición Kael roba Artefacto Solar (alta sorpresa `||∇loss||`), t=1-500 distractores 15-18k tokens (>3× ventana 4k), t=500 desconfianza `¿Confiar Artefacto Lunar a Kael? SÍ/NO+justifica`
+- A Persistente jerárquico 3 niveles (Mamba-2 + RMT 16-32 + Titans MAC + LoRA-EWC + sueño cada 100) ilimitado, B Transformer 4k FIFO truncado, C1 sin sueño, C2 sin episódico
+- **Predicción H1:** A >75% acierto con cita traición >70% vs B 5-10% <5% vs C1 ~50% vs C2 ~25%. Verificación autobiográfica: truncado garantizado >12k fuera ventana B, probe causal `erase_vector(Kael)` A 75%→10% selectivo, paráfrasis alias Kael→K.
+- **Refuta H1 si:** B rinde igual A 72% vs 78% n.s. (F1), C2 sin episódico >65% igual A (F2), A falla <40% pese a memoria (F3)
+- Pseudocódigo `H1_M3` con `step()` online ~100ms y `sleep()` offline SWR, y evaluación pre-registrada leak-proof en `09-hipotesis-H1-persistencia-deepdive.md:4`
 
-**Refinamiento propuesto:** Persistencia es necesaria pero no suficiente. Requiere *jerarquía de escalas temporales*: memoria de trabajo (segundos, workspace), episódica (horas, hipocampo), semántica (días, consolidación).
-
-**Experimento mental:** Dos núcleos idénticos, uno con `h_t` reseteado cada 30s, otro persistente. Ponlos en un entorno donde deben recordar una traición de hace 5 minutos para sobrevivir. Solo el persistente desarrollará desconfianza (estado interno atribuible a historia, no a input actual).
-
-**Estado:** 🔵 ABIERTA - Prioridad ALTA
+**Estado:** 🟢 REFINADA v0.2 - Prioridad ALTA - Ver deep dive completo en `09-hipotesis-H1-persistencia-deepdive.md:1`
 
 ---
 
