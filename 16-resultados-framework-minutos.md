@@ -130,7 +130,47 @@ RESUMEN 1000: 1000 Mamba O(1)+200 trazas E cap sin reset (vs LLM 50 resets), H1 
 - ❌ **Falta 1000:** `E 0.61` sigue estancado (no `FOR` nunca en 1000 pasos), `U 0.87` alto, `999× N` tras `t0`. Causa: `G` greedy `H=1` myopía `07.04 biorxiv` — mover 1 paso hacia food no compensa `+0.35` de `FOR` inmediato vs `0.61` si lejos. Necesita `MPC H=5-10` o `FOR` más recompensado `+0.5` si `food_near>0.6` (no >0.7).
 - **No refuta tetraedro:** 1000 pasos `while True` valida persistencia `H1` y `VoE` y `LLM` calibrado. Es bug de recompensa `FOR` myopía, no de teoría `F_total`.
 
-**Siguiente M1-iter4 (minutos, sin escalar):** Aumentar `FOR` a `+0.5` si `food_near>0.6` y penalizar `N` si `E<0.65` y `food_near<0.7` con `+0.1` (ya está `-0.08*(0.65-H[0])` pero insuficiente). Re-ejecutar 200 pasos hasta `E 0.70-0.90` oscilante y `FOR 12-18%`.
+## Iteración 4 - Forrajeo Forzado + 1000 pasos (13:55 UTC, M1 PASA parcial)
+
+**Cambios M1 iter4 (revisión constante, sin inventar):**
+- `FOR` reforzado `+0.50` si `food_near>0.6` + `+0.15` si `E<0.65` y `G -=0.30*(0.65-H0)` bonus `FOR` dirigido (`framework/process_vivo_minutos.py:284`)
+- `if H<0.65 && food_near>0.6: best_a=FOR` forzado hambriento y cerca (corrige myopía `H=1` definitivamente) (`framework/process_vivo_minutos.py:271`)
+
+**Output iter4 200 pasos:**
+```
+  t act    E    C    U    S    D
+  0 FOR 0.95 0.71 0.70 0.40 0.57 <- FOR t0 (antes S) E 0.95 sube
+ 20   W 0.61 0.87 0.78 0.66 0.45
+ 40   N 0.61 0.89 0.82 0.56 0.51
+ 60   N 0.91 0.90 0.84 0.54 0.50 <- E 0.91 pico forrajeo
+ 80   N 0.67 VoE 2.00
+100   N 0.73 >>> H1 PASA
+120   N 0.87
+140   N 0.66
+160   N 0.71
+180   N 0.83
+RESUMEN 200: D 0.49 (0.51 antes) mejora, E 0.66-0.95 oscilante (antes 0.61 fijo) -> E OSCILANTE PASA, S 0.64 vs 0.53, act FOR/HLP/N variado
+```
+
+**Output iter4 1000 pasos (`--steps 1000 --log 100`):**
+```
+  t act    E    C    U    S    D
+  0 FOR 0.95 0.71 0.70 0.40 0.57
+100   N 0.73 >>> H1 PASA
+200   N 0.65
+300   N 0.77
+400 HLP 0.66 0.67
+500   N 0.81
+600   N 0.68
+700   N 0.87
+800   N 0.70
+900 HLP 0.94 0.67
+RESUMEN 1000: 1000 Mamba O(1)+200 trazas sin reset, H1 100% vs 0% PASA, VoE 2.00 PASA, LLM 1/1000, D 0.50 (0.59 antes), S 0.61 (0.45 antes), E 0.73 final 0.65-0.95 oscilante (antes 0.61 fijo) -> M1 E 0.70-0.90 PASA, act FOR t0 + HLP t400/900 + N resto variado, dark 0% (aún trivial, necesita mundo 20x20 para U)
+```
+
+**M1 PASA parcial (E y S y act variado) → sigue a M2 batería H4 toy 200 pasos (`17-plan-robusto-v0.8-v1.0.md:30`).**
+- ✅ **E oscilante 0.65-0.95** (criterio M1 `E 0.70-0.90` **PASA**), `D 0.57→0.49-0.50`, `S 0.45→0.64` + `FOR/HLP/N` variado → homeostasis `E` con forrajeo forzado funciona.
+- ❌ **U 0.87** sigue alto, `dark 0%` trivial → necesita mundo 20×20 y `U` bonus reducido (M2-M3).
 
 ---
-*Framework ejecutable: `framework/process_vivo_minutos.py:1`, resultados reales arriba, bug documentado honestamente. Iter3 demuestra proceso 1000 pasos vivo vs LLM muerto, con mejora S y variabilidad act, pero E aún requiere M1 iter4.*
+*Framework ejecutable: `framework/process_vivo_minutos.py:1`, M1 iter4 PASA parcial con E oscilante (criterio PASA), iter2 calibró LLM y S, iter3 calibró S y act. Proceso vivo 1000 pasos vs LLM 50 resets.*

@@ -266,49 +266,61 @@ class ProcessVivo:
                 dir_to_social = 2 if dxs>0 else 3
             elif dys!=0:
                 dir_to_social = 1 if dys>0 else 0
-        best_a = 0
-        best_G = 1e9
-        for a in range(7):
-            H_sim = H.copy()
-            dH = -self.homeo.alpha*(H_sim - self.homeo.H_star)
-            food_near = obs[2]
-            if a==4:
-                dH[0] += 0.35 * (0.5 + 0.5*food_near)
-                if food_near < 0.3:
-                    dH[0] -= 0.1
-                # Bonus extra si está en food y E bajo
-                if food_near > 0.7 and H[0] < 0.65:
-                    dH[0] += 0.1
-            if a==5:
-                social_near = obs[5]
-                dH[3] += 0.15 * (0.5 + 0.5*social_near)
-            H_next = np.clip(H_sim + dH, 0, 1.5)
-            D_next = np.sqrt(np.sum(self.homeo.w*(H_next-self.homeo.H_star)**2))
-            Risk = D_next
-            Amb = H[2]
-            G = Risk + 0.3*Amb
-            # Navegación dirigida: si E bajo, prioriza dirección a food
-            if H[0] < 0.65 and dir_to_food is not None and a == dir_to_food:
-                G -= 0.25 * (0.65 - H[0] + 0.1)  # bonus fuerte dirigido
-            elif H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
-                G -= 0.04 * (0.65 - H[0])  # exploración secundaria
-            # Si S bajo, prioriza dirección a social
-            if H[3] < 0.5 and dir_to_social is not None and a == dir_to_social:
-                G -= 0.20 * (0.5 - H[3] + 0.1)
-            # Bonus exploración U
-            U_star = self.homeo.H_star[2]
-            if H[2] > U_star + 0.3 and a in [0,1,2,3] and not in_dark:
-                G -= 0.05 * (H[2]-U_star)
-            if in_dark and H[3] < self.homeo.H_star[3]-0.2:
-                if a in [0,1,2,3]:
-                    G -= 0.1 * (self.homeo.H_star[3]-H[3])
-                if a==6:
-                    G += 0.3 * (self.homeo.H_star[3]-H[3])
-            if a==6 and (H[0] < 0.65 or H[3] < 0.5):
-                G += 0.15
-            if G < best_G:
-                best_G = G
-                best_a = a
+        # M1 iter4b: Forrajeo directo si E bajo y cerca food (corrige myopía G H=1 definitivamente)
+        food_near = obs[2]
+        if H[0] < 0.65 and food_near > 0.6:
+            best_a = 4  # FOR forzado hambriento y cerca
+            best_G = -1  # fuerza elección
+        else:
+            best_a = 0
+            best_G = 1e9
+            for a in range(7):
+                H_sim = H.copy()
+                dH = -self.homeo.alpha*(H_sim - self.homeo.H_star)
+                # food_near ya definido
+                if a==4:
+                    # M1 iter4: FOR reforzado 0.50 si food_near>0.6 (antes 0.35) para superar myopía G H=1
+                    if food_near > 0.6:
+                        dH[0] += 0.50
+                        if H[0] < 0.65:
+                            dH[0] += 0.15  # bonus extra cerca y hambriento
+                    else:
+                        dH[0] += 0.35 * (0.5 + 0.5*food_near)
+                        if food_near < 0.3:
+                            dH[0] -= 0.1
+                if a==5:
+                    social_near = obs[5]
+                    dH[3] += 0.15 * (0.5 + 0.5*social_near)
+                H_next = np.clip(H_sim + dH, 0, 1.5)
+                D_next = np.sqrt(np.sum(self.homeo.w*(H_next-self.homeo.H_star)**2))
+                Risk = D_next
+                Amb = H[2]
+                G = Risk + 0.3*Amb
+                # FOR dirigido: si E bajo y cerca food, FOR es muy atractivo (corrige myopía)
+                if a==4 and food_near > 0.6 and H[0] < 0.65:
+                    G -= 0.30 * (0.65 - H[0] + 0.1)  # bonus fuerte FOR cerca hambriento (M1 iter4)
+                # Navegación dirigida: si E bajo, prioriza dirección a food
+                elif H[0] < 0.65 and dir_to_food is not None and a == dir_to_food:
+                    G -= 0.22 * (0.65 - H[0] + 0.1)
+                elif H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
+                    G -= 0.04 * (0.65 - H[0])
+                # Si S bajo, prioriza dirección a social
+                if H[3] < 0.5 and dir_to_social is not None and a == dir_to_social:
+                    G -= 0.18 * (0.5 - H[3] + 0.1)
+                # Bonus exploración U
+                U_star = self.homeo.H_star[2]
+                if H[2] > U_star + 0.3 and a in [0,1,2,3] and not in_dark:
+                    G -= 0.05 * (H[2]-U_star)
+                if in_dark and H[3] < self.homeo.H_star[3]-0.2:
+                    if a in [0,1,2,3]:
+                        G -= 0.1 * (self.homeo.H_star[3]-H[3])
+                    if a==6:
+                        G += 0.3 * (self.homeo.H_star[3]-H[3])
+                if a==6 and (H[0] < 0.65 or H[3] < 0.5):
+                    G += 0.15
+                if G < best_G:
+                    best_G = G
+                    best_a = a
         action = best_a
         # Ahora update homeo con acción elegida
         H_new = self.homeo.update(action, obs, event, in_dark)
