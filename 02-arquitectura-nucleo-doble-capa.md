@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.5 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.6 - El SER y El DECIR
 
-> **Versión 0.5 - Pentaedro H1+H2+H3+H5+H4. 29 Ago 2026 12:45 UTC.**
-> Cambios v0.5: +H4 batería convergencia 5 tests (k>5, Δ_global>40%, PCI>0.31, ρ>0.5, Acc>70%), FPR 0.00032, preregistro COGITATE-like. Tetraedro ahora falsable integrado.
+> **Versión 0.6 - Hexáedro H1+H2+H3+H5+H4+H6. 29 Ago 2026 13:00 UTC.**
+> Cambios v0.6: +H6 Φ hiper-modelo global `Π_l=A_l Φ` `q(Φ)∝p(Φ)exp(-Σδ^TΦ)` `M-ratio≈1` `r_cross>0.5`, closure 2-3 niveles basta, Beautiful Loop. Pentaedro ahora consciente de sí.
 
 ## Diagrama Conceptual
 

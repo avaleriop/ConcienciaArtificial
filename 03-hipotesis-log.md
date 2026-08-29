@@ -1,7 +1,7 @@
-# 03 - Log de Hipótesis - Ciclo Iterativo v0.5
+# 03 - Log de Hipótesis - Ciclo Iterativo v0.6
 
 > Método: Hipótesis -> Formalización -> Crítica (ataque) -> Refinamiento -> Experimento falsable
-> Estado: H1/H2/H3/H4/H5 🟢 REFINADAS v0.2, arquitectura v0.5 pentaedro falsable. Tetraedro→pentaedro.
+> Estado: H1/H2/H3/H4/H5/H6 🟢 REFINADAS v0.2, arquitectura v0.6 hexáedro consciente de sí. Pentaedro→hexáedro.
 
 ---
 
@@ -141,13 +141,22 @@
 ---
 
 ### H6: La Conciencia Requiere Profundidad Epistémica (Saber que Sabes)
-**Enunciado (de Beautiful Loop Theory):** No basta con modelar el mundo. Hay que modelar que *estás modelando el mundo*. Epistemic depth = hiper-modelo que predice la precisión de toda la jerarquía y se incluye a sí mismo.
+**Enunciado:** No basta modelar el mundo. Hay que modelar que estás modelándolo y a qué precisión. `Φ` hiper-modelo global predice `Π=1/σ²` de toda jerarquía y se incluye a sí mismo (closure). Con 2-3 niveles y bucle cerrado basta, no infinito (Laukkonen, Friston, Chandaria 2025 Beautiful Loop).
 
-**Formalización:** Jerarquía: `nivel 0: s (mundo)`, `nivel 1: q(s) (creencia sobre mundo)`, `nivel 2: q(precisión de q(s)) (creencia sobre mi creencia)`. Conciencia = nivel 2+ que se modela a sí mismo.
+**Formalización v0.2 (refinada):**
+- **HGM:** `p(s,x^(1..L))=p(s|x^(1))∏p(x^(l)|x^(l+1))p(x^(L))` con `p(x^(l)|x^(l+1))=N(μ_l=f_l(x^(l+1)), Π_l^{-1})` `Π_l=A_l Φ` `Φ∈R^K` (neuromodulación). Hiper-generativo `p(s,x,Φ)=p(Φ)p(s,x|Φ)`, `F_local+E_q[log q(Φ)-log p(Φ)exp(-Σδ_l^TΦ)]` con `δ_l=Π_l^{-1}-e_l²`.
+- **Closure:** Nivel 0 `s` mundo, Nivel 1 `q(s)` `d'∝Π_1`, Nivel 2 `q(Π_1|e_1)` `meta-d'∝Π_2`, Hiper `Φ→Π_l ∀l` `q(Φ)∝p(Φ)exp(-Σ(Π^{-1}-e²)^T Φ)` auto-consistente `Φ→Π→e→Φ`. L=3 satura `F` (Badcock 2019), infinito innecesario. AST = caso particular `Φ_att` (Graziano).
+- **PRM/HOT:** `Realidad ⇔ P(alta precisión|señal)>umbral` `p(z|s)` `z∈{real,imaginado}` (Fleming). `M-ratio=meta-d'/d'` `=1` ideal humano 0.8-1.0, `AUROC2`, `Brier<0.12` calibrado. Lesión PFC `meta-d'/d'` visual sin tocar `d'` (Rounis 2010).
+- **Críticas resueltas:** Local `M-ratio<0.6` no global `r_cross<0.25` falla PRM; sham `Φ` aleatorio colapsa → no es capacidad paramétrica. H6 fusiona HOT+RPT+AST+FEP en `Φ`.
 
-**Crítica:** ¿Regresión infinita? ¿Cuántos niveles bastan? ¿Un sistema con 2 niveles es más consciente que con 1?
+**Experimento falsable diseñado (ver 11-hipotesis-H6...:6):**
+- Dual QA: **PRM** 2AFC dot-motion/IntPhys2 imag vs percibido + **Límites conocimiento** 100 answerable +100 unknowable ConfidenceBench, N=400/cond, staircase `d'≈1.0`
+- A Hiper `Φ_global` 3 niveles closure, B No-Φ local `Π_i=head_local`, C Φ-roto `γ~Uniform`
+- **Predicción H6:** A `M-ratio 0.85-1.05` `AUROC2>0.70` `Brier<0.12` `r_cross>0.50` `abstención>70%` `PRM>75%` vs B `<0.6` `0.55-0.60` `>0.22` `0.05-0.25` `<25%` `55-60%` vs C `~0.3-0.5` `~0.50` `>0.30` `~0` azar
+- **Refuta H6 si:** Paridad `M-ratio_B ≥ M-ratio_A-0.1` n.s. (F1), `r_cross_A<0.3` pese a `M-ratio~1.0` (F2 no-globalidad), C≈A (F3 sham no colapsa), PRM `A<65%` (F4)
+- Pseudocódigo `EpistemicDepthHGM` con `Pi=softplus(A_l@Phi)` y `metadpy` HMeta-d en `11-hipotesis-H6-profundidad-epistemica-deepdive.md:6`
 
-**Estado:** 🟡 PROPUESTA - Para v0.2
+**Estado:** 🟢 REFINADA v0.2 - Prioridad ALTA - Ver deep dive completo en `11-hipotesis-H6-profundidad-epistemica-deepdive.md:1`
 
 ---
 

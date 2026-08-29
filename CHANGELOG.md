@@ -1,5 +1,24 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.6] - 2026-08-29 13:00 UTC - H6 Profundidad Epistémica (Hexáedro)
+
+### Añadido
+- `11-hipotesis-H6-profundidad-epistemica-deepdive.md:1` (195 líneas) - 2 agentes paralelos
+  - Beautiful Loop Laukkonen/Friston/Chandaria 2025 Neubiorev: campo epistémico, binding, epistemic depth `Φ` global
+  - HGM: `p(s,x)=p(s|x^(1))∏p(x^(l)|x^(l+1))p(x^(L))` `p(x^(l)|x^(l+1))=N(f_l(x^(l+1)), Π_l^{-1})` `Π_l=A_l Φ` `q(Φ)∝p(Φ)exp(-Σδ^TΦ)` `δ=Π^{-1}-e²` `F_local+F_hyper`
+  - HOT/PRM: `M-ratio=meta-d'/d'` `=1` ideal humano 0.8-1.0, AUROC2, Brier, PRM `P(real|señal)>umbral` `mPFC` 2º orden, AST=caso `Φ_att`
+  - Regresión infinita: 2-3 niveles con closure `Φ→Π→e→Φ` basta L=3 satura F (Badcock 2019), strange loop virtuoso
+  - Experimento dual PRM+QA ConfidenceBench N=400/cond: A Φ_global `M-ratio 0.85-1.05` `Brier<0.12` `r_cross>0.50` `PRM>75%` vs B local `<0.6` `>0.22` `0.05-0.25` vs C sham `~0.3-0.5` `~0.50` `>0.30`, 4 falsadores, preregistrado OSF
+
+### Modificado
+- `02-arquitectura-nucleo-doble-capa.md:1` v0.5→v0.6 (181 líneas): +H6 `Φ` hiper-modelo global `Π_l=A_l Φ` `M-ratio≈1` `r_cross>0.5`
+- `03-hipotesis-log.md:1` v0.5→v0.6 (157→166 líneas): H6 🟡→🟢 REFINADA v0.2 con HGM, PRM, closure 2-3 niveles
+- `INDEX.md:1` → v0.6 2190l 18 agentes (4+3+2+3+2+2+2), hexáedro H1-H6
+- `CHANGELOG.md:1` → v0.6
+
+### Estado Hipótesis
+- 🟢 H1, H2, H3, H4, H5, H6 refinadas (hexáedro pensar+sentir+querer+ser+medir+saber) | H7-H9 backlog
+
 ## [v0.5] - 2026-08-29 12:45 UTC - H4 Medida Convergente (Pentaedro)
 
 ### Añadido
