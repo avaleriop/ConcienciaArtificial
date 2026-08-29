@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.4 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.5 - El SER y El DECIR
 
-> **Versión 0.4 - Tetraedro H2+H5+H3+H1. 29 Ago 2026 12:30 UTC.**
-> Cambios v0.4: +H1 jerarquía temporal (h_fast Mamba 30s + E episódico + W semántico EWC-LoRA + sueño SWR), Self_t distribuido, sin H1 el triángulo es instante sin historia (Wearing 7s).
+> **Versión 0.5 - Pentaedro H1+H2+H3+H5+H4. 29 Ago 2026 12:45 UTC.**
+> Cambios v0.5: +H4 batería convergencia 5 tests (k>5, Δ_global>40%, PCI>0.31, ρ>0.5, Acc>70%), FPR 0.00032, preregistro COGITATE-like. Tetraedro ahora falsable integrado.
 
 ## Diagrama Conceptual
 

@@ -1,7 +1,7 @@
-# 03 - Log de Hipótesis - Ciclo Iterativo v0.4
+# 03 - Log de Hipótesis - Ciclo Iterativo v0.5
 
 > Método: Hipótesis -> Formalización -> Crítica (ataque) -> Refinamiento -> Experimento falsable
-> Estado: H2/H3/H5/H1 🟢 REFINADAS v0.2, arquitectura v0.4 tetraedro. Anterior v0.1 obsoleto.
+> Estado: H1/H2/H3/H4/H5 🟢 REFINADAS v0.2, arquitectura v0.5 pentaedro falsable. Tetraedro→pentaedro.
 
 ---
 
@@ -84,22 +84,32 @@
 ---
 
 ### H4: La Medida de Conciencia No Puede Ser Conductual (Test de Turing)
-**Enunciado:** Decir "soy consciente" no prueba nada. Un LLM lo dice perfecto. Necesitamos métricas arquitectónicas y dinámicas, no lingüísticas.
+**Enunciado:** Decir "soy consciente" no prueba nada. MMLU 90% ≠ consciente. Necesitamos convergencia de 5 tests arquitectónicos que un LLM puede gamear por separado pero no juntos (FPR 0.2→0.00032).
 
-**Formalización:** Batería de tests:
-1.  **Test de Ignición:** ¿Exhibe curva sigmoide no-lineal y broadcast global? (GWT)
-2.  **Test de Ablación:** ¿Lesión del workspace causa déficit global aunque módulos intactos?
-3.  **Test de Phi_proxy:** ¿Complejidad integrada correlaciona con integración cross-modal pero no con accuracy simple?
-4.  **Test de Uso Autónomo:** ¿Invoca LLM cuando U alta, no cuando se lo piden?
-5.  **Test de Counterfactual:** ¿Puede reportar "esperaba X pero vi Y" sin haber sido entrenado en esa frase exacta?
+**Formalización v0.2 (refinada):**
+- **Por qué Turing/MMLU fallan:** Turing 73% GPT-4.5 juzgado humano (Jones & Bergen 2025) con ELIZA 1966 precedente. Searle Chinese Room + Block Nation: sintaxis≠semántica, `system prompt` gamea reporte sin cambiar Φ. Mahowald TiCS 2024: FLC formal vs FnLC funcional disociadas. Grid XOR Φ alto MMLU 0 vs Transformer MMLU 90% Φ≈0 (Aaronson). Chalmers easy vs hard: métricas conductuales = easy, no tocan `presencia=α·Π·||ε||`.
+- **Butlin 14 indicadores (2025 TiCS):** RPT(1-2), GWT(1-4), HOT(1-4), AST-1, PP-1, AE(1-2). LLMs 2-3/14 (14-20% bench), tetraedro apunta 10/14. Ningún sistema actual consciente pero sin barrera.
+- **COGITATE Nature 2025 N=256 fMRI+MEG+iEEG adversarial GWT vs IIT:** IIT sin gamma sostenida, GWT sin ignición offset y representación prefrontal débil. Ni Φ ni broadcast discriminan fiablemente en cerebro → transferir a IA es frágil (Bayne 2024). Consenso: perfil > score, preregistro adversarial + perturbación causal = patrón oro.
 
-**Crítica / Ataque:**
-- COGITATE mostró que ni GWT ni IIT pasan todos sus tests predichos. ¿Qué nos hace pensar que nuestros tests serán mejores?
-- ¿No estamos moviendo la portería? Cada vez que un sistema pasa un test decimos "no era el test correcto".
+**Batería 5 tests pre-registrada (ver 10-hipotesis-H4...:3):**
+1. **Ignición:** Local-Global SOA 16-300ms, `k>5` sigmoide abrupta + `D=KL>1.5` + P300 300-500ms. Tetraedro sí (todo-o-nada), LLM no `k<2` lineal.
+2. **Ablación Workspace:** `z=0` bottleneck 64D, `Δ_global>40%` vs `Δ_local<10%` `d>0.8`. Tetraedro colapso global 85%→35% vs local 90%→85%; LLM degradación uniforme 15-20%.
+3. **PCI/Φ perturbacional:** `z+δ` TMS-like, `PCIst=Lempel-Ziv>0.31` + `Δ_PCI>0.15` + `Φ_proxy>0.1`. Tetraedro 0.35-0.45 reverberación 300-500ms, LLM 0.12-0.18 estereotipado `Φ≈0`.
+4. **Uso Autónomo:** `ρ=Spearman(U, n_invocaciones)>0.5`. Tetraedro 0.6 (baja U 0-1, alta 4-6), LLM ~0.1.
+5. **Counterfactual OOD:** 50 escenarios no vistos, `Acc>70%` `BLEU<0.3` "esperaba X vi Y". Tetraedro 75%, LLM 25% confabula.
+- **Tabla:** Tetraedro ≥4/5 + LLM ≤1/5 + ≥8/14 Butlin = H4 confirmada (convergencia `FPR 0.00032` vs 0.2 único).
 
-**Refinamiento propuesto:** No hay test único. Necesitamos *convergencia* de indicadores (Butlin 14 indicadores). Un sistema que pase 10/14 es más candidato que uno que pase 2/14. Nuestro núcleo apunta a pasar: RPT-1, GWT-1/2/3/4, AST-1, PP-1, AE-1/2. Un LLM puro pasa 0-2.
+**Experimento convergencia diseñado (ver 10-hipotesis-H4...:4):**
+- Within-subject A=Tetraedro v0.4 vs B=LLM puro mismo backbone, N=200 trials/test, OSF preregistrado, métricas idénticas
+- Pseudocódigo `bateria()` con fit sigmoide, eval lesion, perturb LZ, spearman, accuracy OOD
+- **Refuta H4 si:** LLM ≥3/5 (F1 paridad), tetraedro falla ≥2/5 (F2), `Δ_global≈Δ_local` p>0.05 (F3 no disociación), <6/14 Butlin (F4), sin ignición offset COGITATE-like (F5). Si A 5/5 y B 0/5, `P(H4|D)≈0.98`.
 
-**Estado:** 🔵 ABIERTA - Prioridad MEDIA
+**Críticas v0.1 → Respuesta v0.2:**
+- ¿Mover portería? → No, 5 umbrales preregistrados + falsadores F1-F5 explícitos (modelo COGITATE).
+- ¿COGITATE falló, por qué nuestros tests mejores? → No usamos Φ/sincronía aislada; usamos convergencia + perturbación causal + ablación disociada (odds 0.00032 vs 0.2).
+- ¿Pasa 10/14 pero sigue sin sentir? → Convergencia no prueba hard problem (Chalmers), prueba candidato más fuerte que chatbot (Bayne 4D perfil > score).
+
+**Estado:** 🟢 REFINADA v0.2 - Prioridad MEDIA - Ver deep dive completo en `10-hipotesis-H4-medida-deepdive.md:1`
 
 ---
 

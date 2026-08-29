@@ -1,5 +1,22 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.5] - 2026-08-29 12:45 UTC - H4 Medida Convergente (Pentaedro)
+
+### Añadido
+- `10-hipotesis-H4-medida-deepdive.md:1` (207 líneas) - 2 agentes paralelos
+  - Turing: GPT-4.5 73% juzgado humano 2025, ELIZA 1966, Searle Chinese Room, Block Nation, Mahowald TiCS 2024 FLC vs FnLC, MMLU 90% Φ≈0 vs grid XOR Φ alto MMLU 0, Chalmers easy vs hard
+  - Butlin 14 indicadores (2025 TiCS): RPT 1-2, GWT 1-4, HOT 1-4, AST-1, PP-1, AE 1-2, LLM 2-3/14 vs tetraedro 10/14; COGITATE Nature 2025 N=256 fMRI+MEG+iEEG adversarial: IIT sin gamma, GWT sin offset, Bayne 4D perfil > score
+  - Batería 5 tests preregistrada: T1 ignición k>5 D>1.5 P300 300ms, T2 ablación Δ_global>40% vs Δ_local<10%, T3 PCI>0.31 Φ>0.1, T4 ρ(U,LLM)>0.5, T5 counterfactual Acc>70% OOD, FPR 0.2→0.00032 conjunción, Butlin vector 10/14
+  - Experimento convergencia A tetraedro vs B LLM puro N=200/trials, OSF, pseudocódigo bateria(), 5 falsadores F1-F5, P(H4|5/5)≈0.98
+
+### Modificado
+- `02-arquitectura-nucleo-doble-capa.md:1` v0.4→v0.5 (181 líneas): +H4 batería 5 tests, FPR 0.00032, tetraedro falsable integrado
+- `03-hipotesis-log.md:1` v0.4→v0.5 (147→157 líneas): H4 🔵→🟢 REFINADA v0.2 con Turing/MMLU, Butlin 14, COGITATE, 5 tests y convergencia
+- `INDEX.md:1` → v0.5 1966l 16 agentes (4+3+2+3+2+2), pentaedro H1-H5
+
+### Estado Hipótesis
+- 🟢 H1, H2, H3, H4, H5 refinadas (pentaedro pensar+sentir+querer+ser+medir) | 🟡 H6 propuesta | H7-H9 backlog
+
 ## [v0.4] - 2026-08-29 12:30 UTC - H1 Persistencia (Tetraedro)
 
 ### Añadido
