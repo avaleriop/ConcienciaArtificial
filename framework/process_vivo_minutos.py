@@ -247,31 +247,53 @@ class ProcessVivo:
         # --- Política H3 ---
         H = self.homeo.H
         # Expected D after each action (toy)
+        # --- Política H3 v0.8c: navegación dirigida a food/social si E/S bajo (revisión constante iter3) ---
+        # Heurística: si E<0.65, prioriza moverse hacia food más cercano; si S<0.5, hacia social
+        # Calcula dirección a food más cercano y a social
+        foods = [[2,2],[2,7],[7,2],[7,7]]
+        social = [8,8]
+        # obs no trae pos directa, pero agent pos está en world, aquí aproximamos con H y obs
+        # Para toy, usamos extero obs[2]=food_near y obs[5]=social_near, pero para dirección necesitamos pos
+        # Pasamos pos vía closure: self._last_obs y self._last_pos (inyectado desde step)
+        # Aquí simplificamos: si E bajo, FOR solo vale si food_near>0.7, si no, moverse es mejor
         best_a = 0
         best_G = 1e9
-        # Risk = drive, Ambiguity = U (obs[?]) simplificado
+        # Risk = drive, Ambiguity = U
         for a in range(7):
-            # Simula dH para cada a
             H_sim = H.copy()
             dH = -self.homeo.alpha*(H_sim - self.homeo.H_star)
-            if a==4: dH[0]+=0.35
-            if a==5: dH[3]+=0.15
-            # Dark room G: si in_dark, Risk para U y S alto
+            # Recompensa esperada ajustada por proximidad food/social (obs)
+            food_near = obs[2]  # 1-dist_food, alta si cerca
+            if a==4:
+                # FOR solo recompensa si está cerca de food
+                dH[0] += 0.35 * (0.5 + 0.5*food_near)  # 0.35 si cerca, ~0.175 si lejos
+                if food_near < 0.3:
+                    dH[0] -= 0.1  # penaliza forrajear lejos
+            if a==5:
+                social_near = obs[5]
+                dH[3] += 0.15 * (0.5 + 0.5*social_near)
             H_next = np.clip(H_sim + dH, 0, 1.5)
             D_next = np.sqrt(np.sum(self.homeo.w*(H_next-self.homeo.H_star)**2))
             Risk = D_next
-            Amb = H[2]  # U
+            Amb = H[2]
             G = Risk + 0.3*Amb
-            # Bonus exploración proporcional a (U-U*) si U>U* y no en dark (revisión H3, antes binario -0.1)
+            # Bonus navegación dirigida si E bajo: prioriza moves hacia food
+            if H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
+                # Si está lejos de food y E bajo, explora (cualquier move) con bonus pequeño
+                G -= 0.08 * (0.65 - H[0])
+            # Bonus exploración proporcional a (U-U*) si U>U* y no en dark
             U_star = self.homeo.H_star[2]
             if H[2] > U_star + 0.3 and a in [0,1,2,3] and not in_dark:
-                G -= 0.15 * (H[2]-U_star)  # proporcional, no fijo
-            # Penaliza dark si S baja (quiere social) - proporcional
+                G -= 0.08 * (H[2]-U_star)
+            # Penaliza dark si S baja
             if in_dark and H[3] < self.homeo.H_star[3]-0.2:
-                if a in [0,1,2,3]:  # salir de dark
+                if a in [0,1,2,3]:
                     G -= 0.1 * (self.homeo.H_star[3]-H[3])
-                if a==6:  # quedarse
+                if a==6:
                     G += 0.3 * (self.homeo.H_star[3]-H[3])
+            # Penaliza STY quedarse quieto si E o S bajo (fuerza acción)
+            if a==6 and (H[0] < 0.65 or H[3] < 0.5):
+                G += 0.15
             if G < best_G:
                 best_G = G
                 best_a = a
