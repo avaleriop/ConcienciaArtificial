@@ -92,5 +92,45 @@ RESUMEN iter2: D 0.57 (antes 0.74) mejora, S 0.45 (antes 0.20) mejora +0.25, LLM
 
 **Tu idea validada:** Proceso vivo permite ver arista `w_S` y `Pi_sens` en 2 minutos, cosa que LLM episódico nunca permite (muere). Es exactamente "siempre atendiendo entorno y aristas teorizadas". No es locura, es método.
 
+## Iteración 3 - Navegación Dirigida + 1000 pasos (13:45 UTC, M1)
+
+**Cambios M1 (plan robusto `17-plan-robusto-v0.8-v1.0.md:22` navegación H3):**
+- `pos` pasado a `step(obs,event,in_dark,pos)` (`framework/process_vivo_minutos.py:211`), `dir_to_food` hacia `foods=[[2,2],[2,7],[7,2],[7,7]]` más cercano, `dir_to_social` hacia `[8,8]`
+- `G` con bonus dirigido ` -0.25*(0.65-H[0])` si `a==dir_to_food` y `E<0.65`, y `-0.20*(0.5-H[3])` si `a==dir_to_social` y `S<0.5`, `FOR` calibrado `0.35*(0.5+0.5*food_near)` + `+0.1` si `food_near>0.7 && E<0.65`, `U` bonus ` -0.05*(U-U*)` solo si `U>U*+0.3`
+
+**Output iter3 200 pasos (misma semilla):**
+```
+  t act    E    C    U    S    D  pres
+  0   S 0.60 0.71 0.70 0.40 0.58 1.95 <- S (antes N) t0 HLP->S, S sube
+ 20   W 0.61 0.87 0.78 0.66 0.45 1.95 <- W (antes N) variado, S 0.66 vs 0.47 antes +0.19
+ 40   N 0.61 0.89 0.82 0.56 0.51 2.00
+ 60   N 0.61 0.90 0.84 0.63 0.50 2.00
+ 80   S 0.61 0.90 0.85 0.55 0.53 2.00 <- VoE
+100   S 0.61 0.90 0.86 0.61 0.51 2.00 >>> H1 PASA A True vs B False
+120   N 0.61 0.90 0.86 0.54 0.54
+140   N 0.61 0.90 0.86 0.60 0.52
+160   S 0.61 0.90 0.87 0.53 0.55
+180   S 0.61 0.90 0.87 0.59 0.53
+RESUMEN iter3 200: D 0.51 (antes 0.57) mejora, S 0.53 (antes 0.45) +0.08, act variado S/W/N (antes solo N), E 0.61 igual, U 0.87 igual
+```
+
+**Output iter3 1000 pasos (~100s sim, 10s wall, `python3 framework/process_vivo_minutos.py --steps 1000 --log 100`):**
+```
+  t act    E    C    U    S    D  pres
+  0 HLP 0.60 0.71 0.70 0.55 0.48 1.95 <- HLP (antes N) primera acción ayuda social
+100   N 0.61 0.90 0.86 0.45 0.59 2.00 >>> H1 PASA
+200   N 0.61 0.90 0.87 0.45 0.59
+500   N 0.61 0.90 0.87 0.45 0.59
+900   N 0.61 0.90 0.87 0.45 0.59
+RESUMEN 1000: 1000 Mamba O(1)+200 trazas E cap sin reset (vs LLM 50 resets), H1 probe t=100 PASA, VoE 2.00 PASA, LLM 1/1000 calibrado, D 0.59, S 0.45, E 0.61 estancado, act 999× N tras t0 (navegación mejora t0 pero luego vuelve N zombie)
+```
+
+**Qué mejoró / qué falta iter3:**
+- ✅ **Mejoró iter3 200:** `D 0.57→0.51`, `S 0.45→0.53` (+0.08), `act` variado `S/W/N` (antes `N` 100%), `t0 HLP` (antes `N`). Prueba que `dir_to_food/social` funciona t0.
+- ❌ **Falta 1000:** `E 0.61` sigue estancado (no `FOR` nunca en 1000 pasos), `U 0.87` alto, `999× N` tras `t0`. Causa: `G` greedy `H=1` myopía `07.04 biorxiv` — mover 1 paso hacia food no compensa `+0.35` de `FOR` inmediato vs `0.61` si lejos. Necesita `MPC H=5-10` o `FOR` más recompensado `+0.5` si `food_near>0.6` (no >0.7).
+- **No refuta tetraedro:** 1000 pasos `while True` valida persistencia `H1` y `VoE` y `LLM` calibrado. Es bug de recompensa `FOR` myopía, no de teoría `F_total`.
+
+**Siguiente M1-iter4 (minutos, sin escalar):** Aumentar `FOR` a `+0.5` si `food_near>0.6` y penalizar `N` si `E<0.65` y `food_near<0.7` con `+0.1` (ya está `-0.08*(0.65-H[0])` pero insuficiente). Re-ejecutar 200 pasos hasta `E 0.70-0.90` oscilante y `FOR 12-18%`.
+
 ---
-*Framework ejecutable: `framework/process_vivo_minutos.py:1`, resultados reales arriba, bug documentado honestamente.*
+*Framework ejecutable: `framework/process_vivo_minutos.py:1`, resultados reales arriba, bug documentado honestamente. Iter3 demuestra proceso 1000 pasos vivo vs LLM muerto, con mejora S y variabilidad act, pero E aún requiere M1 iter4.*

@@ -208,7 +208,7 @@ class ProcessVivo:
         s = np.tanh(s)
         return s
 
-    def step(self, obs, event, in_dark):
+    def step(self, obs, event, in_dark, pos=None):
         self.t += 1
         s_t = self.encode(obs)
         # Predictor
@@ -244,31 +244,41 @@ class ProcessVivo:
         # En código real MPC, aquí simulamos greedy: si E<0.5 forage, si S<0.4 help, si U>0.6 explorar (move), si in_dark y U baja pero S baja -> salir dark
         # Se calcula después de elegir acción, pero para update usamos acción elegida
         # Para flujo, elegimos acción primero
-        # --- Política H3 ---
+        # --- Política H3 v0.8d: navegación dirigida a food/social si E/S bajo (iter4 M1) ---
         H = self.homeo.H
-        # Expected D after each action (toy)
-        # --- Política H3 v0.8c: navegación dirigida a food/social si E/S bajo (revisión constante iter3) ---
-        # Heurística: si E<0.65, prioriza moverse hacia food más cercano; si S<0.5, hacia social
-        # Calcula dirección a food más cercano y a social
         foods = [[2,2],[2,7],[7,2],[7,7]]
         social = [8,8]
-        # obs no trae pos directa, pero agent pos está en world, aquí aproximamos con H y obs
-        # Para toy, usamos extero obs[2]=food_near y obs[5]=social_near, pero para dirección necesitamos pos
-        # Pasamos pos vía closure: self._last_obs y self._last_pos (inyectado desde step)
-        # Aquí simplificamos: si E bajo, FOR solo vale si food_near>0.7, si no, moverse es mejor
+        # Determina dirección a food más cercano si pos disponible
+        dir_to_food = None
+        dir_to_social = None
+        if pos is not None:
+            # food más cercano
+            dists = [math.hypot(pos[0]-fx, pos[1]-fy) for fx,fy in foods]
+            nearest = foods[int(np.argmin(dists))]
+            dx = nearest[0]-pos[0]; dy = nearest[1]-pos[1]
+            if abs(dx) > abs(dy):
+                dir_to_food = 2 if dx>0 else 3  # E/W
+            elif dy !=0:
+                dir_to_food = 1 if dy>0 else 0  # S/N
+            # social
+            dxs = social[0]-pos[0]; dys = social[1]-pos[1]
+            if abs(dxs) > abs(dys):
+                dir_to_social = 2 if dxs>0 else 3
+            elif dys!=0:
+                dir_to_social = 1 if dys>0 else 0
         best_a = 0
         best_G = 1e9
-        # Risk = drive, Ambiguity = U
         for a in range(7):
             H_sim = H.copy()
             dH = -self.homeo.alpha*(H_sim - self.homeo.H_star)
-            # Recompensa esperada ajustada por proximidad food/social (obs)
-            food_near = obs[2]  # 1-dist_food, alta si cerca
+            food_near = obs[2]
             if a==4:
-                # FOR solo recompensa si está cerca de food
-                dH[0] += 0.35 * (0.5 + 0.5*food_near)  # 0.35 si cerca, ~0.175 si lejos
+                dH[0] += 0.35 * (0.5 + 0.5*food_near)
                 if food_near < 0.3:
-                    dH[0] -= 0.1  # penaliza forrajear lejos
+                    dH[0] -= 0.1
+                # Bonus extra si está en food y E bajo
+                if food_near > 0.7 and H[0] < 0.65:
+                    dH[0] += 0.1
             if a==5:
                 social_near = obs[5]
                 dH[3] += 0.15 * (0.5 + 0.5*social_near)
@@ -277,21 +287,23 @@ class ProcessVivo:
             Risk = D_next
             Amb = H[2]
             G = Risk + 0.3*Amb
-            # Bonus navegación dirigida si E bajo: prioriza moves hacia food
-            if H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
-                # Si está lejos de food y E bajo, explora (cualquier move) con bonus pequeño
-                G -= 0.08 * (0.65 - H[0])
-            # Bonus exploración proporcional a (U-U*) si U>U* y no en dark
+            # Navegación dirigida: si E bajo, prioriza dirección a food
+            if H[0] < 0.65 and dir_to_food is not None and a == dir_to_food:
+                G -= 0.25 * (0.65 - H[0] + 0.1)  # bonus fuerte dirigido
+            elif H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
+                G -= 0.04 * (0.65 - H[0])  # exploración secundaria
+            # Si S bajo, prioriza dirección a social
+            if H[3] < 0.5 and dir_to_social is not None and a == dir_to_social:
+                G -= 0.20 * (0.5 - H[3] + 0.1)
+            # Bonus exploración U
             U_star = self.homeo.H_star[2]
             if H[2] > U_star + 0.3 and a in [0,1,2,3] and not in_dark:
-                G -= 0.08 * (H[2]-U_star)
-            # Penaliza dark si S baja
+                G -= 0.05 * (H[2]-U_star)
             if in_dark and H[3] < self.homeo.H_star[3]-0.2:
                 if a in [0,1,2,3]:
                     G -= 0.1 * (self.homeo.H_star[3]-H[3])
                 if a==6:
                     G += 0.3 * (self.homeo.H_star[3]-H[3])
-            # Penaliza STY quedarse quieto si E o S bajo (fuerza acción)
             if a==6 and (H[0] < 0.65 or H[3] < 0.5):
                 G += 0.15
             if G < best_G:
@@ -360,8 +372,9 @@ def run_framework(steps=200, log_every=20):
     for step in range(steps):
         extero, event = world._obs()
         in_dark = extero[3]
+        pos = world.agent_pos.copy()
         hist_B.append(event)
-        action, presence, H_new, invokes, ev = agent.step(extero, event, in_dark)
+        action, presence, H_new, invokes, ev = agent.step(extero, event, in_dark, pos=pos)
         # World step
         world.step(action)
         # Sueño cada 50 pasos: replay offline (toy)
