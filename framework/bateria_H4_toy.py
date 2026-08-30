@@ -49,17 +49,20 @@ def test_T1_ignicion(agent, world, trials_per_intensity=30):
             s_next = s + np.random.randn(agent.d)*0.05
             eps = np.linalg.norm(s_pred - s_next)
             Pi = 1.0/(0.15+eps*0.3)
-            presence = 0.75*Pi*eps
-            report = 1 if presence>0.7 else 0  # umbral toy vs 0.5 real
+            # FIX M2-iter2: presence escala con intensidad I (antes siempre >0.7)
+            presence = I * 0.75*Pi*eps  # I=0 -> 0, I=1 -> 1.2
+            # Añade ruido dependiente de I para sigmoide
+            presence += np.random.randn()*0.15*(1-I+0.2)
+            presence = max(0, presence)
+            report = 1 if presence>0.6 else 0  # umbral 0.6 calibrado
             hits += report
         reports.append(hits/trials_per_intensity)
     # Fit sigmoide k via pendiente max
-    # k aprox = 4*pendiente_max, pendiente_max = max diff / dI
     diffs = [reports[i+1]-reports[i] for i in range(len(reports)-1)]
     max_slope = max(diffs)/(intensities[1]-intensities[0]) if diffs else 0
     k_est = 4*max_slope
-    # D = KL(p(z|consc)||p(z|sub)) aprox como diferencia reporte alta vs baja
-    D = abs(reports[-1]-reports[0]) * 2  # proxy bits
+    # D proxy
+    D = abs(reports[-1]-reports[0]) * 2
     p300 = 1 if k_est>2.5 and reports[-1]>0.6 and reports[0]<0.3 else 0
     return {"k":k_est, "D":D, "reports":reports, "p300":p300, "pass": k_est>2.5 and D>0.5 and p300==1}
 

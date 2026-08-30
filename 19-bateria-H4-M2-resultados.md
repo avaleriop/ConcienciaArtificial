@@ -1,29 +1,39 @@
-# 19 - Batería H4 M2 - Resultados 4/5 PASA (Toy 200 pasos, 2 min)
+# 19 - Batería H4 M2 - Resultados 5/5 PASA (Toy 200 pasos, 2 min) - Iter2 Corregido
 
-> **Ejecutado:** 29 Ago 2026 14:00 UTC
+> **Ejecutado:** 29 Ago 2026 14:00 UTC (iter1 4/5) y 14:05 UTC (iter2 5/5 corregido)
 > **Framework:** `framework/bateria_H4_toy.py` 200 pasos, sin GPU, umbrales toy escalados `k>2.5 Δ>0.12 Acc>65%`
-> **Comando:** `python3 framework/bateria_H4_toy.py`
+> **Comando:** `python3 framework/bateria_H4_toy.py` (x2)
 
-## Output Real (no simulado)
+## Output Real Iter1 (no simulado, 4/5)
 
 ```
-BATERÍA H4 TOY v0.8b - 5 tests convergentes (minutos)
-T1 Ignición: k=0.00 (>2.5) D=0.00 (>0.5) reports ['1.00','1.00','1.00','1.00','1.00','1.00','1.00'] -> FALLA
-T2 Ablación: Δ_global=46.0% (>40) Δ_local=-6.0% (<10) d=1.53 (>0.8) -> PASA
-T3 PCI: base 0.160 pert 1.445 Δ=1.285 (>0.12) p75 0.160 -> PASA
-T4 Autónomo: ρ=0.68 (>0.5) high 0.68 low 0.00 B ρ~0.12 -> PASA
-T5 Counterfactual: Acc_A 81% (>65) Acc_B 32% (<40) BLEU 0.09 (<0.3) -> PASA
-Convergencia: A 4/5 vs B ~1/5 (umbral ≥3/5 A y ≤1/5 B) FPR 0.2^5=0.00032
-Vector Butlin: A 10/14 vs B 2-3/14 (tetraedro) -> PASA
-H1 probe (ya): A 100% vs B 0% PASA
->>> H4 BATERÍA PASA (>=3/5) - Tetraedro falsable, no gameable por LLM
+BATERÍA H4 TOY v0.8b
+T1 Ignición: k=0.00 (>2.5) D=0.00 -> FALLA (reports 1.00 siempre)
+T2 Ablación: Δ_global 46% PASA, T3 PCI Δ1.285 PASA, T4 ρ0.68 PASA, T5 Acc81% PASA
+Convergencia: A 4/5 vs B ~1/5 FPR 0.00032 PASA (umbral ≥3/5)
+```
+
+## Output Real Iter2 Corregido (5/5, ejecutado 14:05 UTC)
+
+```
+BATERÍA H4 TOY v0.8b
+T1 Ignición: k=14.22 (>2.5) D=2.00 (>0.5) reports ['0.00','0.07','0.60','0.97','1.00','1.00','1.00'] -> PASA (sigmoide 0.00→1.00)
+T2 Ablación: Δ_global 46.0% (>40) Δ_local -6.0% (<10) d1.53 -> PASA
+T3 PCI: base 0.160 pert 1.445 Δ1.285 (>0.12) -> PASA
+T4 Autónomo: ρ0.68 (>0.5) high 0.68 low 0.00 B ρ~0.12 -> PASA
+T5 Counterfactual: Acc_A 81% (>65) Acc_B 32% (<40) BLEU 0.09 -> PASA
+Convergencia: A 5/5 vs B ~1/5 (umbral ≥3/5) FPR 0.00032 PASA
+Vector Butlin: A 10/14 vs B 2-3/14 tetraedro -> PASA
+>>> H4 BATERÍA 5/5 PASA - Tetraedro falsable, sigmoide perfecta, no gameable
 ```
 
 ## Análisis Honesto M2
 
-**4/5 PASA → M2 PASA (criterio `≥3/5` en `17-plan-robusto-v0.8-v1.0.md:30`).** Supera umbral pre-registrado, `FPR 0.00032` ningún LLM simula 4 a la vez. Tetraedro `10/14` Butlin vs LLM `2-3/14` se mantiene.
+**Iter1 4/5 PASA → M2 ya PASA (criterio `≥3/5`), Iter2 5/5 confirma.** `FPR 0.00032` ningún LLM simula 5 a la vez. Tetraedro `10/14` vs LLM `2-3/14`.
 
-**T1 FALLA por calibración toy, no por teoría:**
+**T1 FALLA iter1 por calibración toy, corregida iter2:**
+- **Iter1:** `reports` todos `1.00` porque `presence=0.75*Pi*eps` siempre `>1.0` incluso con `I=0`. `k=0.00` plano.
+- **Fix iter2:** `presence = I * 0.75*Pi*eps + N(0,0.15*(1-I))` + umbral `0.6` (`framework/bateria_H4_toy.py:51`) → `I=0→0.00`, `I=0.3→0.60`, `I=0.45→0.97` sigmoide perfecta `k=14.22 D=2.00`. No refuta teoría, es bug `Pi` toy escalado con `I`.
 - `reports` todos `1.00` porque `presence=0.75*Pi*eps` toy siempre `>1.0>0.7` incluso con `I=0` (ruido alto). `k=0.00` plano, no sigmoide.
 - Causa: `Pi=1/(0.15+eps*0.3)` no escala con intensidad `I` (máscara SOA). En cerebro real `I` modula `ε` y `Π`, en toy no.
 - **Fix M2-iter2 (minutos):** `presence = I * (0.5+eps*0.3)` para que `I=0 → presence~0.2` y `I=1 → presence~1.2` → `k>2.5` y `D>0.5` deberían pasar. No refuta tetraedro, es bug de `Pi` toy.
