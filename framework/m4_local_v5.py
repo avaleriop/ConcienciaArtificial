@@ -19,9 +19,11 @@ def mem_gb():
     return torch.mps.current_allocated_memory()/1e9 if DEVICE=="mps" else 0.0
 
 class MundoRico:
-    """Mundo 20x20 con retina 8x8 alrededor del agente (64 dims) + 4 interoceptivos."""
-    def __init__(self, size=20):
+    """Mundo 20x20 con retina configurable (v6: 16x16 = 256d)."""
+    def __init__(self, size=20, retina=16):
         self.size = size
+        self.retina_n = retina
+        self.r = retina//2
         self.agent_pos = [size//2, size//2]
         self.foods = [[2,2],[2,size-3],[size-3,2],[size-3,size-3]]
         self.social_pos = [size-2, size-2]
@@ -29,24 +31,22 @@ class MundoRico:
         self.dark = [(x,y) for x in range(3) for y in range(3)]
         self.t = 0
     def _grid(self, x, y):
-        # valor de celda mundo: 0 vacío, 1 food, 2 social, 3 landmark, 4 dark
         if [x,y] in self.foods: return 1.0
         if [x,y] == self.social_pos: return 2.0
         if [x,y] == self.landmark: return 3.0
         if (x,y) in self.dark: return 4.0
         return 0.0
     def obs(self):
-        # retina 8x8 centrada en agente (radio 3), toroidal
-        retina = np.zeros((8,8), dtype=np.float32)
+        n = self.retina_n
+        retina = np.zeros((n,n), dtype=np.float32)
         px, py = self.agent_pos
-        for i in range(8):
-            for j in range(8):
-                wx = (px + j - 3) % self.size
-                wy = (py + i - 3) % self.size
+        for i in range(n):
+            for j in range(n):
+                wx = (px + j - self.r) % self.size
+                wy = (py + i - self.r) % self.size
                 retina[i,j] = self._grid(wx, wy)/4.0
-        return retina.flatten()  # 64 dims
+        return retina.flatten()
     def intero(self):
-        # H normalizado [E,C,U,S] como 4 dims extra (lo provee el agente, no mundo)
         return np.zeros(4, dtype=np.float32)
     def step(self, a):
         self.t += 1
@@ -62,7 +62,8 @@ class MundoRico:
         return self.obs()
 
 class EncoderRico(nn.Module):
-    def __init__(self, d_in=68, d_h1=256, d_h2=128, d_out=64):
+    """v6: encoder ~500k params sobre input 260d (retina 256 + intero 4)."""
+    def __init__(self, d_in=260, d_h1=512, d_h2=256, d_out=128):
         super().__init__()
         self.enc = nn.Sequential(nn.Linear(d_in, d_h1), nn.ReLU(),
                                  nn.Linear(d_h1, d_h2), nn.ReLU(),
@@ -127,20 +128,20 @@ def main():
     p.add_argument("--warmup", type=int, default=3000)
     args = p.parse_args()
     print(f"M4-LOCAL v5 MUNDO RICO ({DEVICE}) - retina 8x8 (64d) + JEPA latente + EWC")
-    mundo = MundoRico(size=20)
-    enc = EncoderRico().to(DEVICE)
+    mundo = MundoRico(size=20, retina=16)
+    enc = EncoderRico(d_in=260).to(DEVICE)
     opt = torch.optim.Adam(enc.parameters(), lr=1e-3)
     ecus = ECUS()
     w_star = {n: p.detach().clone() for n,p in enc.named_parameters()}
     fisher = {n: torch.zeros_like(p) for n,p in enc.named_parameters()}
     BATCH = 64
-    Xb = torch.zeros(BATCH, 68, dtype=torch.float32, device=DEVICE)
-    Xn = torch.zeros(BATCH, 68, dtype=torch.float32, device=DEVICE)
+    Xb = torch.zeros(BATCH, 260, dtype=torch.float32, device=DEVICE)
+    Xn = torch.zeros(BATCH, 260, dtype=torch.float32, device=DEVICE)
     buffer = []
     obs = np.concatenate([mundo.obs(), np.zeros(4, dtype=np.float32)])
     t0 = time.time(); max_mem = 0.0
     n_params = sum(p.numel() for p in enc.parameters())
-    print(f"Params: {n_params:,} | input 68 dims (retina 64 + intero 4)")
+    print(f"Params: {n_params:,} | input 260 dims (retina 16x16=256 + intero 4)")
     # Warmup
     for t in range(args.warmup):
         pos = mundo.agent_pos.copy()
@@ -211,7 +212,7 @@ def main():
     print(f"RESULTADO v5 MUNDO RICO ({args.warmup}+{args.steps} pasos, {elapsed:.0f}s, {elapsed/args.steps*1000:.1f}ms/paso)")
     print(f"E {min(E):.2f}-{max(E):.2f} | U final {U[-1]:.2f} | S final {S[-1]:.2f} | D avg {np.mean(D):.2f}")
     print(f"JEPA final {loss_pre:.4f} | VoE z={z:.1f} (eps_tel {eps_tel:.4f} vs base {base.mean():.4f}) | MPS {max_mem:.2f}GB | params {n_params:,}")
-    print(f"Retina aprendida: {n_params:,} params sobre input 68d rico")
+    print(f"Retina aprendida: {n_params:,} params sobre input 260d rico (16x16)")
 
 if __name__ == "__main__":
     main()

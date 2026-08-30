@@ -34,7 +34,7 @@ VoE z: 0.5 (débil, ver abajo)
 
 **Conclusión de la fase local completa (v1→v5):**
 - La arquitectura tetraedro corre entera en M4 Pro sin GPU, con representación aprendida, EWC real, homeostasis estable y plasticidad funcional, a través de **158× de escala de modelo y 11× de input**.
-- **El límite es el mundo, no la máquina:** el hardware aguanta 4M params/3.6GB indefinido; lo que falta para avanzar es un mundo más rico (v6: retina 16×16) o input real (V-JEPA video).
+- **En los experimentos actuales, el M4 Pro no es el cuello de botella práctico; el siguiente incremento de complejidad puede probarse localmente** (frase corregida según valoración externa — no "el límite es el mundo").
 - V-JEPA2 1B + Qwen2-7B sigue requiriendo A100 (~33€ spot) para H2b decisivo y plasticidad a escala real.
 
 ## Siguientes pre-registrados
