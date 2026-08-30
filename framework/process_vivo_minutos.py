@@ -146,7 +146,7 @@ class HomeostasisECUS:
     def __init__(self):
         self.H_star = np.array([0.8,0.9,0.2,0.7], dtype=np.float32)
         self.H = np.array([0.6,0.8,0.7,0.5], dtype=np.float32)
-        self.alpha = np.array([0.08,0.05,0.03,0.08], dtype=np.float32)  # alpha_S 0.04->0.08 (S decae más rápido, duele más)
+        self.alpha = np.array([0.08,0.05,0.12,0.08], dtype=np.float32)  # alpha_U 0.03->0.12 (M3-iter3 pre-registrado: U_eq=0.2+0.02/0.12=0.37)
         self.w = np.array([1,0.8,0.5,1.5])  # w_U 0.7->0.5 (U duele menos), w_S 1.0->1.5 (S duele más)
 
     def drive(self):
