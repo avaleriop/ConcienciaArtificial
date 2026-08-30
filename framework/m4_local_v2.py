@@ -161,6 +161,10 @@ def main():
     E = []
     t0 = time.time()
     max_mem = 0.0
+    # v3: tensores PRE-ALLOCADOS reutilizados (fix leak MPS: no crear tensores nuevos por batch)
+    BATCH = 64
+    Xb_fixed = torch.zeros(BATCH, 6, dtype=torch.float32, device=DEVICE)
+    Xn_fixed = torch.zeros(BATCH, 6, dtype=torch.float32, device=DEVICE)
     # Warmup encoder
     for t in range(args.warmup):
         pos = mundo.agent_pos.copy()
@@ -168,18 +172,21 @@ def main():
         obs_ant = obs.copy()
         obs = mundo.step(a)
         buffer.append((obs_ant.copy(), obs.copy()))
-        if len(buffer) >= 64:
-            Xb = torch.tensor(np.array([b[0] for b in buffer]), dtype=torch.float32, device=DEVICE)
-            Xn = torch.tensor(np.array([b[1] for b in buffer]), dtype=torch.float32, device=DEVICE)
-            s, s_pred, pi = enc(Xb)
-            s_n, _, _ = enc(Xn)
+        if len(buffer) >= BATCH:
+            # v3: copiar datos al tensor pre-allocado (no crear nuevo)
+            Xb_fixed.copy_(torch.from_numpy(np.array([b[0] for b in buffer], dtype=np.float32)))
+            Xn_fixed.copy_(torch.from_numpy(np.array([b[1] for b in buffer], dtype=np.float32)))
+            s, s_pred, pi = enc(Xb_fixed)
+            s_n, _, _ = enc(Xn_fixed)
             loss = (s_pred - s_n.detach()).pow(2).mean()
             opt.zero_grad(); loss.backward(); opt.step()
-            buffer = buffer[-64:]
+            buffer = []
         max_mem = max(max_mem, mem_gb())
         if max_mem > SAFE_GB:
             print(f"SEGURIDAD: MPS {max_mem:.2f}GB > límite, reduciendo. Parada segura.")
             break
+        if t % 100 == 0 and DEVICE == "mps":
+            torch.mps.empty_cache()  # v3: cada 100 pasos (antes 500)
     loss_pre = float((enc(torch.tensor(obs, dtype=torch.float32, device=DEVICE).unsqueeze(0))[1]).pow(2).mean())
     print(f"Warmup {args.warmup} pasos: JEPA loss {loss_pre:.4f}, MPS peak {max_mem:.2f}GB (límite {SAFE_GB}GB)")
     # Fase principal
@@ -192,16 +199,17 @@ def main():
         obs = mundo.step(a)
         xt = torch.tensor(obs_ant, dtype=torch.float32, device=DEVICE).unsqueeze(0)
         xn = torch.tensor(obs, dtype=torch.float32, device=DEVICE).unsqueeze(0)
-        s_t, s_pred, pi = enc(xt)
-        s_n, _, _ = enc(xn)
-        eps = float((s_pred - s_n.detach()).pow(2).mean().sqrt())
+        with torch.no_grad():  # v3: inferencia sin grafo
+            s_t, s_pred, pi = enc(xt)
+            s_n, _, _ = enc(xn)
+            eps = float((s_pred - s_n).pow(2).mean().sqrt())
         # entrenamiento online batch
         buffer.append((obs_ant.copy(), obs.copy()))
-        if len(buffer) >= 64:
-            Xb = torch.tensor(np.array([b[0] for b in buffer]), dtype=torch.float32, device=DEVICE)
-            Xn = torch.tensor(np.array([b[1] for b in buffer]), dtype=torch.float32, device=DEVICE)
-            s, s_pred_b, pi_b = enc(Xb)
-            s_nb, _, _ = enc(Xn)
+        if len(buffer) >= BATCH:
+            Xb_fixed.copy_(torch.from_numpy(np.array([b[0] for b in buffer], dtype=np.float32)))
+            Xn_fixed.copy_(torch.from_numpy(np.array([b[1] for b in buffer], dtype=np.float32)))
+            s, s_pred_b, pi_b = enc(Xb_fixed)
+            s_nb, _, _ = enc(Xn_fixed)
             loss = (s_pred_b - s_nb.detach()).pow(2).mean()
             ewc = sum((fisher[n_] * (p_ - w_star[n_])**2).sum() for n_,p_ in enc.named_parameters())
             loss = loss + lam/2 * ewc
@@ -209,7 +217,7 @@ def main():
             for n_,p_ in enc.named_parameters():
                 if p_.grad is not None:
                     fisher[n_] = 0.9*fisher[n_] + 0.1*p_.grad.detach()**2
-            buffer = buffer[-64:]
+            buffer = []
         presence = min(0.75 * (4.0 if t == args.steps-10 else float(pi.squeeze())*3.0) * eps, 2.0)
         y, h_state = mamba.step(s_t.squeeze(0), h_state)
         H_next = ecus.update(a, obs_ant[3]>0.5, obs_ant[4]>0.9, obs_ant[2])
@@ -221,8 +229,8 @@ def main():
         if max_mem > SAFE_GB:
             print("SEGURIDAD: límite alcanzado, parada limpia.")
             break
-        if t % 500 == 0 and DEVICE == "mps":
-            torch.mps.empty_cache()  # liberar caching allocator (leak MPS detectado en v2)
+        if t % 100 == 0 and DEVICE == "mps":
+            torch.mps.empty_cache()  # v3: cada 100 pasos
     elapsed = time.time() - t0
     # VoE: teleport REAL al final (v2 bug: no había evento real)
     obs_ant = obs.copy()
