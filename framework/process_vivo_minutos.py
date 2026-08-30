@@ -16,15 +16,18 @@ np.random.seed(42)
 class ForageWorld:
     def __init__(self, size=10):
         self.size = size
-        self.agent_pos = [5,5]
-        # Food patches
-        self.foods = [[2,2],[2,7],[7,2],[7,7]]
+        self.agent_pos = [size//2, size//2]
+        # Food patches (fijos para 10x10, escalables si size!=10)
+        if size==10:
+            self.foods = [[2,2],[2,7],[7,2],[7,7]]
+            self.social_pos = [8,8]
+        else:
+            self.foods = [[2,2],[2,size-3],[size-3,2],[size-3,size-3]]
+            self.social_pos = [size-2, size-2]
         # Dark room 3x3 en esquina (0,0)-(2,2) predecible, sin food ni social
         self.dark = [(x,y) for x in range(3) for y in range(3)]
         # Landmark C en centro (reduce U)
-        self.landmark = [5,5]
-        # Social: posición fija que pide ayuda cada 50 pasos
-        self.social_pos = [8,8]
+        self.landmark = [size//2, size//2]
         self.t = 0
         self.kael_traicion_t = 0
         self.teleport_t = 80  # VoE sorpresa
