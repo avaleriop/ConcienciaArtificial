@@ -1,5 +1,32 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.10] - 2026-08-29 17:15 UTC - SECUENCIA M1→M5 COMPLETA (todo local, 0€, sin A100)
+
+### Hito: H2b DECISIVO con LLM real (36)
+- LFM2.5-1.2B-Instruct-MLX-8bit (1.17B, híbrido SSM-conv, 719MB Q4, MLX nativo): 19ms/token, 0.6s/respuesta
+- Condición A (con LFM2.5) vs B (sin LLM), 1500+1500 pasos: **E/U/S/D idénticos → B (LLM=traductor) CONFIRMADO con LLM real participando**
+- Reportes reales: "error de predicción alto al ser robado el artefacto" (Kael), "sensación de sorpresa, expectativa violada" (VoE)
+- El experimento que creíamos requerir A100 (~33€) se hizo local gratis
+
+### Hito: M3b REAL plasticidad (37)
+- F1: 8 envenenamientos forzados (aprende W+E), F2: borrar E, F3: **1/400 visitas a B vs ~25% naive (100× aversión retenida en W sin memoria)**
+- F4: LFM2.5 traduce estado real sin E, no alucina
+- Plasticidad en pesos demostrada con LLM real participando
+
+### Hito: M5 24H LOCAL (38)
+- **864.000 pasos (24h @10Hz) en 157s** (0.18ms/paso), E 0.66-0.84 oscilante, 0 pasos peligro, 86 eventos VoE procesados
+- E_mem 1.720/5.000, MPS 0.01GB sin leak, supervivencia completa sin colapso
+- El organismo vive un día simulado: secuencia pre-registrada M1-M5 COMPLETA
+
+### Escalado local (31-35)
+- 25k→4.08M params (158×) seguro, leak MPS corregido (8GB→0.78GB→0.01GB 24h)
+- Retina 8×8→16×16, JEPA 0.0105→0.0016, homeostasis estable en todas las escalas
+- Techo: 4M params indefinido; el M4 Pro no es cuello práctico
+
+### Estado final
+- 🟢 M1-M5 + M3b + H2b completos localmente | ❌ awareness, conciencia, V-JEPA2 1B
+- 41 docs, 12 scripts, 40 commits, 0€
+
 ## [v0.9] - 2026-08-29 15:20 UTC - Validación Local MPS (Encoder Aprendido Real)
 
 ### Añadido (framework ejecutable, todo en MPS sin GPU)
