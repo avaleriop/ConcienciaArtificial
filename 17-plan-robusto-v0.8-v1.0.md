@@ -1,8 +1,44 @@
 # 17 - Plan Robusto v0.8 → v1.0 - De Tetraedro a Prototipo sin Perder Alineación
 
-> **Fecha:** 29 Ago 2026 13:45 UTC - Plan pre-registrado post-auditoría v0.7
-> **Análisis:** 4 sub-agentes paralelos (navegación H3, batería H4, independencia, escalado) + auditoría alineación
+> **Fecha:** 29 Ago 2026 13:45 UTC - Plan pre-registrado post-auditoría v0.7 | **Actualizado 14:15 UTC v0.8.1**
+> **Análisis:** 4 sub-agentes paralelos (navegación H3, batería H4, independencia, escalado) + auditoría alineación + valoración externa 14:05
 > **Objetivo:** Hacer el proyecto independiente de decisiones del usuario, falsable y sin vueltas, hasta 24h proceso vivo.
+> **Nuevos experimentos decisivos (valoración externa 14:05):** H2b (eliminar LLM) y Plasticidad (eliminar E) antes que M5 24h.
+
+## Estado Hitos (Actualizado 14:15 UTC)
+
+| Hito | Estado | Resultado | Siguiente |
+| :--- | :--- | :--- | :--- |
+| **M1** navegación E | ✅ PASA parcial | `E 0.61→0.95` oscilante, `S 0.20→0.64`, act FOR/HLP/N variado (`16:1`, `f69a406`) | Hecho |
+| **M2** batería H4 toy | ✅ PASA 5/5 | `k14.22 D2.00 Δ46% Δ1.285 ρ0.68 Acc81%` vs B ~1/5 FPR 0.00032 (`19:1`, `bd09ddd`) | Hecho |
+| **M3-iter2** 20×20 GATE_TOY_OK | ⚠️ FALLA parcial 2/4 | E y S PASA, **U 0.87 y dark 0% FALLA**. Diagnóstico: `U_eq=0.2+0.02/0.03=0.87` analítico, calibración `α_U` débil, no bug ni refuta H3 (`21:1`) | M3-iter3 `α_U 0.03→0.12` (U_eq 0.37) |
+| **M3b** plasticidad (NUEVO) | 🔵 pre-registrado | Aprender conducta → borrar `E` → ¿permanece en `W=W₀+BA` EWC? (valoración externa: decisivo antes que 24h) | Después de GATE_TOY_OK |
+| **H2b** sin LLM (NUEVO) | 🔵 pre-registrado | ¿`Self_t`+`G` sigue forrajeando/recordando Kael sin LLM? A `LLM=fuente` colapsa, B `LLM=traductor` sigue | Después de M3 |
+| **M4** escalado real | 🔵 no iniciado | Solo si GATE_TOY_OK PASA → V-JEPA2 1B + W:1024→4096 Qwen2-7B congelado | Gate |
+| **M5** 24h | 🔵 pospuesto tras M3b | Después de plasticidad, no antes | Tras M3b |
+
+**Regla estricta (valoración externa):** FALLA → no reinterpretar ni cambiar métricas; investigar mecanismo y registrar nueva iteración. M3-iter3 solo cambia `α_U` (analítico), no umbrales GATE_TOY_OK.
+
+## Pre-registro H2b: Eliminar LLM (separa A vs B)
+
+**Pregunta:** ¿El comportamiento inteligente persiste si cambiamos o eliminamos el LLM?
+- **A `LLM=fuente principal`** → sin LLM: `Self_t`+`G` colapsa (no forrajea, no recuerda)
+- **B `LLM=traductor`** → sin LLM: `Self_t`+`G` sigue forrajeando `E 0.7-0.9` y recordando Kael 100% vs 0%, solo pierde `utterance`
+
+**Diseño (200 pasos, minutos):** Condición A tetraedro completo (con `W:32→64` codec), Condición B mismo pero `W` eliminado (sin LLM codec), Condición C `LLM solo` (sin núcleo, solo `W` y LLM). Medir `E` oscilación, `H1 probe Kael`, `D avg`.
+- **B gana** → `LLM=boca` reforzado (C2 en `06:1` ya lo sugiere: `C1≈C3>>C2`)
+- **C gana o B colapsa** → refuta tesis, documentar
+
+## Pre-registro M3b: Plasticidad (memoria ontológica vs memoria explícita)
+
+**Pregunta:** ¿El aprendizaje cambia conducta persistentemente tras borrar memoria explícita?
+- **Diseño:** Fase 1 (1000 pasos): organismo aprende conducta (ej: preferir food A sobre food B porque B "envenena" tras t=500). Fase 2: borrar `E` (todas las trazas episódicas). Fase 3 (500 pasos): ¿conducta modificada permanece? Si `W=W₀+BA` EWC actualizó (sueño SWR), permanece. Si solo `E` la guardaba, se pierde.
+- **Métrica:** `P(evitar B | E borrado)` vs baseline 0.5. `>0.7` → plasticidad real en `W`. `≈0.5` → solo memoria, sin plasticidad.
+- **Sin esto, 24h es `while True` largo, no aprendizaje** (valoración externa, correcta).
+
+## Roadmap Original (M1-M5) - Ver `17-plan-robusto-v0.8-v1.0.md:22` para detalle
+
+*(se mantiene igual, M3b y H2b insertados antes de M5)*
 
 ## Principio de Independencia Científica
 

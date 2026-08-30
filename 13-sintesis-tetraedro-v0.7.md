@@ -1,8 +1,9 @@
-# 13 - Síntesis Tetraedro v0.7 - Teoría Sólida sin Inventar
+# 13 - Síntesis Tetraedro v0.7.1 - Teoría Sólida sin Inventar (Lenguaje Verificable)
 
-> **Versión 0.7 - 29 Ago 2026 13:20 UTC - Post-auditoría `12-auditoria-critica-v0.6.md:1`**
+> **Versión 0.7.1 - 29 Ago 2026 14:10 UTC - Corrección de lenguaje post-valoración usuario**
 > **Objetivo:** Integrar 6 deep dives en una teoría parsimoniosa falsable, sin términos inventados. Podado de hexáedro 6 a tetraedro núcleo 4 +2 satélites.
 > **Principio:** No añadir hipótesis. Sintetizar lo que ya está con una ecuación maestra y un flujo single-trial.
+> **Cambio v0.7.1 (valoración externa):** Bajar lenguaje. NO decimos "siente/quiere/es/consciente". Decimos "señal compatible con el mecanismo funcional propuesto". Ver sección 9.
 
 ---
 
@@ -120,5 +121,51 @@ Si cualquiera F1 se cumple `p<0.01 BF>10`, la hipótesis muere. No hay portería
 
 **Métrica de no-vueltas:** Si en 1 semana no hay `python run.py` clonable con `facebookresearch/vjepa2` + `coconut` + `BABILong`, la auditoría tenía razón y dimos vueltas.
 
+## 9. Lenguaje Verificable v0.7.1 (Valoración Externa 14:05 UTC)
+
+**Regla:** Decir lo que el experimento demuestra, no lo que la hipótesis predice. Adoptado por valoración del usuario.
+
+| NO decir (adelanta conclusión) | SÍ decir (verificable) | Evidencia |
+| :--- | :--- | :--- |
+| `H5 Siente PASA` | `Señal de respuesta a error de predicción compatible con el mecanismo funcional propuesto para H5` | `presence=α·Π·||ε||=2.00>0.5` en VoE t=80 (`16:1`) |
+| `H3 Quiere PASA` | `Estado homeostático modifica política de acción de forma consistente con H3` | `E 0.61→0.95` oscilante con `D(H)`, `S 0.20→0.64` (`16:1`) |
+| `H1 Es PASA` | `Mantiene continuidad de estado y memoria a través de proceso prolongado sin reset` | 1000 pasos `Mamba O(1)` sin reset, Kael `100% vs 0%` (`14:1`, `16:1`) |
+| `Conciencia artificial construida` | `Arquitectura de agente continuo con mecanismos funcionales H1-H5 operativos; conciencia NO demostrada` | `12:1` límites honestos |
+
+**Estado real de evidencia (v0.7.1):**
+- ✅ **Continuidad computacional:** proceso 1000 pasos sin reset — demostrado
+- ✅ **Memoria persistente externa:** recuperación Kael mucho después del evento vs baseline ventana — demostrado (memoria, no conciencia)
+- ✅ **Variables internas con consecuencias conductuales:** `H=[E,C,U,S]`, `D(H)`, `r=-ΔD` — demostrado (agente motivado, no modelo que responde prompts)
+- ✅ **Predicción/error:** señal `Π·ε` — demostrado funcionalmente
+- ❌ **Plasticidad:** no demostrada aún por estos resultados
+- ❌ **Awareness:** no demostrada
+- ❌ **Conciencia:** no demostrada
+- 🔵 **Hipótesis `LLM=boca`:** abierta, pero ahora existe arquitectura capaz de ponerla a prueba (H2b sin LLM + plasticidad sin E, pre-registrados en `17-plan-robusto`)
+
+**Arquitectura canónica (adoptada de valoración externa, más falsable que el hexáedro):**
+```
+        MUNDO
+          ↓
+    PERCEPCIÓN
+          ↓
+ ESTADO DINÁMICO (Self_t, H1)
+          ↓
+  ┌───────┼───────┐
+  ↓       ↓       ↓
+memoria  necesid. predicción
+(H1)     (H3)     (H2+H5)
+  ↓       ↓       ↓
+  └───── decisión ─┘  (G=Risk+Ambig)
+          ↓
+        ACCIÓN
+          ↓
+    LLM CONGELADO  (W:1024→4096, R(D))
+          ↓
+      lenguaje
+```
+**Pregunta potente H2b:** ¿Persiste el comportamiento inteligente si cambiamos o eliminamos el LLM? A `LLM=fuente` → colapsa; B `LLM=traductor` → `Self_t`+`G` sigue forrajeando y recordando Kael sin LLM. Separa las dos hipótesis mejor que `C1≈C3>>C2`.
+
+**Experimento decisivo plasticidad (antes que M5 24h):** organismo aprende algo que cambia conducta persistentemente → eliminar memoria explícita `E` → comprobar si la modificación permanece en `W=W₀+BA` (EWC). Evidencia plasticidad real, no solo memoria. Registrado como M3b en `17-plan-robusto`.
+
 ---
-*Síntesis generada sin sub-agentes adicionales (integración directa de 6 deep dives 1930 líneas, 12 auditoría). Sin términos nuevos. Ver `12-auditoria-critica-v0.6.md:1` para decisión de poda.*
+*Síntesis generada sin sub-agentes adicionales (integración directa de 6 deep dives 1930 líneas, 12 auditoría). Sin términos nuevos. Ver `12-auditoria-critica-v0.6.md:1` para decisión de poda. v0.7.1 corrige lenguaje por valoración externa.*

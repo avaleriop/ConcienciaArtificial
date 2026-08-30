@@ -1,7 +1,7 @@
-# 03 - Log de Hipótesis - Ciclo Iterativo v0.6
+# 03 - Log de Hipótesis - Ciclo Iterativo v0.7.1
 
 > Método: Hipótesis -> Formalización -> Crítica (ataque) -> Refinamiento -> Experimento falsable
-> Estado: H1/H2/H3/H4/H5/H6 🟢 REFINADAS v0.2, arquitectura v0.6 hexáedro consciente de sí. Pentaedro→hexáedro.
+> Estado: H1/H2/H3/H4/H5/H6 🟢 REFINADAS v0.2, arquitectura v0.7.1 tetraedro núcleo 4 +2 satélites (H4 medir, H6 meta). Lenguaje verificable: no "siente/quiere/es", sino "señal compatible con mecanismo propuesto" (`13:9`).
 
 ---
 

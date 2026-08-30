@@ -39,11 +39,11 @@ class ForageWorld:
 
     def _obs(self):
         x,y = self.agent_pos
-        # Distancias normalizadas
-        dist_food = min(math.hypot(x-fx, y-fy) for fx,fy in self.foods)/14
+        # Distancias normalizadas por tamaño mundo (M3-iter2: dist/(size*1.4) no 14 fijo)
+        dist_food = min(math.hypot(x-fx, y-fy) for fx,fy in self.foods)/(self.size*1.4)
         in_dark = 1.0 if (x,y) in self.dark else 0.0
-        dist_center = math.hypot(x-5,y-5)/7
-        dist_social = math.hypot(x-self.social_pos[0], y-self.social_pos[1])/14
+        dist_center = math.hypot(x-self.size//2,y-self.size//2)/(self.size*0.7)
+        dist_social = math.hypot(x-self.social_pos[0], y-self.social_pos[1])/(self.size*1.4)
         # Extero: [x_norm, y_norm, food_near, dark, center_near, social_near]
         extero = np.array([x/10, y/10, 1-dist_food, in_dark, 1-dist_center, 1-dist_social], dtype=np.float32)
         # Eventos especiales para H1 y H5 probes
@@ -167,6 +167,8 @@ class HomeostasisECUS:
             dH[2] += -0.08  # U baja en dark (predecible)
         else:
             dH[2] += 0.02  # U sube fuera (incertidumbre)
+        if obs[4] > 0.9:  # cerca landmark (M3-iter2: landmark para U)
+            dH[2] += -0.06  # U baja cerca landmark
         # S: decae si no social, help aumenta S
         dH[3] += -0.02  # decae basal (aislamiento)
         if action==5:  # help
