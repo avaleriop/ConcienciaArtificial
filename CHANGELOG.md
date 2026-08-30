@@ -1,5 +1,24 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.11] - 2026-08-29 18:30 UTC - Capstone: Organismo Completo + Cadena Causal
+
+### Añadido
+- `43-cadena-causal-completa.md:1` + `framework/m5_cadena_completa.py:1`: la cadena que la crítica pidió — predicción→error(z2.9)→estado(U 0.31→1.50)→acción(explor 0.01→0.75)→plasticidad(habituación z→0.1)→persistencia en W sin E (z 0.3)
+- `44-organismo-completo-capstone.md:1` + `framework/organismo_completo.py:1`: TODOS los mecanismos + boca LFM2.5 en UN loop continuo. 20k pasos: E 0.61-1.50 sano, U responde a sorpresa con decaimiento, 57 reportes reales de la boca. 4 bugs de interfaz corregidos (navegación comida, forage dist==0, U acotado, cooldown boca 239→57)
+- `41-sorpresa-sin-vision-sensorimotor.md:1` + `framework/m4_local_sensorimotor.py:1`: sorpresa emergente SIN visión (canal del cuerpo, O'Regan & Noë) — MOTORA z=40.4, habituación 98% (el modelo actualizó su física corporal)
+- `42-integracion-causal-A-vs-B.md:1` + `framework/m5_integracion_causal.py:1`: A integrado (ε→U→política) vs B convencional desconectado — diferencial causal +0.12 real con persistencia post-evento (A 0.20 vs B 0.00), integración funcional parcial, NO decorativa
+- `40-VoE-v2-emergente-limite-local.md:1`: resultado NEGATIVO honesto (sorpresa de objetos no emerge con MLP local, 5 diseños) — delimita frontera y justifica V-JEPA 1B como opcional
+- Regla adoptada (crítica externa): cada experimento debe preguntarse qué resultado sería imposible para un predictor convencional
+- Lenguaje corregido: sin antropomorfismo ("mantiene proceso continuo, detecta violaciones, actualiza predictor, reduce error")
+
+### Decisiones de alcance (usuario)
+- Test LLM intercambiable DESCARTADO (el LLM actual funciona; no complicar)
+- Integrar antes de cerrar: predictor del cuerpo dentro del organismo
+
+### Estado
+- 45 docs, 17 scripts, ~50 commits, 0€ local | ❌ awareness/conciencia no demostradas
+- Objetivo del proyecto funcionando en una pieza
+
 ## [v0.10] - 2026-08-29 17:15 UTC - SECUENCIA M1→M5 COMPLETA (todo local, 0€, sin A100)
 
 ### Hito: H2b DECISIVO con LLM real (36)

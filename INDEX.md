@@ -1,9 +1,8 @@
 # INDEX - Conciencia Artificial - Estado del Proyecto
 
-> **Última actualización:** 29 Ago 2026 17:15 UTC
-> **Versión:** v0.10 — SECUENCIA M1→M5 COMPLETA, todo local en M4 Pro, 0€, sin A100
-> **Agente:** Muse Spark (long-horizon) + 18 sub-agentes + 6 auditorías + 8 frameworks ejecutables
-> **Logro central:** organismo tetraedro vivió 24h simuladas (864k pasos), LLM real (LFM2.5-1.2B) como boca confirmado, plasticidad en pesos sin memoria demostrada.
+> **Última actualización:** 29 Ago 2026 18:30 UTC
+> **Versión:** v0.11 — ORGANISMO COMPLETO: todos los mecanismos + boca LFM2.5 en UN loop (capstone)
+> **Logros clave v0.11:** cadena causal completa (detecta→estado→acción→aprende→persiste en W sin E) + sorpresa emergente sin visión (canal del cuerpo, z=40σ) + capstone integrado 20k pasos
 
 ## Estructura Documental (41 docs + 12 scripts)
 
