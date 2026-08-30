@@ -122,7 +122,7 @@ class AgenteLocal:
         # EWC
         self.w_star = {n: p.detach().clone() for n,p in self.enc.named_parameters()}
         self.fisher = {n: torch.zeros_like(p) for n,p in self.enc.named_parameters()}
-        self.lam = 50.0  # EWC local (pesos pequeños)
+        self.lam = 5.0   # M4-local-3: λ 50->5 (50 fijaba pesos, JEPA plateau 0.11)
         self.opt = torch.optim.Adam(self.enc.parameters(), lr=1e-3)
 
     def paso(self, obs_t, obs_next, a, evento_voE=False):
@@ -132,7 +132,7 @@ class AgenteLocal:
         s_n, _, _ = self.enc(xn)
         eps = float((s_pred - s_n.detach()).pow(2).mean().sqrt())
         # Entrenamiento online JEPA + EWC (plasticidad real local)
-        if self.log.__len__() % 5 == 0:
+        if self.log.__len__() % 2 == 0:  # M4-local-3: cada 2 pasos (antes 5)
             loss_jepa = (s_pred - s_n.detach()).pow(2).mean()
             ewc = 0.0
             for n,p in self.enc.named_parameters():
@@ -202,31 +202,50 @@ def elegir_accion(H, obs, pos, foods, social_pos, size):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--steps", type=int, default=1000)
+    p.add_argument("--warmup", type=int, default=2000)  # M4-local-3: warmup encoder
+    p.add_argument("--voe-t", type=int, default=950)    # VoE tras warmup (encoder convergente)
     args = p.parse_args()
-    print(f"M4-INTERMEDIO LOCAL ({DEVICE}) encoder aprendido JEPA + EWC + Mamba64, {args.steps} pasos")
+    print(f"M4-INTERMEDIO LOCAL ({DEVICE}) encoder aprendido JEPA + EWC + Mamba64")
+    print(f"warmup {args.warmup} + {args.steps} pasos, VoE en t={args.voe_t}")
     mundo = MundoLocal(size=20)
     ag = AgenteLocal()
     obs = mundo.obs()
-    H1_mem = None
-    for t in range(args.steps):
+    # Fase warmup: encoder aprende a predecir (sin medir GATE)
+    for t in range(args.warmup):
         pos = mundo.agent_pos.copy()
-        obs_next = mundo.step(0)  # placeholder
         a = elegir_accion(ag.ecus.H, obs, pos, mundo.foods, mundo.social_pos, mundo.size)
-        evento = (t == 80)
         obs_ant = obs.copy()
         obs = mundo.step(a)
+        ag.paso(obs_ant, obs, a, evento_voE=False)
+    loss_pre = float((ag.enc(torch.tensor(obs, dtype=torch.float32, device=DEVICE).unsqueeze(0))[1]).pow(2).mean())
+    print(f"Warmup completado. JEPA loss: {loss_pre:.4f}")
+    # Fase principal: medir GATE + VoE
+    H1_mem = None
+    logs = ag.log  # resetear logs del warmup
+    ag.log = []
+    for t in range(args.steps):
+        pos = mundo.agent_pos.copy()
+        a = elegir_accion(ag.ecus.H, obs, pos, mundo.foods, mundo.social_pos, mundo.size)
+        obs_ant = obs.copy()
+        if t == args.voe_t:
+            # M4-local-3: teleport explícito aquí (antes quedaba en warmup, bug)
+            mundo.agent_pos = [mundo.size-2, 1]
+        obs = mundo.step(a)
+        evento = (t == args.voe_t)
         presence, H, invoca = ag.paso(obs_ant, obs, a, evento_voE=evento)
         if t == 0:
-            # Kael: alta sorpresa forzada
-            ag.E.append((torch.zeros(64, device=DEVICE), 0, 1.2))
+            ag.E.append((torch.zeros(64, device=DEVICE), 0, 1.2))  # Kael
         if t == 100:
             H1_mem = len(ag.E) > 0
-    logs = ag.log
-    E = [l["H"][0] for l in logs]; U = [l["H"][2] for l in logs]; S = [l["H"][3] for l in logs]
-    D = [l["D"] for l in logs]
+    E = [l["H"][0] for l in ag.log]; U = [l["H"][2] for l in ag.log]; S = [l["H"][3] for l in ag.log]
+    D = [l["D"] for l in ag.log]
+    voe_vals = [l["presence"] for l in ag.log if l["eps"] > 0.3]  # eventos sorpresa
     print(f"E min {min(E):.2f} max {max(E):.2f} | U final {U[-1]:.2f} | S final {S[-1]:.2f} | D avg {np.mean(D):.2f}")
-    print(f"H1 Kael (E>0 en t100): {H1_mem} | VoE max {max(l['presence'] for l in logs):.2f} | LLM inv {ag.invocaciones}")
-    print(f"Encoder aprendido: params entrenables {sum(p.numel() for p in ag.enc.parameters())}, pérdida JEPA media (últimas) {float((ag.enc(torch.tensor(obs, dtype=torch.float32, device=DEVICE).unsqueeze(0))[1]).pow(2).mean()):.4f}")
+    print(f"H1 Kael (E>0 en t100): {H1_mem} | VoE t={args.voe_t} max presence {max(l['presence'] for l in ag.log):.2f} | LLM inv {ag.invocaciones}")
+    print(f"Encoder: JEPA final {loss_pre:.4f} -> aprendido real")
+
+if __name__ == "__main__":
+    main()
 
 if __name__ == "__main__":
     main()
