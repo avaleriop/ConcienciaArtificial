@@ -24,8 +24,8 @@ def mem_gb():
     return 0.0
 
 class EncoderEscalado(nn.Module):
-    """Encoder JEPA escalado v3: ~1M params (seguro en 24GB)."""
-    def __init__(self, d_in=6, d_h1=1024, d_h2=512, d_out=256):
+    """Encoder JEPA escalado v4: ~5M params (techo local seguro)."""
+    def __init__(self, d_in=6, d_h1=2048, d_h2=1024, d_out=512):
         super().__init__()
         self.enc = nn.Sequential(
             nn.Linear(d_in, d_h1), nn.ReLU(),
@@ -41,7 +41,7 @@ class EncoderEscalado(nn.Module):
         return s, self.pred(s), torch.sigmoid(self.pi_head(s))
 
 class Mamba128(nn.Module):
-    def __init__(self, d=256, n=256):
+    def __init__(self, d=512, n=256):
         super().__init__()
         self.n = n; self.d = d
         self.A = nn.Parameter(-torch.rand(n)*0.5 - 0.1)
