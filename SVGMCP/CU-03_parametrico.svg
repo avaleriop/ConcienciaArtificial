@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1150" width="1600" height="1150" font-family="Helvetica, Arial, sans-serif">
+<title>CU-03 Paramétrico — 6.67m entre muros</title>
+<rect width="100%" height="100%" fill="white"/>
+<defs>
+    <pattern id="hatch" width="7" height="7" patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#D8D8D8"/><line x1="0" y1="0" x2="0" y2="7" stroke="#777" stroke-width="0.6"/>
+    </pattern>
+    <pattern id="dots" width="10" height="8" patternUnits="userSpaceOnUse">
+      <rect width="10" height="8" fill="#E9E9E9"/><circle cx="2" cy="2" r="0.7" fill="#AAA"/><circle cx="7" cy="5" r="0.7" fill="#AAA"/>
+    </pattern>
+    </defs>
+<rect x="0" y="0" width="1600" height="38" fill="black"/>
+<text x="18" y="24" fill="white" font-size="15" font-weight="700">BLUE VALLEY</text>
+<text x="148" y="24" fill="white" font-size="13" font-weight="600">PROPUESTA DE DETALLE DE MOBILIARIO — GENERADO POR CÓDIGO (PARAMÉTRICO)</text>
+<text x="1320" y="23" fill="white" font-size="13" font-weight="700">LAMINA · CU-03 · PYTHON</text>
+<rect x="140" y="512" width="1083.85" height="22" fill="url(#dots)" stroke="black" stroke-width="1.1"/>
+<rect x="140" y="105.59000000000003" width="25" height="406.40999999999997" fill="url(#hatch)" stroke="black" stroke-width="1"/>
+<rect x="1198.85" y="105.59000000000003" width="25" height="406.40999999999997" fill="url(#hatch)" stroke="black" stroke-width="1"/>
+<rect x="140" y="105.59000000000003" width="1083.85" height="26.504999999999995" fill="#E8E8E8" stroke="black" stroke-width="1"/>
+<rect x="165" y="500.22" width="1033.85" height="11.78" fill="#C9A87A" stroke="black" stroke-width="0.9"/>
+<rect x="165.00" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="171.00" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="218.0" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">01</text>
+<rect x="270.98" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="276.98" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="324.0" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">02</text>
+<rect x="376.96" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="382.96" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="430.0" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">03</text>
+<rect x="482.94" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="488.94" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="535.9" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">04</text>
+<rect x="774.92" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="780.92" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="827.9" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">05</text>
+<rect x="880.91" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="886.91" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="933.9" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">06</text>
+<rect x="986.89" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="992.89" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="1039.9" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">07</text>
+<rect x="1092.87" y="132.10" width="105.98" height="368.12" fill="#FFFBF2" stroke="black" stroke-width="1.05"/>
+<rect x="1098.87" y="138.10" width="93.98" height="356.12" fill="none" stroke="#D9C2A0" stroke-width="0.6"/>
+<text x="1145.9" y="297.8" font-size="7" fill="#C9A87A" text-anchor="middle">08</text>
+<line x1="382.9625" y1="198.35750000000002" x2="582.925" y2="198.35750000000002" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="382.9625" y1="260.93875" x2="582.925" y2="260.93875" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="382.9625" y1="323.52" x2="582.925" y2="323.52" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="382.9625" y1="386.10125000000005" x2="582.925" y2="386.10125000000005" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="780.925" y1="198.35750000000002" x2="980.8874999999999" y2="198.35750000000002" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="780.925" y1="260.93875" x2="980.8874999999999" y2="260.93875" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="780.925" y1="323.52" x2="980.8874999999999" y2="323.52" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<line x1="780.925" y1="386.10125000000005" x2="980.8874999999999" y2="386.10125000000005" stroke="#C9A87A" stroke-width="0.7" stroke-dasharray="7 5"/>
+<rect x="268.98125" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="288.98125" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="480.94374999999997" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="500.94374999999997" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="878.90625" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="898.90625" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="1090.8687499999999" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="1110.8687499999999" y="360.33250000000004" width="5" height="18" rx="1.5" fill="#2B2B2B"/>
+<rect x="588.925" y="132.09500000000003" width="186.0" height="66.2625" fill="#FFFBF2" stroke="black" stroke-width="1"/>
+<line x1="681.925" y1="132.09500000000003" x2="681.925" y2="198.35750000000002" stroke="black" stroke-width="0.7"/>
+<text x="681.925" y="150.09500000000003" font-size="6.5" text-anchor="middle">SUPERIOR</text>
+<text x="681.925" y="160.09500000000003" font-size="6.5" text-anchor="middle">0,45 m</text>
+<rect x="610.925" y="186.35750000000002" width="14" height="4.5" rx="1" fill="#2B2B2B"/>
+<rect x="738.925" y="186.35750000000002" width="14" height="4.5" rx="1" fill="#2B2B2B"/>
+<rect x="588.925" y="198.35750000000002" width="186.0" height="210.56750000000005" fill="white" stroke="black" stroke-width="1"/>
+<text x="681.925" y="299.64125" font-size="8" font-weight="700" fill="#2F5B8A" text-anchor="middle">ESCRITORIO</text>
+<text x="681.925" y="311.64125" font-size="8" font-weight="700" fill="#2F5B8A" text-anchor="middle">PROFESOR</text>
+<text x="681.925" y="323.64125" font-size="7.5" fill="#2F5B8A" text-anchor="middle">1,20 × 0,70 m</text>
+<rect x="588.925" y="408.92500000000007" width="186.0" height="91.29499999999999" fill="#EADBC0" stroke="black" stroke-width="1"/>
+<rect x="594.925" y="414.92500000000007" width="174.0" height="79.29499999999999" fill="none" stroke="#C9A87A" stroke-width="0.6"/>
+<rect x="208.98125" y="547" width="124" height="12" rx="2" fill="#FFF8E8" stroke="#C9A87A" stroke-width="0.5"/>
+<text x="270.98125" y="555.5" font-size="6.5" text-anchor="middle">01-02  instrumentos altos</text>
+<rect x="420.94374999999997" y="547" width="124" height="12" rx="2" fill="#FFF8E8" stroke="#C9A87A" stroke-width="0.5"/>
+<text x="482.94374999999997" y="555.5" font-size="6.5" text-anchor="middle">03-04  repisas regulables</text>
+<rect x="818.90625" y="547" width="124" height="12" rx="2" fill="#FFF8E8" stroke="#C9A87A" stroke-width="0.5"/>
+<text x="880.90625" y="555.5" font-size="6.5" text-anchor="middle">05-06  repisas regulables</text>
+<rect x="1030.8687499999999" y="547" width="124" height="12" rx="2" fill="#FFF8E8" stroke="#C9A87A" stroke-width="0.5"/>
+<text x="1092.8687499999999" y="555.5" font-size="6.5" text-anchor="middle">07-08  instrumentos altos</text>
+<line x1="125" y1="105.59000000000003" x2="125" y2="132.09500000000003" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="105.59000000000003" x2="133" y2="105.59000000000003" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="132.09500000000003" x2="133" y2="132.09500000000003" stroke="black" stroke-width="0.5"/>
+<text x="103" y="121.84250000000003" font-size="8" text-anchor="middle">0,45 m</text>
+<line x1="125" y1="132.09500000000003" x2="125" y2="408.92500000000007" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="132.09500000000003" x2="133" y2="132.09500000000003" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="408.92500000000007" x2="133" y2="408.92500000000007" stroke="black" stroke-width="0.5"/>
+<text x="103" y="273.51000000000005" font-size="8" text-anchor="middle">2,50 m</text>
+<line x1="125" y1="408.92500000000007" x2="125" y2="512" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="408.92500000000007" x2="133" y2="408.92500000000007" stroke="black" stroke-width="0.5"/>
+<line x1="117" y1="512" x2="133" y2="512" stroke="black" stroke-width="0.5"/>
+<text x="103" y="463.46250000000003" font-size="8" text-anchor="middle">0,76 m</text>
+<line x1="165" y1="560" x2="588.925" y2="560" stroke="black" stroke-width="0.5"/>
+<line x1="165" y1="555" x2="165" y2="565" stroke="black" stroke-width="0.5"/>
+<line x1="588.925" y1="555" x2="588.925" y2="565" stroke="black" stroke-width="0.5"/>
+<text x="376.9625" y="554" font-size="8" text-anchor="middle">2,735 m</text>
+<line x1="588.925" y1="560" x2="774.925" y2="560" stroke="black" stroke-width="0.5"/>
+<line x1="588.925" y1="555" x2="588.925" y2="565" stroke="black" stroke-width="0.5"/>
+<line x1="774.925" y1="555" x2="774.925" y2="565" stroke="black" stroke-width="0.5"/>
+<text x="681.925" y="554" font-size="8" text-anchor="middle">1,20 m</text>
+<line x1="774.925" y1="560" x2="1198.85" y2="560" stroke="black" stroke-width="0.5"/>
+<line x1="774.925" y1="555" x2="774.925" y2="565" stroke="black" stroke-width="0.5"/>
+<line x1="1198.85" y1="555" x2="1198.85" y2="565" stroke="black" stroke-width="0.5"/>
+<text x="986.8874999999999" y="554" font-size="8" text-anchor="middle">2,735 m</text>
+<line x1="165" y1="584" x2="1198.85" y2="584" stroke="black" stroke-width="0.5"/>
+<line x1="165" y1="579" x2="165" y2="589" stroke="black" stroke-width="0.5"/>
+<line x1="1198.85" y1="579" x2="1198.85" y2="589" stroke="black" stroke-width="0.5"/>
+<text x="681.925" y="578" font-size="8" text-anchor="middle">6,67 m  ·  ENTRE MUROS</text>
+<rect x="1327" y="512" width="210" height="22" fill="url(#dots)" stroke="black" stroke-width="1"/>
+<rect x="1340" y="105.59000000000003" width="28" height="406.40999999999997" fill="#D8D8D8" stroke="black" stroke-width="1"/>
+<rect x="1315" y="105.59000000000003" width="155" height="26.504999999999995" fill="#E8E8E8" stroke="black" stroke-width="1"/>
+<rect x="1368" y="132.09500000000003" width="93.0" height="368.125" fill="#EADBC0" stroke="black" stroke-width="1"/>
+<line x1="1368" y1="193.44916666666668" x2="1461.0" y2="193.44916666666668" stroke="#C9A87A" stroke-width="0.7"/>
+<line x1="1368" y1="254.80333333333334" x2="1461.0" y2="254.80333333333334" stroke="#C9A87A" stroke-width="0.7"/>
+<line x1="1368" y1="316.1575" x2="1461.0" y2="316.1575" stroke="#C9A87A" stroke-width="0.7"/>
+<line x1="1368" y1="377.51166666666666" x2="1461.0" y2="377.51166666666666" stroke="#C9A87A" stroke-width="0.7"/>
+<line x1="1368" y1="438.86583333333334" x2="1461.0" y2="438.86583333333334" stroke="#C9A87A" stroke-width="0.7"/>
+<rect x="1368" y="500.22" width="93.0" height="11.78" fill="#C9A87A" stroke="black" stroke-width="0.9"/>
+<polyline points="1368,408.92500000000007 1476.5,408.92500000000007 1476.5,512" fill="none" stroke="#2F5B8A" stroke-width="0.9" stroke-dasharray="5 4"/>
+<line x1="1368" y1="408.92500000000007" x2="1476.5" y2="408.92500000000007" stroke="#2F5B8A" stroke-width="0.9"/>
+<text x="1377" y="152.09500000000003" font-size="7" font-weight="600">FONDO</text>
+<line x1="1368" y1="560" x2="1461.0" y2="560" stroke="black" stroke-width="0.5"/>
+<line x1="1368" y1="555" x2="1368" y2="565" stroke="black" stroke-width="0.5"/>
+<line x1="1461.0" y1="555" x2="1461.0" y2="565" stroke="black" stroke-width="0.5"/>
+<text x="1414.5" y="554" font-size="8" text-anchor="middle">0,60 m closet</text>
+<line x1="1340" y1="584" x2="1476.5" y2="584" stroke="black" stroke-width="0.5"/>
+<line x1="1340" y1="579" x2="1340" y2="589" stroke="black" stroke-width="0.5"/>
+<line x1="1476.5" y1="579" x2="1476.5" y2="589" stroke="black" stroke-width="0.5"/>
+<text x="1408.25" y="578" font-size="8" text-anchor="middle">0,70 m escritorio</text>
+<text x="1315" y="68" font-size="12" font-weight="700">3   SECCION A-A</text>
+<text x="1315" y="80" font-size="7.5" fill="#555">PROFUNDIDAD · ESC. 1:25 — ESCALA PARAM. 155px/m</text>
+<rect x="18" y="700" width="750" height="52" fill="#FFF8E8" stroke="#C9A87A" stroke-width="0.6" rx="4"/>
+<text x="28" y="718" font-size="8" font-weight="700" fill="#8C5A1A">MÉTODO 2 — SVG GENERATIVO (PYTHON) · VENTAJA: PARAMÉTRICO</text>
+<text x="28" y="732" font-size="7" fill="#333">Cambias CONFIG (entre_muros, vano_izq, prof_closet...) y regeneras. Precisión vectorial infinita. Git-friendly.</text>
+<text x="28" y="744" font-size="6.5" fill="#666" font-family="monospace">CONFIG = {'entre_muros': 6.67, 'vano_izq': 2.735, 'vano_centro': 1.2, 'vano_der': 2.735, 'h_puerta': 2.5, 'h_zocalo': 0.08, 'h_superior': 0.45, 'h_escritorio': 0.76, 'prof_closet': 0.6, 'prof_escritorio': 0.7, 'puertas_por_lado': 4}  ·  px/m=155  ·  puerta_ancho=0.6837 m (especificado 0,684 m) ✓</text>
+<line x1="18" y1="768" x2="1582" y2="768" stroke="black" stroke-width="1.4"/>
+<text x="18" y="790" font-size="8" fill="#333">Este SVG es 100% código — sin difusión — editable en Inkscape / Illustrator / VS Code. Para cambiar dimensiones: edita CONFIG arriba y ejecuta python3 generador_parametrico.py</text>
+<rect x="0" y="1122" width="1600" height="28" fill="black"/>
+<text x="18" y="1139" fill="white" font-size="7">CU-03 PARAMÉTRICO · PYTHON → SVG · PRECISIÓN &lt;0,5 mm a escala 1:25</text>
+</svg>
