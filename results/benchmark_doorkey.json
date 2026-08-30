@@ -1,0 +1,22 @@
+{
+  "aleatorio": {
+    "solved": 0.004,
+    "mean_steps": 63.934000000000005,
+    "coverage": 30.6
+  },
+  "ICM": {
+    "solved": 0.006,
+    "mean_steps": 63.89,
+    "coverage": 34.0
+  },
+  "RND": {
+    "solved": 0.028000000000000004,
+    "mean_steps": 63.54,
+    "coverage": 34.0
+  },
+  "organismo": {
+    "solved": 0.018000000000000002,
+    "mean_steps": 63.739999999999995,
+    "coverage": 34.8
+  }
+}
