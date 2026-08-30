@@ -55,10 +55,17 @@ class ECUS:
         self.w = np.array([1, 0.8, 0.5, 1.5], dtype=np.float32)
     def drive(self):
         return float(np.sqrt(np.sum(self.w * (self.H - self.H_star)**2)))
-    def update(self, a, in_dark, cerca_landmark):
+    def update(self, a, in_dark, cerca_landmark, food_near=0.0):
         dH = -self.alpha * (self.H - self.H_star)
         dH[0] += -0.015
-        if a == 4: dH[0] += 0.50
+        # M4-local-2: FOR con penalización sobre-forrajeo portada del toy (process_vivo_minutos.py:284)
+        if a == 4:
+            if food_near > 0.6:
+                dH[0] += 0.50
+            else:
+                dH[0] += 0.175
+                if food_near < 0.3:
+                    dH[0] -= 0.10
         if a == 5: dH[3] += 0.15
         if in_dark: dH[2] += -0.08
         else: dH[2] += 0.02
@@ -76,6 +83,7 @@ class MundoLocal:
         self.social_pos = [size-2, size-2]
         self.dark = [(x,y) for x in range(3) for y in range(3)]
         self.t = 0
+        self.teleport_t = 80  # M4-local-2: VoE teletransporte portado
     def obs(self):
         x,y = self.agent_pos
         df = min(math.hypot(x-fx, y-fy) for fx,fy in self.foods)/(self.size*1.4)
@@ -96,6 +104,9 @@ class MundoLocal:
             if y < self.social_pos[1]: y+=1
             elif y > self.social_pos[1]: y-=1
         self.agent_pos = [x,y]
+        # M4-local-2: teletransporte VoE en t=80
+        if self.t == self.teleport_t:
+            self.agent_pos = [self.size-2, 1]
         return self.obs()
 
 # ---------- Agente M4-intermedio ----------
@@ -146,8 +157,8 @@ class AgenteLocal:
         # ECUS
         in_dark = obs_t[3] > 0.5
         cerca_landmark = obs_t[4] > 0.9
-        H = self.ecus.H
-        H_next = self.ecus.update(a, in_dark, cerca_landmark)
+        food_near = float(obs_t[2])
+        H_next = self.ecus.update(a, in_dark, cerca_landmark, food_near)
         D = self.ecus.drive()
         # LLM invocación (U alta + presence)
         invoca = (H_next[2] > 0.4 and presence > 0.7)
@@ -156,23 +167,35 @@ class AgenteLocal:
         return presence, H_next, invoca
 
 def elegir_accion(H, obs, pos, foods, social_pos, size):
+    # M4-local-2: política completa portada del toy (process_vivo_minutos.py:250-330)
     best_a, best_G = 0, 1e9
     food_near = obs[2]
+    in_dark = obs[3] > 0.5
     if H[0] < 0.65 and food_near > 0.6:
-        return 4
-    dir_food = None
+        return 4  # FOR forzado hambriento y cerca
     dists = [math.hypot(pos[0]-fx, pos[1]-fy) for fx,fy in foods]
     fx_, fy_ = foods[int(np.argmin(dists))]
     dx, dy = fx_-pos[0], fy_-pos[1]
     dir_food = (2 if dx>0 else 3) if abs(dx)>abs(dy) else (1 if dy>0 else 0)
-    dir_social = (2 if social_pos[0]-pos[0]>0 else 3) if abs(social_pos[0]-pos[0])>abs(social_pos[1]-pos[1]) else (1 if social_pos[1]-pos[1]>0 else 0)
+    dxs, dys = social_pos[0]-pos[0], social_pos[1]-pos[1]
+    dir_social = (2 if dxs>0 else 3) if abs(dxs)>abs(dys) else (1 if dys>0 else 0)
     for a in range(7):
         G = 0.0
-        if a==4: G -= 0.5 if food_near>0.6 else 0
-        if a==5: G -= 0.15
-        if H[0] < 0.65 and a==dir_food: G -= 0.22*(0.65-H[0])
-        if H[3] < 0.5 and a==dir_social: G -= 0.18*(0.5-H[3])
-        if a==6: G += 0.15
+        if a==4 and food_near > 0.6:
+            G -= 0.30*(0.65 - H[0] + 0.1)  # bonus FOR cerca hambriento
+        elif H[0] < 0.65 and a==dir_food:
+            G -= 0.22*(0.65 - H[0] + 0.1)
+        elif H[0] < 0.65 and food_near < 0.7 and a in [0,1,2,3]:
+            G -= 0.04*(0.65 - H[0])
+        if H[3] < 0.5 and a==dir_social:
+            G -= 0.18*(0.5 - H[3] + 0.1)
+        if H[2] > 0.5 and a in [0,1,2,3] and not in_dark:
+            G -= 0.05*(H[2]-0.2)
+        if in_dark and H[3] < 0.5:
+            if a in [0,1,2,3]: G -= 0.1*(0.7-H[3])
+            if a==6: G += 0.3*(0.7-H[3])
+        if a==6 and (H[0] < 0.65 or H[3] < 0.5):
+            G += 0.15
         if G < best_G: best_G, best_a = G, a
     return best_a
 
