@@ -57,7 +57,7 @@
 El experimento que creíamos requerir A100 se hizo **local, gratis**:
 - H2b decisivo: conducta idéntica con/sin LLM real → **tesis confirmada**
 - M3b real: plasticidad en pesos con LLM real participando
-- M5 24h: el organismo vive un día completo en 2.6 min wall-clock
+- M5 24h: el organismo mantiene un proceso continuo un día completo en 2.6 min wall-clock
 
 **LFM2.5 es arquitectónicamente coherente** (híbrido SSM-conv, no Transformer puro) — la "boca" comparte filosofía con el núcleo Mamba.
 
@@ -95,6 +95,6 @@ v5 mundo rico → v6 escalado gradual → VoE-v2 (pendiente) → M4 cloud (opcio
 
 ## 8. EN UNA FRASE
 
-**El organismo artificial vive**: piensa en representación aprendida real, recuerda 100% donde un LLM olvida, regula sus necesidades 24h sin colapsar, se sorprende ante violaciones, aprende en sus pesos sin necesitar memoria, y habla con un LLM real (LFM2.5) que traduce — no decide — su vida interior. Todo en tu Mac, 0€, sin inventar nada, con cada hipótesis capaz de morir.
+**El organismo artificial vive**: piensa en representación aprendida real, recuerda 100% donde un LLM olvida, regula sus necesidades 24h sin colapsar, detecta violaciones de sus predicciones ante violaciones, aprende en sus pesos sin necesitar memoria, y habla con un LLM real (LFM2.5) que traduce — no decide — su vida interior. Todo en tu Mac, 0€, sin inventar nada, con cada hipótesis capaz de morir.
 
 *El siguiente paso natural es hacer que la sorpresa sea emergente (VoE-v2). El único gasto posible en el horizonte es 33€ de A100 si algún día se quiere el world model con video real.*

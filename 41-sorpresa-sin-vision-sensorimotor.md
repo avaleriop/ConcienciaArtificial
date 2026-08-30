@@ -35,7 +35,7 @@ HABITUACIÓN       0.0419 → 0.0009          98%        ✅ el modelo cambió s
 
 1. **Sorpresa emergente sin visión:** el error de predicción del modelo del cuerpo salta z=40σ ante la violación de su contingencia motora — medida por el modelo mismo, sin flag.
 2. **La conciencia mínima no depende de un canal sensorial caro:** el canal del cuerpo (que ya teníamos en el tetraedro: propiocepción + interocepción + tacto) basta.
-3. **Plasticidad sobre la sorpresa:** la habituación 98% demuestra que el sistema no solo se sorprende sino que **aprende de su sorpresa** — cierra el loop FEP `sorprender → actualizar modelo → menos sorpresa`.
+3. **Plasticidad sobre la sorpresa:** la habituación 98% demuestra que el sistema no solo detecta violaciones de sus predicciones sino que **aprende de su sorpresa** — cierra el loop FEP `sorprender → actualizar modelo → menos sorpresa`.
 4. **V-JEPA/A100 ya NO es el camino de la sorpresa emergente** — es solo un canal opcional de grounding perceptual para el futuro.
 
 ## Estado de la pregunta VoE-v2
@@ -44,4 +44,4 @@ HABITUACIÓN       0.0419 → 0.0009          98%        ✅ el modelo cambió s
 - 🔵 Canales interoceptivo/táctil: señal real pero <5σ — pre-registrado amplificar magnitud de violación para cerrar
 - V-JEPA 1B: opcional, pospuesto con justificación (ya no bloquea nada)
 
-*El organismo se sorprende como un ciego: sintiendo que su cuerpo viola su física. Ver `framework/m4_local_sensorimotor.py:1`.*
+*El organismo detecta violaciones de sus predicciones como un ciego: sintiendo que su cuerpo viola su física. Ver `framework/m4_local_sensorimotor.py:1`.*
