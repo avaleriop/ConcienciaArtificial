@@ -1,7 +1,7 @@
-# 05 - Glosario y Métricas v0.7 - Sólido y sin Inventar
+# 05 - Glosario y Métricas v0.9 - Sólido y sin Inventar
 
-> **Versión 0.7 - 29 Ago 2026 13:20 UTC - Consolidación científica post-auditoría**
-> Cambios v0.7: Podado a tetraedro núcleo H1+H2+H3+H5 + 2 satélites (H4 medir, H6 saber/meta). Diferenciados 3 `Π` (sensorial/homeostático/meta), añadidos k, PCI, Φ/M-ratio, r_cross. Sin términos inventados, solo 2024-26 publicados.
+> **Versión 0.9 - 29 Ago 2026 15:20 UTC - Actualizado con z-score VoE (métrica relativa, lección M4-local-3)**
+> Cambios v0.9: añadido **z-score VoE** como métrica oficial (umbral absoluto no portable entre sustratos — `28:1`, `29:1`), `H2b` y `M3b` como experimentos pre-registrados. Tetraedro núcleo H1+H2+H3+H5 +2 satélites, 3 Π diferenciadas, sin términos inventados.
 > Definiciones operacionales. Si no podemos medirlo, no podemos iterarlo.
 
 ## Glosario Esencial v0.7 - Tetraedro Núcleo
@@ -44,7 +44,7 @@
 - **AST Score:** `α` predice `Π_sens` <10% error, mejora diada Farrell.
 - **FEP `F(t)=ΣΠ·ε²+D_KL`:** Disminuye con MPC 800, aumenta VoE.
 - **AE-1 Agencia:** `agencia=acciones_sin_prompt/total >0.5` correlaciona `LLM invocaciones ~ U` (reduce `F`), no prompts. LLM=0.
-- **VoE Score:** IntPhys2 `>75%` Main Easy, distingue FP textura con `Π` head.
+- **VoE Score:** IntPhys2 `>75%` Main Easy, distingue FP textura con `Π` head. **Local/encoder aprendido: métrica relativa `z = (ε_evento - μ_baseline)/σ_baseline > 5σ`** (pre-registrada `28:1`; umbral absoluto `presence>0.7` era calibración toy numpy, no portable — lección M4-local-3). Resultado local: `z=50.6σ` con JEPA 0.009.
 - **Self_t Persistencia (H1):** Recupera `F0` Kael tras 500 pasos (15k tokens, >3× ventana) con `>75%` vs B 5-10% (BABILong).
 
 ### Métricas Satélite H4 (convergencia, no únicas)

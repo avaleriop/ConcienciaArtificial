@@ -1,7 +1,7 @@
-# 02 - Arquitectura de Doble Capa v0.7 - El SER y El DECIR
+# 02 - Arquitectura de Doble Capa v0.7.1 - El SER y El DECIR
 
-> **Versión 0.7 - Tetraedro Sólido H1+H2+H3+H5 +2 Satélites (H4 medir, H6 meta). 29 Ago 2026 13:20 UTC.**
-> Cambios v0.7: Podado post-auditoría `12:1`: hexáedro 6 → tetraedro núcleo 4 (pensar+sentir+querer+ser) + H4 batería `k>5,Δ>40%,PCI>0.31` + H6 `Φ` como `H5b` meta-precisión. Ecuación maestra `F_total=ΣΠ_sens·ε² + D(H) + EWC + D_KL`. Sin inventar.
+> **Versión 0.7.1 - Tetraedro Sólido H1+H2+H3+H5 +2 Satélites. 29 Ago 2026 (actualizado 15:20).**
+> Cambios v0.7.1: lenguaje verificable (ver `13:9` — no "siente/quiere/es/conciencia", sino "señal compatible con mecanismo propuesto"). Arquitectura canónica `MUNDO→PERCEPCIÓN→ESTADO→memoria/necesidades/predicción→decisión→ACCIÓN→LLM congelado`. Ecuación maestra `F_total=ΣΠ_sens·ε² + D(H) + EWC + D_KL`. Sin inventar.
 
 ## Diagrama Conceptual
 

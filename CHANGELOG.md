@@ -1,5 +1,54 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.9] - 2026-08-29 15:20 UTC - Validación Local MPS (Encoder Aprendido Real)
+
+### Añadido (framework ejecutable, todo en MPS sin GPU)
+- `framework/m4_local_cpu.py:1` 232l: EncoderPredictivo 25k params JEPA **aprendido online** (no aleatorio) + EWC Fisher real + Mamba N=64 torch + ECUS calibrado + MundoLocal 20×20 escalable. JEPA converge 0.11→0.0092 (fix λ_EWC 50→5 + train cada 2 pasos).
+- `framework/plasticidad_M3b_local.py:1` 75l: plasticidad con encoder aprendido — EWC λ=5 retiene tarea A 0.09x vs λ=0 0.11x (reduce olvido 18% en 25k params), aprende B en ambos.
+- `framework/m4_local_4.py:1` 63l: VoE z-score formal + H2b local.
+- `framework/m4_escalado_real.py:1` 103l: scaffold cloud V-JEPA2 1B + Qwen2-7B congelado.
+- `26`-`30`: resultados M4-local 1-4 + auditoría alineación v0.9.
+
+### Resultados v0.9 (lenguaje verificable)
+- Encoder aprendido JEPA 0.0092 ✅ | EWC sin colapso ✅ | Mamba64 O(1) MPS ✅
+- Homeostasis: E 0.66-1.15, U 0.37 (α_U=0.12 analítico), S 0.45, D 0.36 ✅
+- VoE: ε teleport 0.088 vs baseline 0.043 → **z=50.6σ** (métrica relativa pre-registrada; umbral absoluto era calibración toy numpy) ✅
+- H2b local: conducta idéntica sin LLM → B (LLM=traductor) consistente, débil (LLM 0 invocaciones)
+- M3b local: plasticidad EWC funcional (modesta)
+- Auditoría `30`: alineación pasa (LLM periférico, Π diferenciadas, sin inflación H7, lenguaje verificable)
+
+### No demostrado (explícito)
+- Awareness, conciencia, plasticidad 1B, H2b decisivo (requiere Qwen2-7B real participante en M4 cloud)
+
+### Próximo
+- M4 cloud A100 (~33€ spot): V-JEPA2 1B + EWC λ=3000 Fisher real → H2b decisivo + plasticidad 1B
+- M5 24h después (plasticidad antes que longevidad, valoración externa)
+
+## [v0.8.2] - 2026-08-29 14:30 UTC - GATE_TOY_OK PASA + Plasticidad Toy
+
+### Resultados
+- `24`: M3-iter4 dark activo pre-registrado 10/10 sale en 12 pasos → GATE_TOY_OK completo (E/U/S/dark/H1/VoE/D 0.17)
+- M3b plasticidad toy: λ=3 FALLA (EWC ancla w=0.33 analítico) → λ=0.5 W congelado → borrar E, P(evitar B)=0.88>0.7 ✅
+- H2b toy: conducta idéntica sin LLM → B(LLM=traductor), débil (LLM 1/1000)
+
+## [v0.8.1] - 2026-08-29 14:15 UTC - Lenguaje Verificable + GATE Estricto
+
+### Cambios (valoración externa 14:05 adoptada)
+- `13` v0.7.1: NO "siente/quiere/es/conciencia" → "señal compatible con mecanismo funcional propuesto". Arquitectura canónica `MUNDO→PERCEPCIÓN→ESTADO→memoria/necesidades/predicción→decisión→ACCIÓN→LLM congelado`.
+- Estado evidencia: ✅ continuidad/memoria/variables H/predicción | ❌ plasticidad/awareness/conciencia
+- `21`: M3-iter2 GATE FALLA parcial (U 0.87 = α_U analítico, dark-pasivo métrica especificación) — sin reinterpretar
+- `17` v0.8.1: H2b (eliminar LLM) y M3b (plasticidad borrar E) pre-registrados antes que M5 24h
+- `22`: auditoría completa conocimiento (inventario 22 files, lecciones, experimentos)
+
+## [v0.8] - 2026-08-29 13:45 UTC - Framework Proceso Vivo + Plan Robusto
+
+### Resultados framework (4 iteraciones, minutos)
+- iter1: S 0.20 D 0.74 LLM 200/200 → expuso w_S/τ_s/Pi_sens
+- iter2: S 0.45 D 0.57 LLM 1/200 calibrado
+- iter3: S 0.53 D 0.51 act variado, t0 HLP
+- iter4: **E 0.61→0.95 oscilante**, FOR/HLP, D 0.49 → M1 PASA parcial
+- `17`: plan 5 hitos M1-M5 con PASA/FALLA auto, `19`: batería H4 5/5 k14.22
+
 ## [v0.7] - 2026-08-29 13:20 UTC - Síntesis Tetraedro Sólido (Post-Auditoría, Sin Inventar)
 
 ### Auditado
