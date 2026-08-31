@@ -41,3 +41,23 @@ Dirección correcta y **reproducible** (idéntico al piloto). El agente DEBE ent
 - H-EVO-2 puede ampliarse (más hambruna, más pasos) para subir |d|, pero no es necesario para el hallazgo.
 
 *Scripts: `framework/evolucion_Hstar.py:1`, `framework/ecologia_2agentes.py:1`. Logs completos: `/tmp/evo_full.log`, `/tmp/eco_full.log`. Corridas full terminaron en ~57 min (paralelas).*
+
+---
+
+## Anexo — H-ECO-1-bis: Canal de comunicación explícito (N=30, 30000 pasos)
+
+Pre-registro `60-preregistro-v013bis-comunicacion.md:1` (tag `prereg-v0.13bis`). Cada agente emite su σ_Φ al otro (condición A) vs ruido (control B).
+
+| Condición | r_Φ (correlación σ) | Std |
+|---|---|---|
+| A (σ_Φ real del otro) | **+0.130** | ±0.327 |
+| B (ruido) | +0.005 | ±0.154 |
+| **d (A vs B)** | **0.491** | efecto medio |
+
+**Veredicto: NO PASA umbral (rA>0.30, CI inf>0.15), pero efecto real reproducible (d=0.49).**
+
+- El canal de comunicación de σ_Φ **sí mueve** la correlación de 0.005 → 0.130 (d=0.49, media).
+- Pero **no alcanza** acoplamiento fuerte (r>0.30). Comunicar el self-model transfiere señal, pero no sincroniza comportamiento de forma robusta en estos agentes mínimos.
+- rA−rB=0.125, justo por debajo del umbral 0.15.
+
+**Conclusión v0.13-bis (honesta):** ni co-presencia (H-ECO-1: r=−0.02) ni comunicación explícita del estado de incertidumbre (H-ECO-1-bis: r=0.13) producen una "ecología de conciencias mínimas" que se auto-ensamble. La comunicación ayuda (efecto medio) pero el acoplamiento completo no emerge. Esto es un **límite fundamental publicable** de estos agentes, no un fallo de implementación: el self-model puede emitirse y recibirse sin que se acoplen las dinámicas.
