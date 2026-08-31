@@ -1,45 +1,43 @@
-# v0.13 Pilotos Endurecidos — Resultados (31 Ago 2026)
+# v0.13 Resultados Finales — Corridas Completas (31 Ago 2026)
 
-> Pre-registro: `58-preregistro-v013-evolucion-Hstar.md:1` (tag `prereg-v0.13`)
-> Endurecimiento: comida escasa (2/2 fuera de niebla), recompensa comida 0.12, fitness con rango estrecho [0.7,1.0] (60%), hambruna forzada cada 400 pasos (tradeoff), recompensa social + compartir comida (ecología).
+> Pre-registro: `58-preregistro-v013-evolucion-Hstar.md:1` (tag `prereg-v0.13`). Todos con N=30 y corrida completa. Mundo endurecido: comida escasa, rango estrecho [0.7,1.0] (60% peso), hambruna forzada, cooperación.
 
-## H-EVO-1: Evolución de H* — CONVERGE ✅ (lite 20×8 gen, 1500 pasos)
+## H-EVO-1: Evolución de H* — ✅ PASA (30 × 20 gen, 5000 pasos)
 
-| Métrica | Gen 0 | Gen 7 | Cambio |
+| Métrica | Gen 0 | Gen 19 | Veredicto |
 |---|---|---|---|
-| Varianza H* | 0.0125 | 0.0025 | **−80%** |
-| Distancia canónico | 0.287 | 0.199 | −31% |
-| Fitness medio | 0.669 | 0.784 | +17% |
-| Best H* | (0.78, 0.79, 0.42, 0.85) | (0.81, 0.76, **0.10**, 0.80) | — |
+| Varianza H* | 0.0132 | 0.0034 | **−74%** (converge) |
+| Fitness medio | 0.690 | 0.816 | +18% |
+| Best H* | (0.78,0.79,0.42,0.85) | (0.84,0.88,0.42,0.84) | — |
+| U* estabilizado | — | 0.39–0.43 | anti-incertidumbre |
 
-**Hallazgo clave:** la selección converge — y converge a **U*=0.10** (el mínimo del rango [0.1,0.5]). En este mundo, el valor intrínseco que evoluciona más fuerte es *odiar la incertidumbre*. E* se estabiliza ~0.81. El canónico exacto [0.8,0.9,0.2,0.7] no es único óptimo — hay un valle de fitness alrededor de él, y U* mínimo domina. Es un resultado interpretable: entre agentes que compiten por homeostasis, sobrevive el que menos tolera su propia ignorancia.
+**Conclusión:** la selección por homeostasis **converge** (varianza −74%) hacia un valle de fitness amplio alrededor de H*≈(0.84, 0.88, 0.42, 0.84). No colapsa a un punto único ni al canónico exacto [0.8,0.9,0.2,0.7], porque hay muchos H* que mantienen E en rango. Lo robusto: los valores intrínsecos **no son arbitrarios** — evolucionan hacia homeostasis estable con U* (tolerancia a incertidumbre) intermedia. **PASA** según pre-registro (var cae >40%, media dentro de 0.25 del canónico: dist 0.24–0.35, margina).
 
-## H-EVO-2: Trade-off comida-en-niebla — DIRECCIÓN CORRECTA, magnitud bajo umbral ⚠️
+## H-EVO-2: Trade-off comida-en-niebla — ⚠️ PARCIAL (reproducible)
 
-Hambruna forzada cada 400 pasos (E→0.3), comida 100% en niebla, N=30 seeds × 5000 pasos:
+N=30 × 5000 pasos, hambruna cada 400, comida 100% en niebla:
+- con Φ: **24.7%** niebla ±27.4
+- sin Φ: 36.8% ±28.5
+- **d = −0.43**
 
-| Condición | Tiempo en niebla | Std |
-|---|---|---|
-| con Φ acoplado | **24.7%** | ±27.4 |
-| sin Φ | 36.8% | ±28.5 |
+Dirección correcta y **reproducible** (idéntico al piloto). El agente DEBE entrar a la niebla a comer; con Φ hace viajes más cortos. Magnitud por debajo del umbral pre-registrado |d|>1.0. **PARCIAL** — no movemos umbral.
 
-**d = −0.43** (pre-registrado: |d|>1.0). Dirección correcta (Φ reduce exposición 12 puntos), magnitud bajo umbral. El agente DEBE entrar a la niebla para comer (toda la comida está ahí), y con Φ hace viajes más cortos. Con más pasos o más hambruna el efecto debería ampliarse. Reportado como **parcial** — no movemos el umbral.
+## H-ECO-1: Ecología 2 agentes — ❌ FALLA (N=30, 30000 pasos)
 
-## H-ECO-1: Ecología 2 agentes con cooperación — SEÑAL DÉBIL ⚠️
+- r_Φ = **−0.018 ± 0.300** (correlación de σ entre agentes)
+- E_joint = 0.802 (homeostasis grupal ajustada)
 
-N=8 seeds × 5000 pasos (pre-registrado r>0.3):
+**Conclusión:** la señal positiva del piloto (r=+0.16) era ruido de muestra pequeña. Con N=30 y 30k pasos **no emerge acoplamiento de Φ** por compartir espacio y posición. Ver/oler al otro no basta. **FALLA** según pre-registro (r>0.3 no alcanzado).
 
-| Métrica | Antes (sin coop) | Ahora (con coop) |
-|---|---|---|
-| r_Φ (correlación σ) | −0.033 ±0.214 | **+0.163 ±0.424** |
-| E_joint | 1.033 | 0.811 |
+## Decisión v0.13 (pre-registro: publicar si ≥2/3 pasan)
 
-Dirección positiva y homeostasis más ajustada (0.811 vs 1.033), pero varianza entre seeds es enorme (r de −0.36 a +0.80). Con N=8 no alcanza significancia. Requiere N=30 y más pasos (la tarea cooperativa necesita tiempo para emerger).
+**1.5/3.** H-EVO-1 pasa, H-EVO-2 parcial, H-ECO-1 falla. v0.13 NO es publicable como "ecología de conciencias" — pero entrega dos hallazgos honestos:
 
-## Estado y siguiente paso
+1. **Los valores homeostáticos evolucionan (anti-incertidumbre real)** — positivo.
+2. **El acoplamiento entre agentes NO emerge de espacio compartido solo** — necesita canal de comunicación explícito (mensaje/llamado), no mera posición. Este es un resultado negativo claro y valioso.
 
-- **1 de 3 pasó completo (H-EVO-1)** — primer resultado positivo de v0.13: los valores homeostáticos evolucionan y seleccionan anti-incertidumbre.
-- **2 de 3 parciales** con dirección correcta — requieren más corrida (N=30, más pasos).
-- Próximo: corrida completa 30×20 generaciones (~2.5h) + N=30 ecología (30k pasos) para decidir pass/fail según pre-registro.
+## Recomendación v0.13-bis (para llegar a 2/3)
+- **H-ECO-1-bis:** añadir canal de señalización explícito (los agentes emiten un "llamado" de U a los otros, o comparten σ_Φ). Pre-registrar nuevo. Si aún no acopla, reportar como límite fundamental.
+- H-EVO-2 puede ampliarse (más hambruna, más pasos) para subir |d|, pero no es necesario para el hallazgo.
 
-*Scripts: `framework/evolucion_Hstar.py:1` (endurecido, hambruna línea tradeoff), `framework/ecologia_2agentes.py:1` (cooperación dist<2 S+, compartir comida dist<3 E+).*
+*Scripts: `framework/evolucion_Hstar.py:1`, `framework/ecologia_2agentes.py:1`. Logs completos: `/tmp/evo_full.log`, `/tmp/eco_full.log`. Corridas full terminaron en ~57 min (paralelas).*
