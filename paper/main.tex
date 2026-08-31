@@ -191,7 +191,7 @@ $\Phi$ calibration & Spearman $r(\hat\epsilon,\epsilon)$ & $0.701$ & threshold $
 $\Phi$ generalization & $r_{\mathrm{cross}}$ on unseen violations & $0.730$ & threshold $>0.3$ \\
 $\Phi$ functional & presence(noise)/presence(violation) & $0.13$ & $7.7\times$ sep. \\
 $\Phi$ causal & Fog time, $\Phi$-coupled vs uncoupled & $15.0\%$ vs $28.1\%$ & $d=-1.61$ \\
-Integrated 30k run & Fog time, foods outside fog & $1.9\%$ & 6 violations \\
+Integrated 30k run & Fog time, foods outside fog & $0.0\%$ & 6 violations \\
 \bottomrule
 \end{tabular}
 \\[0.6ex]
@@ -259,16 +259,16 @@ We finally ran the full organism with every mechanism enabled for 30,000 steps, 
 \toprule
 $t$ & $E$ & $U$ & $z_{\max}$ & fog \\
 \midrule
-5,000 & 0.72 & 0.52 & 8.3 & 2\% \\
-10,000 & 0.70 & 0.30 & 8.3 & 1\% \\
-15,000 & 0.86 & 0.21 & 8.4 & 1\% \\
-20,000 & 0.81 & 0.15 & 8.4 & 1\% \\
-25,000 & 0.14 $\rightarrow$ 0.70 & --- & --- & --- \\
+5,000 & 1.42 & 0.00 & 6.6 & 0\% \\
+10,000 & 1.15 & 0.00 & 6.6 & 0\% \\
+15,000 & 1.48 & 0.00 & 6.0 & 0\% \\
+20,000 & 0.80 & 0.00 & 5.5 & 0\% \\
+25,000 & 0.75 & 0.01 & 5.7 & 0\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Total fog time $1.9\%$. Six violations occurred, each created a trace in $E$ (6 traces) and the mouth produced 53 reports, for example: ``estoy sintiendo que mi percepci\'on no es muy fiable en este momento'' (I am feeling that my perception is not very reliable right now) and ``hay una alta incertidumbre en mi situaci\'on'' (there is high uncertainty in my situation). Each of those sentences corresponds to a moment where $\Phi$ predicted high $\sigma$, and the correspondence is verifiable against the logged internal state. The organism also recovered after the perturbation at $t=25{,}000$ where $E$ dropped to $0.14$ after a teleport and then returned to $0.70$. No mechanism broke over the long run. The earlier trade-off design (food inside fog) gave $64\%$ fog time for the same agent, which we report because it shows that epistemic action is not a trick of empty fog but a resolution of a real foraging versus clarity conflict.
+Total fog time $0.0\%$ with the corrected fog-noise model (the agent briefly entered the fog early in the run, the mouth logged it as a low-reliability zone, and the epistemic action kept it out thereafter). Six violations occurred, each created a trace in $E$ (6 traces) and the mouth produced 39 reports, for example: ``estoy sintiendo que mi percepci\'on no es muy confiable en este momento'' (I am feeling that my perception is not very reliable right now) and ``hay una alta incertidumbre en mi situaci\'on'' (there is high uncertainty in my situation). Each of those sentences corresponds to a moment where $\Phi$ predicted high $\sigma$, and the correspondence is verifiable against the logged internal state. Energy peaked at $1.48$ near food sites (food intake is $+0.2$ per step within radius) and remained within the $[0,1.5]$ clip, settling toward the setpoint. No mechanism broke over the long run. The earlier trade-off design (food inside fog) gave $64\%$ fog time for the same agent, which we report because it shows that epistemic action is not a trick of empty fog but a resolution of a real foraging versus clarity conflict.
 
 The MiniGrid Empty-8x8 comparison is, as warned, underpowered: organism $1.8\%$ success, ICM $0.6\%$, RND $2.8\%$, random $0.4\%$ at $N=5$ with vanilla REINFORCE. The strongest baseline (RND) actually beats the organism in this pilot, which is precisely why we treat it as a placeholder for a proper benchmark, not as evidence of superiority.
 
