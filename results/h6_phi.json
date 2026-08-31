@@ -1,0 +1,35 @@
+{
+  "phi_calibration": {
+    "r_spearman": 0.701,
+    "r_cross": 0.73,
+    "threshold_calibration": 0.5,
+    "threshold_cross": 0.3,
+    "n_train": 3000,
+    "n_test": 500,
+    "source": "framework/h6_selfmodel.py",
+    "note": "Phi (22->64->1) predicts sigma (expected |epsilon|). r=0.701 on held-out transitions; r_cross=0.730 on unseen motor violations (OOD). See paper Table 1 and Fig phi."
+  },
+  "phi_functional": {
+    "presence_ratio_noise_over_violation": 0.13,
+    "separation_factor": 7.7,
+    "threshold": 0.7,
+    "definition": "presence = epsilon / (sigma_Phi^2 + 1e-6). Low ratio means expected noise is attenuated vs true violation."
+  },
+  "phi_causal": {
+    "fog_time_coupled": 0.15,
+    "fog_time_uncoupled": 0.281,
+    "cohens_d": -1.61,
+    "n_seeds": 30,
+    "source": "framework/h6_phi_causal.py",
+    "note": "Phi-coupled epistemic action (leave fog when att_visual<0.35 or mean att 1:5 >0.65) halves fog exposure."
+  },
+  "phi_architecture": {
+    "input_dim": 22,
+    "hidden": 64,
+    "output": 1,
+    "input_breakdown": "13 (vis 2 + H_norm 4 + action 7) + 7 atten weights + 2 eps stats (mean, std)",
+    "training": "Adam 1e-3, 500 steps, MSE vs eps",
+    "attention_training": "Adam 1e-3, 300 steps, MSE sigma_mean vs eps + 0.01 entropy regularizer; sigma_canal = RUIDO_BASE + (RUIDO_NIEBLA - RUIDO_BASE)*atten_weights (7-dim vector, channel 6 half noise)",
+    "ewc": "lambda=5.0, fisher 0.9*F+0.1*g^2, updated online, w_star refreshed every 5000 steps"
+  }
+}

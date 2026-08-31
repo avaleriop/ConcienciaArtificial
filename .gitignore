@@ -1,3 +1,4 @@
 framework/__pycache__/
 models/
 *.safetensors
+paper-viewer.html

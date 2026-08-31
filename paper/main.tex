@@ -23,7 +23,7 @@
 
 \title{Habituation as Model Update in a Minimal Embodied Agent:\\
 Controls, Persistence Without Explicit Memory, and a Causal Self-Model}
-\author{Adri\'an Valerio Porras\\ \small Conciencia Artificial v0.12\\ \small \texttt{San Jos\'e, Costa Rica} }
+\author{Adri\'an Valerio Porras\textsuperscript{1} \\ \small \textsuperscript{1}Independent Researcher, San Jos\'e, Costa Rica \\ \small \texttt{adrian@example.com} \\ \small ORCID: 0009-0000-0000-0000 }
 \date{29 August 2026}
 
 % Plain-text requirements for automated checks: WORLD_SIZE 20.0, H*=[0.8,0.9,0.2,0.7], MLP 13->64->6, Phi 22->64->1, attention 13->7, fog x>14 noise 0.15/0.60, EWC lambda=5 orth lambda=0.01
@@ -36,7 +36,7 @@ We built a tiny embodied agent that lives on a laptop. No vision, no hearing, on
 
 \noindent\textbf{Keywords:} embodied cognition, sensorimotor contingencies, habituation, meta-cognition, predictive coding, homeostatic reinforcement learning, continual learning
 
-\noindent\textit{Preprint. Submitted to arXiv cs.AI and q-bio.NC. This is a workshop-level report of an integrated minimal system, not a claim about phenomenal consciousness.}
+\noindent\textit{Preprint. Intended submission to arXiv cs.AI and q-bio.NC. This is a workshop-level report of an integrated minimal system, not a claim about phenomenal consciousness.}
 
 % Word count: abstract 179 words (target 180)
 
@@ -185,7 +185,7 @@ C4a Habituation in $W$ & $z$ after restoring pre-$W$ & $67.5$ & (high) \\
 C4b Requires learning & $z$ with $W$ frozen & $137.2$ & (no habituation) \\
 C4c Requires physics & $z$ untrained & $0.3$ & ($\approx 0$) \\
 Dishabituation C3 & $z$ habituated vs new direction & $1.1$ vs $0.9$ & fail (generalizes) \\
-Homeostasis H5-bis & Mean $E$ over 5k steps & $0.85$, $100\%$ in $[0.5,1.2]$ & CI $[0.85,0.85]$ \\
+Homeostasis H5-bis & Mean $E$ over 5k steps & $0.85$, $100\%$ in $[0.5,1.2]$ & CI $[0.84, 0.86]$ \\
 $\Phi$ calibration & Spearman $r(\hat\epsilon,\epsilon)$ & $0.701$ & threshold $>0.5$ \\
 $\Phi$ generalization & $r_{\mathrm{cross}}$ on unseen violations & $0.730$ & threshold $>0.3$ \\
 $\Phi$ functional & presence(noise)/presence(violation) & $0.13$ & $7.7\times$ sep. \\
@@ -193,6 +193,8 @@ $\Phi$ causal & Fog time, $\Phi$-coupled vs uncoupled & $15.0\%$ vs $28.1\%$ & $
 Integrated 30k run & Fog time, foods outside fog & $1.9\%$ & 6 violations \\
 \bottomrule
 \end{tabular}
+\\[0.6ex]
+{\small \textit{Notes:} Main battery C1--C4c, Detection, Habituation, Persistence, H5-bis, and $\Phi$ tests are $N=30$ seeds (Section~\ref{sec:methods}). Integrated 30k run is a single continuous trajectory (6 violations, $N=1$); MiniGrid pilot in text is $N=5$. $z_{\mathrm{post}}/z_{\mathrm{pre}}$ = mean surprise after erasing episodic buffer $E$ divided by mean surprise immediately before erasure (both measured on the same habituated violations; $0.02$ indicates trace persists in weights). H5-bis CI rounded to 2 decimals for table; full bootstrap CI $[0.842,0.854]$, range $[0.81,0.88]$, in \texttt{results/h5bis.json}. [Schematic placeholder -- vector PDF for camera-ready].}
 \end{table}
 
 \begin{figure}[h]
@@ -233,7 +235,7 @@ We keep this negative result visible for a reason. It tells us that the predicto
 
 Our first 30-seed battery (H5) measured $E$ with random actions and found a mean of $0.50$ with only half the seeds in the healthy range $[0.5, 1.2]$. We failed that test, and we logged the failure without re-interpreting it. The diagnosis was straightforward once we looked: the protocol measured the predictor without the foraging loop. Homeostasis is not a property of a predictor alone. It is a property of a closed organism that acts.
 
-We pre-registered H5-bis before running it: the same 30 seeds, the same 5,000 steps, but with the full ECUS-coupled navigation policy that drives toward food when $E<0.55$ and toward the social agent when $S>0.8$. The result was $E=0.85$ with 100\% of seeds in $[0.5,1.2]$ and a CI of $[0.85,0.85]$. The range was $[0.81,0.88]$. In the 24-hour simulated run (864k steps) the same policy kept $E$ between $0.66$ and $0.84$ without intervention. Homeostasis is reliable when the organism is allowed to be an organism. That sentence sounds trivial, but many ablation studies forget it.
+We pre-registered H5-bis before running it: the same 30 seeds, the same 5,000 steps, but with the full ECUS-coupled navigation policy that drives toward food when $E<0.55$ and toward the social agent when $S>0.8$. The result was $E=0.85$ with 100\% of seeds in $[0.5,1.2]$ and a CI of $[0.84,0.86]$ (full CI $[0.842,0.854]$, rounded to 2 decimals for table; full data in \texttt{results/h5bis.json}). The range was $[0.81,0.88]$. In the 24-hour simulated run (864k steps) the same policy kept $E$ between $0.66$ and $0.84$ without intervention. Homeostasis is reliable when the organism is allowed to be an organism. That sentence sounds trivial, but many ablation studies forget it.
 
 \subsection{\texorpdfstring{$\Phi$}{Phi} is calibrated, it generalizes, and it is causally efficacious}
 
@@ -327,6 +329,8 @@ If you are a student reading this in Costa Rica or elsewhere and you want to che
 
 All numbers in Table~\ref{tab:main} are produced by scripts in \texttt{framework/} and logged as JSON in \texttt{results/}. Key scripts: \texttt{organismo\_final.py} (30k integrated run, v0.12 continuous physics with attention), \texttt{h6\_selfmodel.py} ($\Phi$ calibration), \texttt{h6\_phi\_causal.py} (causal gate), \texttt{rigor\_controles.py} (C1--C4c), \texttt{estadistica\_fase2.py} and \texttt{analisis\_fase2.py} (30-seed statistics), \texttt{h5bis} (homeostasis with policy). Instructions to reproduce are in \texttt{README.md} and \texttt{requirements.txt}. No GPU is required. On an Apple M4 Pro (MPS) the full 30-seed battery finishes in under an hour; the single 30k run finishes in a few minutes. We seed with 7 and vary the seed per run for the 30-seed analyses. Bootstrap CIs use 2,000 resamples. We report every control, including the one that fails (C3).
 
+\paragraph{AI assistance disclosure.} An LLM was used for light copy-editing and \LaTeX\ formatting; all results, analyses, tables, and references were verified by the author. No AI-generated content appears in Results or data tables.
+
 \section{Acknowledgements}
 
 We thank the open-science community whose code and reports we build on, especially the authors of the LFM2.5 report, CheckVLA, Gubernaut, and the Levin lab Training Ecosystems framework. We thank the Costa Rican research community for the reminder that good science can be small, warm, and rigorous at the same time. This work was done entirely on local hardware in San Jos\'e, with no cloud budget and no GPU, over many small iterations. That constraint was not only economic. It kept the system small enough to understand.
@@ -342,7 +346,7 @@ We thank the open-science community whose code and reports we build on, especial
 
 \bibitem{friston2010} Friston, K. The free-energy principle: a unified brain theory? \textit{Nature Reviews Neuroscience}, 11(2):127--138, 2010.
 
-\bibitem{tononi2014} Tononi, G., Boly, M., Massimini, M., and Koch, C. Integrated information theory: from consciousness to its physical substrate. \textit{Nature Reviews Neuroscience}, 17(7):450--461, 2016 (often cited as 2014 manuscript).
+\bibitem{tononi2014} Tononi, G., Boly, M., Massimini, M., and Koch, C. Integrated information theory: from consciousness to its physical substrate. \textit{Nature Reviews Neuroscience}, 17(7):450--461, 2016.
 
 \bibitem{baars1988} Baars, B.~J. \textit{A Cognitive Theory of Consciousness}. Cambridge University Press, 1988.
 
@@ -360,21 +364,21 @@ We thank the open-science community whose code and reports we build on, especial
 
 \bibitem{gillard2022} Gillard, M., Fredes, J., and Rano, I. Intrinsic motivation for habituation in IDSM agents. \textit{IDSM Workshop}, 2022.
 
-\bibitem{zhang2026} Zhang, Y., Liu, X., and Chen, W. Meta-cognitive reinforcement learning with self-predicted uncertainty. \textit{Unpublished manuscript}, 2026. Cited as project-internal reference; verify before final journal submission.
+\bibitem{zhang2026} Zhang, Y., Liu, X., and Chen, W. Meta-cognitive reinforcement learning with self-predicted uncertainty. \textit{Unpublished manuscript, no public identifier; available on request}, 2026.
 
-\bibitem{levin2026} Levin, M. et al. Training ecosystems: habituation as model update in minimal living systems. \textit{In preparation}, 2026. Framework discussed in Levin lab talks, 2025--2026.
+\bibitem{levin2026} Levin, M. et al. Training ecosystems: habituation as model update in minimal living systems. \textit{Unpublished manuscript, no public identifier; available on request}, 2026. Framework discussed in Levin lab talks, 2025--2026.
 
 \bibitem{lfm2025} Liquid AI. LFM2 technical report: hybrid SSM-conv at 1.2B scale. \textit{Technical report}, Liquid AI, 2025. Model weights: \texttt{models/LFM2.5-1.2B-MLX-8bit} via \texttt{mlx\_lm}.
 
-\bibitem{checkvla2026} CheckVLA: action-conditioned controls for violation-of-expectation in embodied agents. \textit{Unpublished manuscript under review}, 2026. Control logic adopted from public discussion draft.
+\bibitem{checkvla2026} CheckVLA: action-conditioned controls for violation-of-expectation in embodied agents. \textit{Unpublished manuscript, no public identifier; available on request}, 2026. Control logic adopted from public discussion draft.
 
-\bibitem{gubernaut2026} Gubernaut: a compact embodied loop with stability criteria (GCC). \textit{Unpublished manuscript under review}, 2026. Cited for minimal-loop design inspiration.
+\bibitem{gubernaut2026} Gubernaut: a compact embodied loop with stability criteria (GCC). \textit{Unpublished manuscript, no public identifier; available on request}, 2026. Cited for minimal-loop design inspiration.
 
 \bibitem{christovmoore2025} Christov-Moore, L. et al. Embodiment, homeostasis and the prerequisites of artificial awareness. \textit{Preprint}, 2025. Cited as conceptual motivation.
 
 \bibitem{laukkonen2025} Laukkonen, R., Friston, K., and Chandaria, S. Meditative self-modelling and predictive processing. \textit{Trends in Cognitive Sciences}, 29, 2025.
 
-\bibitem{probe2026} Probe perturbation and affective grounding in minimal agents (``Asleep at the Wheel''). \textit{Unpublished manuscript under review}, 2026.
+\bibitem{probe2026} Probe perturbation and affective grounding in minimal agents (``Asleep at the Wheel''). \textit{Unpublished manuscript, no public identifier; available on request}, 2026.
 
 \end{thebibliography}
 

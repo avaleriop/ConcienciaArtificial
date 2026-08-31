@@ -10,7 +10,7 @@ Metodologia: resuelve el problema del MLP de habi generalizandose globalmente,
 usando actualizaciones de peso ortogonales por canal y atencion dinamica.
 Ejecuta: python3 framework/organismo_final.py --steps 30000
 """
-import sys, math, random, time, argparse
+import sys, math, random, time, argparse, os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -26,6 +26,7 @@ N_SENSORIAL = 7
 RUIDO_BASE = 0.15
 RUIDO_NIEBLA = 0.60
 ORTHO_LAMBDA = 0.01
+EWC_LAMBDA = 5.0
 
 class Attention(nn.Module):
     """Modulo de atencion activa: modula precisión por canal sensorial."""
@@ -130,14 +131,36 @@ class CuerpoMundo:
         return self.estado()
 
 _LLM = None; _TOK = None
+# R16 mitigation: relative path with env-var fallback; mouth is optional (behaviour identical without it per H2b)
+_MODEL_CANDIDATES = [
+    os.environ.get("LLM_MODEL_PATH", ""),
+    os.environ.get("MODELS_PATH", ""),
+    "models/LFM2.5-1.2B-MLX-8bit",
+    os.path.join(os.path.dirname(__file__), "..", "models", "LFM2.5-1.2B-MLX-8bit"),
+]
+def _resolve_model_path():
+    for p in _MODEL_CANDIDATES:
+        if p and os.path.exists(p):
+            return p
+    return None
+
 def boca(texto):
     global _LLM, _TOK
     from mlx_lm import load, generate
     if _LLM is None:
-        _LLM, _TOK = load("/Users/adrianvalerio/Desktop/ConcienciaArtificial/models/LFM2.5-1.2B-MLX-8bit")
+        model_path = _resolve_model_path()
+        if model_path is None:
+            return "[boca model not found - run: python3 -c \"from huggingface_hub import snapshot_download; snapshot_download('LiquidAI/LFM2.5-1.2B-Instruct-MLX-8bit', local_dir='models/LFM2.5-1.2B-MLX-8bit')\"]"
+        try:
+            _LLM, _TOK = load(model_path)
+        except Exception as e:
+            return f"[boca load failed: {e}]"
     prompt = ("system\nEres el traductor lingüistico de un agente. Traduce su estado interno a UNA frase en primera persona, sin añadir nada.\n"
               f"user\n{texto}\nassistant\n")
-    return generate(_LLM, _TOK, prompt=prompt, max_tokens=28).strip()
+    try:
+        return generate(_LLM, _TOK, prompt=prompt, max_tokens=28).strip()
+    except Exception as e:
+        return f"[boca generate failed: {e}]"
 
 def entrenar(mundo, pred, phi, atten):
     X, Y = [], []
@@ -173,6 +196,29 @@ def entrenar(mundo, pred, phi, atten):
         idx = torch.randint(0, Xpt.shape[0], (64,))
         loss = (phi(Xpt[idx])-Ypt[idx]).pow(2).mean()
         opt2.zero_grad(); loss.backward(); opt2.step()
+    # --- R15 mitigation: train Attention (was previously never trained, gate was heuristic) ---
+    # Attention learns to map predictor input -> 7-channel weights that predict expected error sigma.
+    # We train atten so that its implied per-channel noise estimate correlates with actual eps.
+    # sigma_canal = RUIDO_BASE + (RUIDO_NIEBLA - RUIDO_BASE) * atten_weights  -> sigma_mean should predict eps
+    # This makes attention non-random and its gate (att_visual <0.35 etc) grounded in learned uncertainty.
+    opt_atten = torch.optim.Adam(atten.parameters(), lr=1e-3)
+    # Build dataset for atten: reuse Xt (13-dim) and Yp eps as proxy for sigma
+    # For atten training we need paired eps values; subsample Xp's base part (first 13 dims) and Yp
+    X_atten = torch.tensor(np.array([xp[:13] for xp in Xp]), dtype=torch.float32, device=DEVICE)
+    Y_atten = Ypt  # eps as target sigma
+    for _ in range(300):
+        idx = torch.randint(0, X_atten.shape[0], (64,))
+        aw = atten(X_atten[idx])  # [64,7] softmax
+        # Correct per-channel sigma formula (R15 sigma_canal bug fix reference)
+        sigma_canal_batch = RUIDO_BASE + (RUIDO_NIEBLA - RUIDO_BASE) * aw  # [64,7] vector
+        # Channel 6 has half noise (intero tactile special)
+        sigma_canal_batch[:, 6] = RUIDO_BASE * 0.5
+        sigma_mean = sigma_canal_batch.mean(dim=1, keepdim=True)  # [64,1]
+        loss_atten = (sigma_mean - Y_atten[idx]).pow(2).mean()
+        # Entropy regularizer to avoid collapse to one-hot
+        entropy = -(aw * torch.log(aw + 1e-8)).sum(dim=1).mean()
+        loss_atten = loss_atten - 0.01 * entropy
+        opt_atten.zero_grad(); loss_atten.backward(); opt_atten.step()
     return opt
 
 def main():
@@ -201,8 +247,10 @@ def main():
         with torch.no_grad():
             x_at = torch.tensor(entrada(s, 4), dtype=torch.float32, device=DEVICE).unsqueeze(0)
             atten_weights = atten(x_at).cpu().numpy()[0]
-        sigma_canal = RUIDO_BASE * (1.0 - atten_weights + RUIDO_NIEBLA/RUIDO_BASE * atten_weights[0])
-        sigma_prom = np.mean(sigma_canal)
+        # R15 sigma_canal bug fix: proper per-channel vector (7-dim)
+        sigma_canal = RUIDO_BASE + (RUIDO_NIEBLA - RUIDO_BASE) * atten_weights  # [7] vector
+        sigma_canal[6] = RUIDO_BASE * 0.5  # channel 6 special (tactile half noise)
+        sigma_prom = float(np.mean(sigma_canal))
         with torch.no_grad():
             xp = torch.tensor(entrada_phi(s, 4, np.mean(eps_hist) if eps_hist else 0.1, np.std(eps_hist) if eps_hist else 0.05, atten_weights), dtype=torch.float32, device=DEVICE).unsqueeze(0)
             sigma = float(phi(xp))
@@ -252,10 +300,18 @@ def main():
         for name, param in pred.named_parameters():
             if 'weight' in name:
                 ortho_penalty += (param**2).mean()
-        loss = base_loss + ORTHO_LAMBDA * ortho_penalty
+        # R15 EWC fix: fisher was computed but never used. Now add EWC term.
+        ewc_loss = 0.0
+        for n, p in pred.named_parameters():
+            if n in fisher and n in w_star:
+                ewc_loss = ewc_loss + (fisher[n] * (p - w_star[n]).pow(2)).sum()
+        loss = base_loss + (EWC_LAMBDA / 2) * ewc_loss + ORTHO_LAMBDA * ortho_penalty
         opt_pred.zero_grad(); loss.backward(); opt_pred.step()
         for k,p_ in pred.named_parameters():
             if p_.grad is not None: fisher[k] = 0.9*fisher[k]+0.1*p_.grad.detach()**2
+        # Periodically update w_star to track consolidated weights (prevents EWC anchoring to stale origin)
+        if t % 5000 == 0 and t > 0:
+            w_star = {n: p_.detach().clone() for n, p_ in pred.named_parameters()}
         if (z > 4.0 or (sigma > 0.25 and mundo.en_niebla())) and t - ultima_boca > 500:
             ultima_boca = t
             n_boca += 1
