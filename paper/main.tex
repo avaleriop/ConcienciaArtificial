@@ -145,7 +145,7 @@ We test three violation types. Motor: the body teleports by $+2$ in $x$ and $y$ 
 
 \textbf{Provenance of Table~\ref{tab:main}.} The reader should know exactly which system produced each row. The detection, habituation, and persistence statistics (rows 1--5) come from the earlier 30-seed grid-world battery (20$\times$20 grid, $\pm5$-cell teleport, predictor 13$\rightarrow$128$\rightarrow$128$\rightarrow$6), pre-registered as H1--H4 in the project registration notes. The $\Phi$ statistics (rows 8--11) come from that same battery, where $\Phi$ takes 15 inputs without attention. The continuous-physics organism described in Section~\ref{sec:methods} (13$\rightarrow$64$\rightarrow$6, $+2$ teleport, attention) is the v0.12 system used for the integrated 30k run (row 12). We state this provenance so that every row of Table~\ref{tab:main} is reproducible as-is; unifying all rows onto the v0.12 world is future work, not something we paper over.
 
-We pre-registered the full statistical protocol before running the 30-seed battery (see \texttt{48-preregistro-estadistica.md}). Primary hypotheses H1--H6, sample size $N=30$, test statistics (means, 95\% bootstrap CIs with 2,000 resamples, Cohen's $d$ for paired and unpaired comparisons), and pass/fail thresholds are fixed in that document; the control battery C1--C4c was specified in the rigor-controls document (\texttt{46}). No threshold was moved after seeing data. When H5 failed in its first protocol (which omitted the navigation policy), we registered H5-bis as a named correction before executing it. That discipline costs us a clean sweep, but it is the reason we trust the positives that remain.
+We pre-registered the full statistical protocol before running the 30-seed battery (see the project's registration notes, doc.~48). Primary hypotheses H1--H6, sample size $N=30$, test statistics (means, 95\% bootstrap CIs with 2,000 resamples, Cohen's $d$ for paired and unpaired comparisons), and pass/fail thresholds are fixed in that document; the control battery C1--C4c was specified in the rigor-controls document (\texttt{46}). No threshold was moved after seeing data. When H5 failed in its first protocol (which omitted the navigation policy), we registered H5-bis as a named correction before executing it. That discipline costs us a clean sweep, but it is the reason we trust the positives that remain.
 
 Predictor and $\Phi$ are pre-trained as described above, then updated online during the run with the same Adam optimizer and the EWC/orthogonal penalties. The Fisher is estimated online. Episodic buffer $E$ is appended only for violations or highly salient events.
 
@@ -173,6 +173,7 @@ Table~\ref{tab:main} collects every statistic on one page. We then walk through 
 \centering
 \caption{All outcomes. Sample sizes are stated in the table notes (detection/habituation/persistence/H5-bis/$\Phi$: $N=30$ seeds; C1--C4c: single-seed pilots). CI is 95\% bootstrap (2,000 resamples). $d$ is Cohen's $d$. The negative result (C3) is included.}
 \label{tab:main}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}llcc@{}}
 \toprule
 Claim & Measure & Result & Statistic \\
@@ -193,7 +194,7 @@ $\Phi$ functional & presence(noise)/presence(violation) & $0.13$ & $7.7\times$ s
 $\Phi$ causal & Fog time, $\Phi$-coupled vs uncoupled & $15.0\%$ vs $28.1\%$ & $d=-1.61$ \\
 Integrated 30k run & Fog time, foods outside fog & $0.0\%$ & 6 violations \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \\[0.6ex]
 {\small \textit{Notes:} Sample sizes: Detection, Habituation, Persistence, H5-bis, and the $\Phi$ tests (calibration, generalization, functional, causal) are $N=30$ seeds from the grid-world battery (predictor 13$\rightarrow$128$\rightarrow$128$\rightarrow$6, $\pm5$ teleport; see Methods). Controls C1--C4c are single-seed pilots (seed 7, \texttt{rigor\_controles.py}); we report them for mechanism isolation, not as 30-seed estimates. The integrated 30k run is a single continuous trajectory (6 violations, $N=1$); MiniGrid pilot in text is $N=5$. $z_{\mathrm{post}}/z_{\mathrm{motor}}$ = mean surprise after habituation divided by mean surprise on the first motor violation, both in the $N=30$ battery. That battery contains no episodic buffer in the prediction path at all; the buffer-erasure protocol is the single-run version (\texttt{m5\_cadena\_completa.py}), where erasing $E$ leaves behaviour intact because prediction never consulted $E$. The persistence claim is therefore: the trace lives in the weight delta, not in explicit memory. H5-bis CI rounded to 2 decimals; full bootstrap CI $[0.842,0.854]$, range $[0.81,0.88]$, in \texttt{results/h5bis.json}. [Schematic placeholder -- vector PDF for camera-ready].}
 \end{table}
