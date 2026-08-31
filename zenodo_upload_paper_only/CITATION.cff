@@ -19,7 +19,7 @@ keywords:
   - predictive coding
   - homeostatic reinforcement learning
   - continual learning
-abstract: "Tiny embodied agent (13->64->6 predictor + Phi 22->64->1 self-model + 13->7 active attention) in continuous 20x20 physics with fog zone (x>14, noise 0.15/0.60). Tests violation detection (z=20.6), habituation (86%, d=3.5), weight-level persistence (post/pre 0.02, EWC lambda=5, ortho 0.01), homeostasis (E 0.85, 100% in [0.5,1.2]), and Phi calibration (r=0.701, r_cross=0.730, d=-1.61). Runs on laptop MPS/CPU, no GPU."
+abstract: "Minimal embodied agent (13->64->6 predictor + Phi 22->64->1 self-model + 13->7 active attention) in continuous 20x20 physics with fog zone (x>14, noise 0.15/0.60). Tests violation detection (z=20.6), habituation (86%, d=3.5), weight-level persistence (post/pre 0.02, EWC lambda=5, ortho 0.01), homeostasis (E 0.85, 100% in [0.5,1.2]), and Phi calibration (r=0.701, r_cross=0.730, d=-1.61). Runs on a MacBook Pro (M4 Pro, Apple silicon) with MPS, no discrete GPU."
 preferred-citation:
   type: article
   title: "Learning Without Remembering: Habituation in Weights and a Self-Model That Acts in a Minimal Embodied Agent"

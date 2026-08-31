@@ -24,7 +24,7 @@ No external .bib needed. All 21 references are inline in thebibliography.
 
 ---
 
-## One-command reproduce (no GPU, no model required)
+## One-command reproduce (no discrete GPU, no model required)
 
 ```bash
 # 1. Install deps
@@ -80,9 +80,9 @@ If no model is found, `boca()` returns `"[boca model not found - run download sc
 - [x] Preprint line says "Intended submission to arXiv" (not "Submitted")
 - [x] Degenerate CI fixed: H5-bis CI [0.84,0.86] (full [0.842,0.854] in results/h5bis.json), not [0.85,0.85]
 - [x] Table footnote clarifies N=30 vs single-seed pilot (Integrated 30k is N=1; post/pre ratio defined; full CI in JSON)
-- [x] Abstract 179 words, varied, concrete ("single MacBook Air, no GPU, over coffee in San José")
-- [x] Code on single laptop, no GPU, runs in minutes; MPS or CPU
+- [x] Abstract 167 words, professional register, concrete statistics
+- [x] Code on single MacBook Pro, no discrete GPU, runs in minutes; MPS or CPU
 - [x] No "crucial/delve/tapestry" AI markers
 - [x] Braces balanced, compiles with pdflatex, no EPS
 
-**Tone:** Human Costa Rican English - warm, rigorous, "pura vida" humility, first-person plural, varied burstiness. Limitations stated upfront (Section 1.2 + Section 6). One negative result (C3) kept visible.
+**Tone:** Professional research English, first-person plural, no slang. Limitations stated upfront (Section 1.2 + Section 6). One negative result (C3) kept visible. Author affiliation (San José, Costa Rica) states origin without ornament.
