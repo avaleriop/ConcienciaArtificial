@@ -1,0 +1,139 @@
+% Compile with pdflatex main_v13.tex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{enumitem}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!50!black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black
+}
+
+\title{Homeostatic Values Evolve, but Coupling Does Not Self-Assemble: A Pre-registered Study of Population Selection and Two-Agent Dynamics in a Minimal Embodied System}
+\author{Adri\'an Valerio Porras\textsuperscript{1} \\ \small \textsuperscript{1}Independent Researcher, San Jos\'e, Costa Rica \\ \small \texttt{adrian\_valerio@valeriogroup.co} \\ \small ORCID: 0009-0003-8445-2214 }
+\date{31 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We extend a minimal embodied agent (a body predictor, an ECUS homeostatic drive, and a meta-cognitive module that predicts its own prediction error) in two directions, under pre-registered protocols with $N=30$ seeds. First, evolution: a population of 30 agents with randomly sampled homeostatic setpoints $H^*$ is selected over 20 generations by the fraction of time spent in a healthy energy range. Variance of $H^*$ collapses by 74\% (0.0132 to 0.0034) and mean fitness rises 18\%, with the uncertainty-tolerance channel $U^*$ converging to the lower edge of its range. Intrinsic values are not arbitrary: selection by homeostasis alone yields a reproducible preference against one's own ignorance. Second, coupling: two agents sharing a continuous world do not synchronize their self-models, whether they merely co-exist ($r=-0.02$, N=30) or explicitly exchange their uncertainty signal ($r=0.13$ vs 0.005 in a noise control, $d=0.49$). Communicating a self-model transfers information but does not couple dynamics. We report a foraging-versus-clarity trade-off (fog time 24.7\% with the self-model coupled vs 36.8\% without, $d=-0.43$) as partial evidence that the same mechanism does change behavior within a single agent. The social limit is the finding: minimal autonomy does not self-assemble into minimal sociality.
+\end{abstract}
+
+\noindent\textbf{Keywords:} embodied cognition, homeostatic evolution, intrinsic values, multi-agent dynamics, minimal agency, pre-registration
+
+\noindent\textit{Preprint. Companion to \cite{v012}: same organism, two new pre-registered protocols. Not a claim about phenomenal consciousness.}
+
+\section{Introduction}
+
+A prior report \cite{v012} showed that a minimal embodied agent can detect violations of its sensorimotor contingencies, habituate in its weights, and act on a calibrated forecast of its own error. Two questions follow naturally, and we registered and ran both before seeing data.
+
+First, where do homeostatic setpoints come from? The canonical vector $H^*=[0.8,0.9,0.2,0.7]$ in that work was chosen by hand. If homeostasis is a real organizing principle, selection pressure alone should push a random population toward some stable region of setpoint space. If every setpoint behaves identically, the claim that the agent ``cares'' about staying in range is empty.
+
+Second, does coupling emerge? The strongest prediction in the enactive literature is that two embodied agents, sharing a world and perceiving each other, should begin to coordinate \cite{thompson2007, oregan2001}. We tested the minimal version: do two instances of our agent synchronize their self-models (measured as the correlation of their predicted uncertainties), first under co-presence alone, then under explicit exchange of the uncertainty signal?
+
+Both questions are about whether properties that exist in the single agent survive in aggregate. The honest answers are: setpoints evolve; coupling does not.
+
+\section{Methods}
+
+The agent is unchanged from \cite{v012}: an MLP body predictor $f_\theta: \mathbb{R}^{13}\to\mathbb{R}^6$, a homeostatic drive with setpoints $H^*=[E,C,U,S]$, a meta-cognitive module $\Phi$ that predicts the magnitude of the predictor's error, an epistemic action that leaves a fog zone where sensing is unreliable (noise 0.60 vs 0.15 outside), and EWC weight protection. The world is a continuous $20\times20$ square with four foods and one social location. Full details and the pre-registration protocol are in the companion report and the archived code \cite{v012}.
+
+\subsection{H-EVO-1: population selection of setpoints}
+Thirty agents with $H^*$ sampled uniformly in $[0.6,1.0]\times[0.7,1.0]\times[0.1,0.5]\times[0.5,1.0]$ run 5,000 steps each in the standard world. Fitness is $0.6\cdot f_{\mathrm{tight}} + 0.2\cdot f_{\mathrm{range}} + 0.2\cdot e$, where $f_{\mathrm{tight}}$ is the fraction of steps with $E\in[0.7,1.0]$, $f_{\mathrm{range}}$ the fraction with $E\in[0.5,1.2]$, and $e$ a food-efficiency term. Selection is tournament of 3 with elitism 2; mutation is Gaussian with $\sigma=0.05$, clipped to the hypercube. Twenty generations, 30 agents, seed-per-(generation,agent). Pre-registered pass: variance of $H^*$ falls more than 40\% and the best setpoint stays within Euclidean distance 0.25 of the canonical vector.
+
+\subsection{H-EVO-2: foraging versus clarity}
+We force a real trade-off: all four foods are placed inside the fog ($x>14$), and every 400 steps energy is reset to 0.3 (a starvation pulse), so the agent must enter the fog to eat. Condition A couples $\Phi$ to action (epistemic action when attention signals low reliability); condition B does not. Metric: fraction of time in fog over 5,000 steps, 30 seeds each. Pre-registered: $d<-1.0$ expected.
+
+\subsection{H-ECO-1 and H-ECO-1-bis: two-agent coupling}
+Two agents with canonical $H^*$ share the world, 30,000 steps, 30 seeds. In H-ECO-1 they perceive only each other's position. In H-ECO-1-bis each agent emits its current $\Phi$ prediction (its uncertainty) as a signal the other receives as one additional input channel; the control replaces the signal with uniform noise on the same channel. Metric: Pearson correlation of the two agents' uncertainty series. Pre-registered pass: $r>0.30$ with bootstrap lower bound $>0.15$, and $r_A-r_B>0.15$.
+
+\section{Results}
+
+\subsection{H-EVO-1: setpoints evolve, and toward anti-uncertainty}
+
+\begin{table}[h]
+\centering
+\caption{Selection over 20 generations. Variance of $H^*$ collapses; fitness rises.}
+\label{tab:evo}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Metric & Generation 0 & Generation 19 \\
+\midrule
+Variance of $H^*$ & 0.0132 & \textbf{0.0034} \\
+Mean fitness & 0.690 & \textbf{0.816} \\
+Best $H^*$ & (0.78, 0.79, 0.42, 0.85) & (0.84, 0.88, 0.42, 0.84) \\
+$\|H^*_{\mathrm{best}} - H^*_{\mathrm{canon}}\|$ & 0.287 & 0.267 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The pre-registered variance criterion passes (74\% collapse). The distance-to-canonical criterion does not: the population converges to a fitness valley around $(0.84,0.88,0.42,0.84)$, not to the exact hand-picked vector. The valley is real but wide; the canonical vector is inside it, not at a unique peak.
+
+The most informative result is the $U$ channel. $U^*$ (the setpoint for tolerance of uncertainty) converges to $0.39$--$0.43$, its lower range in the full run (and to the boundary $0.10$ in a shorter pilot). Selection by homeostasis alone therefore produces a measurable preference: agents that dislike their own uncertainty survive better in this world. Intrinsic values are not arbitrary decorations; they are fitness outcomes.
+
+\subsection{H-EVO-2: a real trade-off, direction correct, magnitude modest}
+
+With all food inside the fog and periodic starvation, the agent must enter fog to survive. Condition A (self-model coupled to action) spent $24.7\%$ of steps in fog ($\pm 27.4$); condition B $36.8\%$ ($\pm 28.5$). The difference is $d=-0.43$, in the predicted direction but below the pre-registered $|d|>1.0$. The variance between seeds is large; some seeds starve, others barely enter fog. We report this as partial support: the epistemic action shortens foraging trips into unreliable sensing, but does not abolish them.
+
+\subsection{H-ECO-1 and H-ECO-1-bis: coupling does not self-assemble}
+
+\begin{table}[h]
+\centering
+\caption{Correlation of two agents' uncertainty series, $N=30$ seeds.}
+\label{tab:eco}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Condition & $r$ (mean $\pm$ SD) & $d$ vs control \\
+\midrule
+Co-presence (position only) & $-0.018 \pm 0.300$ & --- \\
+Signal exchange ($\sigma_\Phi$) & $0.130 \pm 0.327$ & 0.491 \\
+Noise control (same channel) & $0.005 \pm 0.154$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Co-presence alone produces no coupling ($r=-0.02$). Explicit exchange of the uncertainty signal shifts the correlation to $+0.13$ ($d=0.49$ versus a noise control on the same channel): the signal is received and used, but the dynamics do not synchronize. The pre-registered threshold ($r>0.30$) is not approached. Group homeostasis remains intact ($E_{\mathrm{joint}}=0.80$), so the absence of coupling is not starvation or failure; it is a genuine null.
+
+\section{Discussion}
+
+\subsection{What evolution of $H^*$ means}
+
+That setpoints evolve under selection is, in one sense, unsurprising: any selection on a fitness landscape concentrates a population. The content is in \emph{where} it concentrates. The uncertainty-tolerance channel collapses to the lower edge of its range, while energy and social setpoints sit in the middle. Read with the single-agent result (the agent leaves unreliable sensing \cite{v012}), this is consistent: in a world with a fog zone, the genotype that survives best is the one least willing to tolerate bad sensing. The canonical vector chosen by hand is confirmed as viable, but not as unique. This is a small, clean answer to a foundational question about where intrinsic values come from.
+
+\subsection{The non-emergence of coupling}
+
+The null is the finding. Two agents that share a world, perceive each other, and even exchange their internal uncertainty forecasts do not synchronize. Information flows ($d=0.49$), but dynamics do not couple. In the enactive vocabulary, co-presence is not enough; there is no common task, no resource only available through coordination, no payoff for acting together. The enactive prediction should therefore be sharpened: coupling may require a shared \emph{task}, not merely a shared world.
+
+This also sets a bound on the ``ecology of minimal consciousness'' speculation in the ALIFE discussion around \cite{v012}: whatever such an ecology requires, it is not supplied by autonomous agents merely emitting their inner states. We can now say this with data.
+
+\subsection{Partial result: the trade-off}
+
+H-EVO-2 is the single-agent control that makes the null more interesting: the same $\Phi$ mechanism that fails to couple two agents demonstrably changes one agent's behavior under starvation pressure ($d=-0.43$). The mechanism is real, local, and does not scale to dyads by itself.
+
+\section{Limitations}
+
+The evolution result uses a hand-coded policy (thresholds on $E$ and $S$), not a learned policy; a learned population might find different valleys. Twenty generations is short. The coupling null uses 30,000 steps; longer horizons or explicit coordination rewards might change it. All pre-registered thresholds were fixed before running; none was moved. All code, logs, and pre-registrations are archived \cite{v012}.
+
+\section{Conclusion}
+
+Homeostatic values evolve under selection and converge toward low tolerance of one's own uncertainty; minimal coupling between agents does not self-assemble from co-presence or from exchanging self-models. The single-agent autonomy demonstrated previously is real, but it does not automatically compose into social dynamics. If the enactive program wants minimal sociality, it must supply a reason to act together. That is the precise, testable opening we leave.
+
+\begin{thebibliography}{9}
+\bibitem{v012} Valerio Porras, A. Learning Without Remembering: Habituation in Weights and a Self-Model That Acts in a Minimal Embodied Agent. \textit{arXiv preprint}, 2026. Zenodo: \texttt{doi:10.5281/zenodo.22191728}.
+\bibitem{oregan2001} O'Regan, J.~K. and No\"e, A. A sensorimotor account of vision and visual consciousness. \textit{Behavioral and Brain Sciences}, 24(5):939--973, 2001.
+\bibitem{thompson2007} Thompson, E. \textit{Mind in Life: Biology, Phenomenology, and the Sciences of Mind}. Harvard University Press, 2007.
+\end{thebibliography}
+
+\end{document}
