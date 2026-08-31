@@ -61,3 +61,20 @@ Pre-registro `60-preregistro-v013bis-comunicacion.md:1` (tag `prereg-v0.13bis`).
 - rA−rB=0.125, justo por debajo del umbral 0.15.
 
 **Conclusión v0.13-bis (honesta):** ni co-presencia (H-ECO-1: r=−0.02) ni comunicación explícita del estado de incertidumbre (H-ECO-1-bis: r=0.13) producen una "ecología de conciencias mínimas" que se auto-ensamble. La comunicación ayuda (efecto medio) pero el acoplamiento completo no emerge. Esto es un **límite fundamental publicable** de estos agentes, no un fallo de implementación: el self-model puede emitirse y recibirse sin que se acoplen las dinámicas.
+
+---
+
+## Anexo 2 — Cuarteto de habituación (Thompson-Spencer) — N=30, métrica corregida
+
+**Protocolo:** habituar (12 violaciones) → interferencia (40 violaciones nuevas, con EWC λ) vs congelar (restaurar snapshot pre-hab) → probe de recuperación → re-habituación (savings). Referencia: z de la primera violación (z_original).
+
+| Condición | Recuperación (z_probe/z_original) | Savings (violaciones a 50%) |
+|---|---|---|
+| Interferencia (violaciones nuevas) | **0.48** | 1.9 |
+| Congelar (restaurar pesos pre-hab) | **0.64** | 1.9 |
+
+- **Recuperación espontánea ~48% tras interferencia:** la traza se desgasta parcialmente con violaciones nuevas, pero no se borra — consistente con habituación de tipo memoria, no mera deriva paramétrica.
+- **Congelar restaura 64%:** consistente con C4a — la traza vive en los pesos.
+- **Sweep EWC-λ {0, 0.5, 5, 50}: SIN efecto** (0.48/0.48/0.48/0.49). Hallazgo honesto: la interferencia con la MISMA tarea (mismas violaciones) es refuerzo, no olvido catastrófico — EWC no tiene nada que proteger. Para activar el dial λ se necesita interferencia con TAREA DISTINTA (violaciones opuestas o interoceptivas vs motoras) — diseño pendiente, lo sugiere el panel neuro.
+
+*Script: `framework/cuarteto_habituacion.py:1`. Resultados: `results/cuarteto_habituacion.json`. Sensibilización: con baseline ruidosa, requiere rediseño (comparar ε crudo contra baseline congelada, no z).*
