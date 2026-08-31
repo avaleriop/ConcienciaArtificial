@@ -130,6 +130,13 @@ def run_joint(seed, steps=30000):
             elif ag.H[3]>0.8: aa=5
             else: aa=random.randrange(4)
             ag.step(a_idx=aa)
+        dist12=math.hypot(a1.pos[0]-a2.pos[0], a1.pos[1]-a2.pos[1])
+        if dist12<2.0:
+            a1.H[3]=min(1.5, a1.H[3]+0.02); a2.H[3]=min(1.5, a2.H[3]+0.02)
+        for ag,other in [(a1,a2),(a2,a1)]:
+            if any(math.hypot(ag.pos[0]-fx,ag.pos[1]-fy)<0.5 for fx,fy in FOODS):
+                if math.hypot(ag.pos[0]-other.pos[0],ag.pos[1]-other.pos[1])<3.0:
+                    other.H[0]=min(1.5, other.H[0]+0.03)
         # update eps hist
         for ag in [a1,a2]:
             with torch.no_grad():

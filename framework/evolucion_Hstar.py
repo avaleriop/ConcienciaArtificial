@@ -12,8 +12,8 @@ random.seed(7); np.random.seed(7); torch.manual_seed(7)
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 WORLD_SIZE = 20.0
 NIEBLA_X = 14.0
-FOODS = [(3.0,3.0),(3.0,16.0),(10.0,3.0),(10.0,16.0)]
-FOODS_FOG = [(16.0,3.0),(16.0,16.0),(10.0,3.0),(10.0,16.0)]
+FOODS = [(3.0,3.0),(10.0,3.0)]
+FOODS_FOG = [(16.0,3.0),(16.0,16.0),(17.0,10.0),(18.0,8.0)]
 SOCIAL = (18.0, 18.0)
 RUIDO_BASE = 0.15
 RUIDO_NIEBLA = 0.60
@@ -80,7 +80,7 @@ class CuerpoMundo:
         dH=-0.02*(self.H-self.h_star)
         if niebla: dH[0]-=0.03; dH[2]+=0.01
         else: dH[2]-=0.01
-        if any(math.hypot(self.pos[0]-fx,self.pos[1]-fy)<0.5 for fx,fy in self.foods): dH[0]+=0.2
+        if any(math.hypot(self.pos[0]-fx,self.pos[1]-fy)<0.5 for fx,fy in self.foods): dH[0]+=0.12
         for ch in range(7):
             r=ruido_canal(ch, niebla)
             if ch<4: dH[ch]+=r*0.1
@@ -126,9 +126,10 @@ def evaluate_hstar(h_star, foods, seed, steps=5000):
         with torch.no_grad(): eps=float((pred(x)-y).pow(2).mean().sqrt())
         eps_hist.append(eps)
     frac=np.mean([(0.5<=e<=1.2) for e in e_hist])
+    frac_tight=np.mean([(0.7<=e<=1.0) for e in e_hist])
     steps_per_food=steps/max(1,food_eaten)
-    fitness=0.7*frac + 0.3*(1 - steps_per_food/steps)
-    return fitness, frac, food_eaten, float(np.mean(e_hist))
+    fitness=0.6*frac_tight + 0.2*frac + 0.2*(1 - steps_per_food/steps)
+    return fitness, frac, frac_tight, food_eaten, float(np.mean(e_hist))
 
 def mutate(h):
     child=list(h)
@@ -156,16 +157,16 @@ def main():
         fits=[]
         for idx,h in enumerate(pop):
             seed=7000+g*100+idx
-            f,frac,food,mean_e=evaluate_hstar(h, FOODS, seed, steps=args.steps)
-            fits.append((f,h,frac,food,mean_e))
+            f,frac,frac_tight,food,mean_e=evaluate_hstar(h, FOODS, seed, steps=args.steps)
+            fits.append((f,h,frac,frac_tight,food,mean_e))
         fits.sort(key=lambda x: -x[0])
         best=fits[0]; mean_f=np.mean([x[0] for x in fits])
         # variance of H*
         hs=np.array([x[1] for x in fits])
         var=np.mean(np.var(hs,axis=0))
         dist=np.linalg.norm(np.array(best[1])-H_CANON)
-        print(f" gen {g:02d}: best {best[1]} fit={best[0]:.3f} frac={best[2]:.2f} mean_f={mean_f:.3f} var={var:.4f} dist_canon={dist:.3f}")
-        history.append({"gen":g,"best":list(best[1]),"best_fit":float(best[0]),"mean_fit":float(mean_f),"var":float(var),"dist_canon":float(dist),"pop": [list(x[1]) for x in fits]})
+        print(f" gen {g:02d}: best {best[1]} fit={best[0]:.3f} frac={best[2]:.2f} tight={best[3]:.2f} mean_f={mean_f:.3f} var={var:.4f} dist_canon={dist:.3f}")
+        history.append({"gen":g,"best":list(best[1]),"best_fit":float(best[0]),"mean_fit":float(mean_f),"var":float(var),"dist_canon":float(dist),"frac":float(best[2]),"frac_tight":float(best[3]),"pop": [list(x[1]) for x in fits]})
         # selection
         new_pop=[fits[0][1], fits[1][1]]
         while len(new_pop)<args.pop:
@@ -201,6 +202,8 @@ def main():
             fog_time=0
             eps_hist=[]
             for t in range(5000):
+                if t % 400 == 399:
+                    mundo.H[0] = 0.3
                 sa=mundo.estado()
                 x=torch.tensor(entrada(sa,4),dtype=torch.float32,device=DEVICE).unsqueeze(0)
                 with torch.no_grad():
