@@ -81,7 +81,7 @@ def fisica_continuo(pos, a, en_niebla):
 def ruido_canal(canal_idx, en_niebla):
     base = RUIDO_BASE
     if en_niebla and canal_idx in (0,1,2,3,4):
-        base *= RUIDO_NIEBLA
+        base = RUIDO_NIEBLA
     if canal_idx == 6: base = RUIDO_BASE * 0.5
     return np.random.randn() * base
 
@@ -119,7 +119,7 @@ class CuerpoMundo:
             dH[0] -= 0.03; dH[2] += 0.01
         else:
             dH[2] -= 0.01
-        if tuple(self.pos) in [tuple(f) for f in self.foods]:
+        if any(math.hypot(self.pos[0]-fx, self.pos[1]-fy) < 0.5 for fx, fy in self.foods):
             dH[0] += 0.2
         for ch in range(7):
             r = ruido_canal(ch, en_niebla)
@@ -279,6 +279,8 @@ def main():
                          min(WORLD_SIZE, max(0.0, mundo.pos[1] + 2.0))]
             s_despues = mundo.estado()
             E_mem.append((t, "violacion", 1.2))
+            if len(E_mem) > 5000:
+                E_mem.pop(0)
         else:
             s_despues = mundo.step(a_idx=a_idx)
         with torch.no_grad():

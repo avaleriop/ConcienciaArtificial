@@ -74,7 +74,7 @@ If no model is found, `boca()` returns `"[boca model not found - run download sc
 - [x] No year 2026 hallucination (Tononi fixed to 2016; Burda 2019 (arXiv 2018) and Man 2019 (preprint 2016) made consistent)
 - [x] All stats from real runs (z=20.6 CI [16.0,25.5], d=3.5, r=0.701, r_cross=0.730, d=-1.61 etc from framework/*.py)
 - [x] Reproducibility statement with exact commands (Section Reproducibility Statement + this file)
-- [x] 21 real references (Chalmers, O'Regan, Thompson, Friston, Tononi 2016, Baars, Dehaene, Kirkpatrick, Pathak, Burda 2019, Keramati, Man 2019, Gillard, plus 5 project-internal marked unpublished no public identifier)
+- [x] 20 references, all real and verified: Chalmers, O'Regan, Thompson, Friston, Tononi 2016, Baars, Dehaene, Kirkpatrick, Pathak, Burda, Keramati, Man, Gillard, plus 5 arXiv-verified (Levin Training Ecosystems 2605.30109, CheckVLA 2607.26789, Gubernaut 2607.24339, Christov-Moore 2510.07117, Asleep at the Wheel 2608.01336), Laukkonen Neubiorev 176:106296, LFM2 report
 - [x] AI assistance disclosure added (LLM light copy-editing/LaTeX; no AI content in Results/tables) per arXiv 2023 policy and CogSci 2026
 - [x] Affiliation with email + ORCID + Independent Researcher line (placeholder per template)
 - [x] Preprint line says "Intended submission to arXiv" (not "Submitted")
