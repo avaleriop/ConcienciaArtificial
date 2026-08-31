@@ -30,7 +30,7 @@ preferred-citation:
   year: 2026
   month: 8
   url: "https://arxiv.org/abs/xxxx.xxxxx"
-  doi: "10.0000/placeholder"
+  doi: 10.5281/zenodo.22191728
 references:
   - type: article
     title: "Overcoming catastrophic forgetting in neural networks"
