@@ -1,6 +1,6 @@
-# Paper - Compile & Reproduce Instructions
+# Paper v0.13 - Compile & Reproduce Instructions (peer-review revision, supersedes v0.12)
 
-**Main file:** `paper/main.tex` (~385 lines, ~10 pages, article class for arXiv)
+**Main file:** `paper/main.tex` (v0.13, ~400 lines, article class for arXiv) — also archived here as `Learning_Without_Remembering_v0.13.tex`
 
 **Compile:**
 ```bash
@@ -44,6 +44,7 @@ python3 framework/organismo_final.py --steps 200
 ```
 
 All stats in Table 1 come from `framework/*.py` and JSON logs in `results/*.json` (`estadistica_fase2.json`, `h5bis.json`, `h6_phi.json`, `benchmark_doorkey.json`).
+Table 1 v0.13 splits grid battery (N=30, 13->128->128->6, +-5) vs continuous v0.12 long run (N=1, 13->64->6, +2, attention); C3 is renamed stimulus generalization (fail 1.1 vs 0.9), Phi causal d=-1.61 is flagged as attention-confounded (requires 4-arm test), presence is offline diagnostic, EWC/ortho are non-load-bearing for same-task interference. See paper Sec. 1.2 and Sec. 6 and `63-preregistro-v014-rankin-phi-factorizado.md` for the pre-registered Rankin battery + factored predictor + per-channel Phi + SVD.
 
 ---
 
@@ -68,21 +69,22 @@ If no model is found, `boca()` returns `"[boca model not found - run download sc
 
 ---
 
-## Anti-rejection checklist before arXiv upload
+## Anti-rejection checklist before arXiv upload (v0.13)
 
+- [x] Peer-review fixes applied: C3 renamed stimulus generalization (not dishabituation), Table 1 split into grid battery vs continuous v0.12, Phi flagged as scalar MSE offline diagnostic with attention-gate confound, EWC flagged as non-load-bearing, MiniGrid removed from Table
 - [x] No hallucinated arXiv IDs (future 26xx IDs removed; 5 unpublished refs marked "Unpublished manuscript, no public identifier; available on request")
 - [x] No year 2026 hallucination (Tononi fixed to 2016; Burda 2019 (arXiv 2018) and Man 2019 (preprint 2016) made consistent)
-- [x] All stats from real runs (z=20.6 CI [16.0,25.5], d=3.5, r=0.701, r_cross=0.730, d=-1.61 etc from framework/*.py)
-- [x] Reproducibility statement with exact commands (Section Reproducibility Statement + this file)
-- [x] 20 references, all real and verified: Chalmers, O'Regan, Thompson, Friston, Tononi 2016, Baars, Dehaene, Kirkpatrick, Pathak, Burda, Keramati, Man, Gillard, plus 5 arXiv-verified (Levin Training Ecosystems 2605.30109, CheckVLA 2607.26789, Gubernaut 2607.24339, Christov-Moore 2510.07117, Asleep at the Wheel 2608.01336), Laukkonen Neubiorev 176:106296, LFM2 report
+- [x] All stats from real runs (z=20.6 CI [16.0,25.5], d=3.5, r=0.701, r_cross=0.730, d=-1.61 flagged, d=-0.43 with random gate, recovery 0.48 lam-invariant etc from framework/*.py)
+- [x] Reproducibility statement with exact commands (Section Reproducibility Statement + this file) plus v0.14 prereg `63-preregistro-v014-rankin-phi-factorizado.md`
+- [x] 22 references, all real and verified: Chalmers, O'Regan, Thompson 2007, Friston, Tononi 2016, Baars, Dehaene, Kirkpatrick, Pathak, Burda, Keramati, Man, Gillard, plus 5 arXiv-verified (Levin 2605.30109, CheckVLA 2607.26789, Gubernaut 2607.24339, Christov-Moore 2510.07117, Asleep at the Wheel 2608.01336), Laukkonen 2025, Thompson & Spencer 1966, Rankin et al. 2009, LFM2 report
 - [x] AI assistance disclosure added (LLM light copy-editing/LaTeX; no AI content in Results/tables) per arXiv 2023 policy and CogSci 2026
 - [x] Affiliation with email + ORCID + Independent Researcher line (placeholder per template)
-- [x] Preprint line says "Intended submission to arXiv" (not "Submitted")
-- [x] Degenerate CI fixed: H5-bis CI [0.84,0.86] (full [0.842,0.854] in results/h5bis.json), not [0.85,0.85]
-- [x] Table footnote clarifies N=30 vs single-seed pilot (Integrated 30k is N=1; post/pre ratio defined; full CI in JSON)
-- [x] Abstract 167 words, professional register, concrete statistics
+- [x] Preprint line says "Intended submission to arXiv" (not "Submitted"); v0.13 date 1 Sep 2026
+- [x] Degenerate CI fixed: H5-bis CI [0.84,0.85] (full [0.842,0.854] in results/h5bis.json), not [0.85,0.85]
+- [x] Table footnote splits N=30 vs single-seed pilot + 4-arm confound note; MiniGrid only in Limitations as pilot where RND wins
+- [x] Abstract rewritten to frame "learning without distinguishing" and provenance split
 - [x] Code on single MacBook Pro, no discrete GPU, runs in minutes; MPS or CPU
 - [x] No "crucial/delve/tapestry" AI markers
 - [x] Braces balanced, compiles with pdflatex, no EPS
 
-**Tone:** Professional research English, first-person plural, no slang. Limitations stated upfront (Section 1.2 + Section 6). One negative result (C3) kept visible. Author affiliation (San José, Costa Rica) states origin without ornament.
+**Tone:** Professional research English, first-person plural, no slang. Limitations stated upfront (Section 1.2 + Section 6, 7 points). Negative result (C3) renamed and kept visible. v0.14 Rankin battery pre-registered.

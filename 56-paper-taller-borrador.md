@@ -1,11 +1,11 @@
-# 56 - Paper de Taller (Borrador) - IWAI / ALIFE / CogSci Late-Breaking
+# 56 - Paper de Taller (Borrador) - IWAI / ALIFE / CogSci Late-Breaking — v0.13 (revisado 2026-09-01, supersede v0.12)
 
-> **Estado:** borrador listo para envío cuando el usuario decida
-> **Título propuesto:** Habituation as Model Update in a Minimal Embodied Agent: Controls, Dishabituation Limits, and Weight Persistence Without Explicit Memory
+> **Estado:** v0.13 peer-review revision — lista para Zenodo v0.13 y arXiv. Título sin cambios pero claim corregido a "learning without distinguishing".
+> **Título propuesto:** Habituation as Model Update in a Minimal Embodied Agent: Controls, Stimulus Generalization Limits, and Weight Persistence Without Explicit Memory
 
-## Abstract
+## Abstract (v0.13)
 
-We present a minimal embodied agent — a continuous loop of an action-conditioned body predictor, a homeostatic drive (E,C,U,S), episodic memory, and a meta-cognitive module (Φ) that predicts its own prediction error — running without vision or audition, on body channels only. In 30-seed pre-registered experiments: (1) the agent detects violations of its sensorimotor contingencies (z=20.6, 95% CI [16.0, 25.5]); (2) it habituates to repeated violations by learning (86% reduction, Cohen's d=3.5), and this habituation lives in the weight delta — restoring pre-habituation weights restores surprise (z=67.5), freezing weights prevents habituation, and the learned trace persists after erasing explicit episodic memory (post/pre ratio 0.02); (3) an action-shuffled control (7× weaker) and observation-only control (8.5× weaker) establish that detection is genuinely action-conditioned; (4) the meta-cognitive module Φ is calibrated (Spearman r=0.701 between predicted and actual error), generalizes out-of-distribution (r_cross=0.730), and is causally efficacious: an agent that knows its senses are unreliable leaves the unreliable zone (15.0% vs 28.1% time, d=-1.61). We discuss one negative result — habituation generalizes across teleport direction, so fine-grained stimulus specificity is not demonstrated — and frame the system within habituation-as-model-update (Levin lab) rather than as a claim about phenomenal consciousness.
+We present a minimal embodied agent — a continuous loop of an action-conditioned body predictor, a homeostatic drive (E,C,U,S), episodic memory, and a meta-cognitive module (Φ) that predicts its own prediction error — running without vision or audition, on body channels only. Grid-world battery (N=30, 13→128→128→6, ±5 teleport): (1) detection z=20.6 CI[16.0,25.5]; (2) habituation 86% d=3.5 lives in weight delta (restore pre-W → z=67.5, freeze → 137.2, post/pre 0.02); (3) action-shuffled 7× and obs-only 8.5× weaker (C1/C2 single-seed pilots). Negative result renamed (C3): stimulus generalization — habituating to (+5,+5) also habituates (−5,−5) (1.1 vs 0.9) → habituation of displacement magnitude, not vector, i.e. learning without distinguishing (Rankin 2009 char. 7 not met; true dishabituation char. 8 and recovery not tested — pre-registered v0.14). (4) Φ scalar MSE to |ε| (15→64→1) is calibrated r=0.701 and generalizes r_cross=0.730; offline presence ratio 0.13 (7.7×). Isolated causal battery: Φ-coupled vs uncoupled 15.0% vs 28.1% fog time d=-1.61 — flagged as confounded with attention gate (att_vis<0.35; random gate reproduces d=-0.43 in continuous v0.12). Continuous v0.12 run (13→64→6, +2, attention 13→7, Φ 22→64→1) closes the loop over 30k steps (0% fog, food outside fog). EWC λ=5 + ortho 0.01 is non-load-bearing for same-task interference (recovery 0.48 invariant); trace likely low-rank. Framed as habituation-as-model-update (Levin lab), not phenomenal consciousness. Pre-registered Rankin battery + factored predictor + per-channel Φ + 4-arm test + ΔW SVD as v0.14.
 
 ## 1. Introduction
 
@@ -28,41 +28,47 @@ The claim we test: a minimal agent built from an action-conditioned forward mode
 Motor (body teleports 5 cells), interoceptive (eating lowers energy — inverted causality), tactile (wall pass-through).
 
 ### 2.4 Controls and statistics (pre-registered before running)
-C1 action-shuffled, C2 observation-only, C3 dishabituation, C4a weight-restore, C4b weight-freeze, C4c untrained. N=30 seeds, 95% CI (bootstrap 2000), Cohen's d.
+C1 action-shuffled, C2 observation-only, **C3 stimulus generalization (renamed; misnamed dishabituation in v0.12)**, C4a weight-restore, C4b weight-freeze, C4c untrained. Grid battery N=30 for detection/habituation/persistence/H5-bis/Φ; C1-C4c single-seed pilots (seed 7). 95% CI (bootstrap 2000), Cohen's d. Rankin char. 7/8/10 and 4-arm Φ vs attention pre-registered as v0.14.
 
-## 3. Results
+## 3. Results (v0.13 — grid battery vs continuous v0.12 split)
 
-| Claim | Result | Statistic |
-| :--- | :--- | :--- |
-| Detection | z=20.6 | CI [16.0, 25.5], N=30 |
-| Action-conditioning (C1) | 132.7 vs 18.1 | 7× |
-| Action adds info (C2) | 132.7 vs 15.5 | 8.5× |
-| Habituation (H3) | 3.8→0.5 | 86%, d=3.5 |
-| Weight persistence (H4) | post/pre 0.02 | N=30 |
-| Habituation in W (C4a) | z returns to 67.5 | restore pre-W |
-| Requires learning (C4b) | z stays 137.2 | frozen |
-| Requires physics (C4c) | z=0.3 | untrained |
-| Homeostasis with policy (H5-bis) | E=0.85 | 100% seeds in range |
-| Φ calibration | r=0.701 | Spearman |
-| Φ generalization (r_cross) | 0.730 | out-of-distribution |
-| Φ functional (noise vs surprise) | ratio 0.13 | 7.7× separation |
-| Φ causal efficacy | 15.0% vs 28.1% fog time | d=-1.61 |
-| Integrated 30k-step run | fog time 1.9%; mouth reports Φ state | qualitative |
+| Claim | Result | Statistic | System |
+| :--- | :--- | :--- | :--- |
+| Detection | z=20.6 | CI [16.0, 25.5], N=30 | grid |
+| Action-conditioning (C1)† | 132.7 vs 18.1 | 7× | grid pil. |
+| Action adds info (C2)† | 132.7 vs 15.5 | 8.5× | grid pil. |
+| Habituation (H3) | 3.8→0.5 | 86%, d=3.5 | grid |
+| Weight persistence (H4) | post/pre 0.02 | N=30 | grid |
+| Habituation in W (C4a)† | z returns to 67.5 | restore pre-W | grid pil. |
+| Requires learning (C4b)† | z stays 137.2 | frozen | grid pil. |
+| Requires physics (C4c)† | z=0.3 | untrained | grid pil. |
+| **C3 Generalization†** | **1.1 vs 0.9** | **fail (no specificity)** | **grid pil.** |
+| Homeostasis with policy (H5-bis) | E=0.85 | 100% seeds, CI[0.84,0.85] | grid |
+| Φ calibration (scalar MSE) | r=0.701 | Spearman | grid |
+| Φ generalization (r_cross) | 0.730 | out-of-distribution | grid |
+| Φ functional (offline) | ratio 0.13 | 7.7× separation | grid |
+| Φ causal isolated‡ | 15.0% vs 28.1% fog | d=-1.61 | grid iso. |
+| Integrated 30k-step run | fog time 0.0%; mouth reports Φ state | 6 viol. | **continuous v0.12** |
 
-**Negative result (reported):** C3 dishabituation — habituating to teleport(+5,+5) also habituates teleport(−5,−5) (z 1.1 vs 0.9). Habituation generalizes at the level of "large displacement", not the specific vector. Fine-grained stimulus specificity is NOT demonstrated.
+† single-seed pilot, ‡ attention not modelled — in continuous organism random gate reproduces d=-0.43, so gate is confound.
+
+**Negative result (kept, renamed):** C3 stimulus generalization — habituating to (+5,+5) also habituates (−5,−5) (1.1 vs 0.9). Habituation is of displacement magnitude, not vector — "learning without distinguishing". Rankin specificity (7), true dishabituation (8) and recovery not tested.
 
 ## 4. Discussion
 
-The agent's habituation is model update (Levin "Training Ecosystems" 2026): the trace lives in weight deltas, requires learning, and persists without explicit memory — but only at the granularity of violation type, not instance. The Φ module turns raw prediction error into "expected unreliability" — a calibrated, generalizing, behaviorally efficacious self-model (d=−1.61). Per the discriminating rule (what could a conventional predictor not do?): a conventional forward model has ε; it does not predict its own ε, and its uncertainty does not change action. Our agent does both.
+The agent's habituation is model update (Levin "Training Ecosystems" 2026): the trace lives in weight deltas (ΔW), requires learning, and persists without explicit memory — but only as a coarse, likely low-rank "ignore large L2" direction, not a vector concept. Factored predictor + ΔW SVD predicted. The Φ module (scalar MSE to |ε|, 15→64→1) is calibrated and generalizes, and is efficacious in the isolated battery (d=-1.61, offline presence 7.7×), but its effect is confounded with the attention gate att_vis<0.35 in the continuous organism (random gate → same d=-0.43). Per discriminating rule (what could a conventional predictor not do?): a conventional forward model has ε; it does not predict its own ε. Our Φ does (calibrated), but whether its precision (per-channel log-variance) drives action online requires the 4-arm test (v0.14). We keep that distinction explicit.
 
-We do NOT claim phenomenal consciousness. We claim the architectural machinery — sensorimotor-contingency detection, habituation-as-model-update, meta-cognitive calibration, and causal efficacy of the self-model — is demonstrated in a minimal embodied system at zero cost (single laptop, no GPU).
+We do NOT claim phenomenal consciousness. We claim the architectural machinery — sensorimotor-contingency detection, habituation-as-model-update at coarse granularity, meta-cognitive calibration (with offline presence), and a confounded-but-isolated causal efficacy — is demonstrated at zero cost (single laptop, no GPU) and bounded by a precise negative result.
 
-## 5. Limitations
+## 5. Limitations (v0.13 — 7 points)
 
-- Toy scale (MLP, grid world); no claim transfers to biological scale.
-- Fine-grained stimulus specificity not shown (C3).
-- LLM mouth is a translator of constructed prompts; the "reportability" is a translation of internal state, not free recall.
-- Benchmark vs ICM/RND on MiniGrid Empty-8x8 is preliminary (N=5, vanilla REINFORCE): organism 1.8% > ICM 0.6% > random 0.4%, highest coverage — under-powered.
+- Toy scale (MLP, grid + continuous 20×20); no transfer to biology; Table splits two systems.
+- No stimulus specificity: C3 generalization 1.1 vs 0.9; no dishabituation (Rankin 8) nor ISI recovery; H_A = magnitude not contingency, Rankin battery pre-registered.
+- Φ is scalar MSE proxy, not per-channel log-variance; presence offline, not online drive; attention gate confound (requires 4-arm A/B/C/D).
+- EWC λ=5 + ortho 0.01 non-load-bearing for same-task; trace likely low-rank (ΔW SVD + factored predictor pending).
+- LLM mouth is translator of constructed prompts, not free recall.
+- Benchmark MiniGrid N=5 (RND 2.8% beats 1.8%) — pilot removed from Table, under-powered.
+- Other gaps: no vision/audition by design, intero/tactile only single-seed, no Rankin S1-S5/isodirectional controls yet.
 
 ## 6. References (key)
 

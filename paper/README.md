@@ -1,6 +1,6 @@
-# Paper - Compile & Reproduce Instructions
+# Paper v0.13 - Compile & Reproduce Instructions (peer-review revision, 1 Sep 2026)
 
-**Main file:** `paper/main.tex` (~385 lines, ~10 pages, article class for arXiv)
+**Main file:** `paper/main.tex` (~410 lines, article class for arXiv) — v0.13 supersedes v0.12
 
 **Compile:**
 ```bash
@@ -43,7 +43,7 @@ python3 framework/h6_phi_causal.py            # Phi causal fog 15.0% vs 28.1% d=
 python3 framework/organismo_final.py --steps 200
 ```
 
-All stats in Table 1 come from `framework/*.py` and JSON logs in `results/*.json` (`estadistica_fase2.json`, `h5bis.json`, `h6_phi.json`, `benchmark_doorkey.json`).
+All stats in Table 1 come from `framework/*.py` and JSON logs in `results/*.json` (`estadistica_fase2.json`, `h5bis.json`, `h6_phi.json`, `benchmark_doorkey.json`, `cuarteto_habituacion.json` 0.48 lam-invariant).
 
 ---
 
@@ -68,21 +68,19 @@ If no model is found, `boca()` returns `"[boca model not found - run download sc
 
 ---
 
-## Anti-rejection checklist before arXiv upload
+## Anti-rejection checklist before arXiv upload (v0.13)
 
-- [x] No hallucinated arXiv IDs (future 26xx IDs removed; 5 unpublished refs marked "Unpublished manuscript, no public identifier; available on request")
-- [x] No year 2026 hallucination (Tononi fixed to 2016; Burda 2019 (arXiv 2018) and Man 2019 (preprint 2016) made consistent)
-- [x] All stats from real runs (z=20.6 CI [16.0,25.5], d=3.5, r=0.701, r_cross=0.730, d=-1.61 etc from framework/*.py)
-- [x] Reproducibility statement with exact commands (Section Reproducibility Statement + this file)
-- [x] 20 references, all real and verified: Chalmers, O'Regan, Thompson, Friston, Tononi 2016, Baars, Dehaene, Kirkpatrick, Pathak, Burda, Keramati, Man, Gillard, plus 5 arXiv-verified (Levin Training Ecosystems 2605.30109, CheckVLA 2607.26789, Gubernaut 2607.24339, Christov-Moore 2510.07117, Asleep at the Wheel 2608.01336), Laukkonen Neubiorev 176:106296, LFM2 report
-- [x] AI assistance disclosure added (LLM light copy-editing/LaTeX; no AI content in Results/tables) per arXiv 2023 policy and CogSci 2026
-- [x] Affiliation with email + ORCID + Independent Researcher line (placeholder per template)
-- [x] Preprint line says "Intended submission to arXiv" (not "Submitted")
-- [x] Degenerate CI fixed: H5-bis CI [0.84,0.86] (full [0.842,0.854] in results/h5bis.json), not [0.85,0.85]
-- [x] Table footnote clarifies N=30 vs single-seed pilot (Integrated 30k is N=1; post/pre ratio defined; full CI in JSON)
-- [x] Abstract 167 words, professional register, concrete statistics
-- [x] Code on single MacBook Pro, no discrete GPU, runs in minutes; MPS or CPU
-- [x] No "crucial/delve/tapestry" AI markers
-- [x] Braces balanced, compiles with pdflatex, no EPS
+- [x] Peer-review fixes: C3 renamed, Table 1 split, Phi offline + attention confound flagged, EWC non-load-bearing, MiniGrid removed from Table
+- [x] No hallucinated arXiv IDs; 5 unpublished refs marked "Unpublished manuscript"
+- [x] No year 2026 hallucination (Tononi 2016; Burda 2019; Man 2019)
+- [x] All stats from real runs (z=20.6 CI[16.0,25.5], d=3.5, r=0.701, r_cross=0.730, d=-1.61 flagged, d=-0.43 random gate, recovery 0.48 lam-invariant)
+- [x] Reproducibility statement + prereg `63-preregistro-v014-rankin-phi-factorizado.md` (Rankin battery + factored predictor + per-channel Phi + 4-arm + SVD)
+- [x] 22 refs verified: previous 20 + Thompson & Spencer 1966 + Rankin et al. 2009 Neurobiol Learn Mem added
+- [x] AI assistance disclosure added
+- [x] Affiliation + ORCID, preprint line "Intended submission", date 1 Sep 2026 v0.13
+- [x] H5-bis CI [0.84,0.85] (full [0.842,0.854] in results/h5bis.json)
+- [x] Table footnote: N=30 vs pilots + confound note; MiniGrid only in Limitations (RND wins)
+- [x] Abstract rewritten: learning without distinguishing, provenance split
+- [x] M4 Pro MPS, no GPU, minutes; no crucial/delve, braces balanced, no EPS
 
-**Tone:** Professional research English, first-person plural, no slang. Limitations stated upfront (Section 1.2 + Section 6). One negative result (C3) kept visible. Author affiliation (San José, Costa Rica) states origin without ornament.
+**Tone:** Professional, first-person plural. Limitations up front (Sec 1.2 + Sec 6, 7 points). Negative result kept visible. Pre-registered next step.

@@ -1,5 +1,27 @@
 # CHANGELOG - Conciencia Artificial
 
+## [v0.13] - 2026-09-01 15:00 UTC - Peer-Review Revision (rigurosa, sin nuevos runs)
+
+### Corregido (peer review Rankin/Thompson-Spencer / Friston / continual / diseño)
+- `paper/main.tex:26-33` Abstract reescrito: batería grid vs continuo v0.12 separados, C3 renombrado stimulus generalization (1.1 vs 0.9, learning without distinguishing), Φ escalar MSE offline diagnostic (r=0.701, r_cross=0.730, ratio 0.13) con gate atencional como confound (d=-1.61 aislado vs d=-0.43 con gate aleatoria), EWC/ortho flagged non-load-bearing (recovery 0.48 flat), MiniGrid fuera de Tabla.
+- `paper/main.tex:65-67` Limitations upfront 4→7 puntos: especifica Rankin char. 7/8/10 no testados, Φ scalar vs per-channel log-variance, gate confound, EWC low-rank, 2 sistemas, mouth, benchmark pilot.
+- `paper/main.tex:114-122` Φ y presence: MSE a |ε| es proxy de zona, no log-varianza por canal; presence offline, no drive online.
+- `paper/main.tex:120-124` Attention y Phi causal: 4-brazo A/B/C/D pre-registrado, random gate reproduce efecto.
+- `paper/main.tex:124-125` EWC/ortho: diagonal Fisher, misma-tarea = refuerzo, ΔW likely rank-1, SVD + factored predictor como next.
+- `paper/main.tex:142-146` Provenance: Tabla split grid (13->128->128->6, ±5) vs v0.12 continuous (13->64->6, +2, attention 13->7, Φ 22->64->1).
+- `paper/main.tex:152-160` Controls C3 re-etiquetado como generalization, no dishabituation; dishab real + recovery pre-registrados.
+- `paper/main.tex:172-199` Tabla 1 split en dos paneles con † pilotos y ‡ confound, MiniGrid fuera.
+- `paper/main.tex:230-234` C3 section: Rankin 2009 char. 7/8/10, H_A = magnitud vs vector, learning without distinguishing.
+- `paper/main.tex:242-256` Φ results: r_cross no separa zona vs confiabilidad, presence offline, d=-1.61 confounded.
+- `paper/main.tex:305-326` Limitations 5→7 párrafos, Conclusion con v0.14 Rankin battery.
+- `CITATION.cff:10` version 0.12→0.13, date 2026-09-01, abstract reescrito con claims acotados.
+- `zenodo_upload_paper_only/` v0.13.tex + CITATION.cff copiados, README actualizado, checklist v0.13.
+- `56-paper-taller-borrador.md:1-65` abstract/tabla/discussion/limitations alineados a paper v0.13.
+- Nuevo `63-preregistro-v014-rankin-phi-factorizado.md:1` (Rankin S1-S5 + dishab + gap, factored f_pos/f_H, Φ por canal NLL, 4 brazos A-D, SVD, N=30, thresholds fijos).
+
+### Estado
+- v0.13 es publicable como "habituación gruesa + trazo en pesos + Φ calibrado con caveat" (no claim vectorial ni physics online). v0.14 es el experimento que decide H_A vs H_vec.
+
 ## [v0.11] - 2026-08-29 18:30 UTC - Capstone: Organismo Completo + Cadena Causal
 
 ### Añadido
