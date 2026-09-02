@@ -1,5 +1,10 @@
 # 36 - H2b DECISIVO LOCAL: LFM2.5 Confirma LLM=Traductor (con LLM Real)
 
+> **⚠️ "DECISIVO" RETIRADO (2026-09-02, ver CHANGELOG "Claims retirados"):** el resultado es
+> *consistente* con LLM=boca pero no decisivo — el LLM nunca controla la política por diseño,
+> así que conducta idéntica con/sin LLM está garantizada. Pasa a principio de diseño, no a
+> evidencia de H2. Ver paper v0.13 (`56`).
+
 > **Ejecutado:** 29 Ago 2026 16:30 UTC - `python3 framework/m4_local_h2b.py --steps 1500` en M4 Pro (MPS)
 > **Importante:** este era el experimento que creíamos requerir A100 (~33€). LFM2.5-1.2B lo hace local, 0€.
 

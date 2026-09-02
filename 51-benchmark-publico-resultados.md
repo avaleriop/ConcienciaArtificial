@@ -1,5 +1,8 @@
 # 51 - Benchmark Público (Fase 3): Resultados Preliminares y Límites
 
+> **⚠️ RETIRADO DE LA TABLA DEL PAPER (2026-09-02, ver CHANGELOG):** N=5, sin potencia
+> (RND 2.8% > organismo 1.8%). Este doc se conserva como registro histórico.
+
 > **Ejecutado:** 29 Ago 2026 19:50 UTC - `python3 framework/benchmark_doorkey.py`
 > **Pre-registrado:** `46-plan-rigor-cientifico.md:1` (Fase 3: medirnos contra el campo)
 

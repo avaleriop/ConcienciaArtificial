@@ -1,5 +1,9 @@
 # 53 - Φ-Causal: El Self-Model Cambia la Conducta (No Es Epifenómeno)
 
+> **⚠️ RESULTADO CONFUNDIDO (2026-09-02, ver CHANGELOG y `61`/`62`):** el d=−1.61 aislado no
+> modela la gate atencional; gate aleatoria reproduce d=−0.43. No publicar como causal hasta
+> el test de 4 brazos (pre-registrado `63`).
+
 > **Ejecutado:** 29 Ago 2026 20:25 UTC - `python3 framework/h6_phi_causal.py` (MPS, N=30 seeds)
 > **La pregunta:** ¿saber su propia incertidumbre cambia lo que el organismo hace? (crítica del epifenomenalismo aplicada al awareness)
 

@@ -1,5 +1,9 @@
 # 38 - M5 24H LOCAL - El Organismo Vivió 24 Horas Simuladas
 
+> **⚠️ CLAIM RECORTADO (2026-09-02, ver CHANGELOG):** 864k pasos de simulador ≠ persistencia
+> con interferencia; no es test de H1. Se conserva como run largo de humo (sin colapso),
+> fuera de la Tabla del paper v0.13.
+
 > **Ejecutado:** 29 Ago 2026 17:00 UTC - `python3 framework/m5_24h_local.py` (MPS, M4 Pro)
 > **Pre-registrado:** `17-plan-robusto` M5 (longevidad DESPUÉS de plasticidad — M3b hecho primero, orden respetado)
 

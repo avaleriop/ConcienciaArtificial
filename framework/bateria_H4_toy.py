@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """
+[RETIRADO COMO EVIDENCIA — 2026-09-02, ver CHANGELOG "Claims retirados"]
+Este script implementa su propio resultado: T1 inyecta monotonía (presence = I·0.75·Π·ε),
+T2 hardcodea los Bernoullis 0.85/0.40/0.90/0.88, T3 usa un string aleatorio como PCI.
+NO citar en tablas, README, paper ni abstracts. Se conserva solo como registro histórico.
+
 Batería H4 Toy v0.8b - 5 tests convergentes en minutos
 Implementa en toy 32D los 5 tests de 10-hipotesis-H4-medida-deepdive.md:135
 Umbrales toy escalados: k>2.5 (no 5), Δ_PCI>0.12 (no 0.15), Acc>65% (no 70%)

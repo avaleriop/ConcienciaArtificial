@@ -1,5 +1,10 @@
 # 47 - Controles de Rigor (Fase 1): 5/6 Pasan — Claim Blindado con Una Limitación Documentada
 
+> **⚠️ TÍTULO Y ESTADO RECORTADOS (2026-09-02, ver CHANGELOG "Claims retirados"):** C1–C4 son
+> **pilotos de una semilla** (seed 7), y el C3a negativo (1.1 vs 0.9) desarma la especificidad
+> del estímulo — "blindado" fue sobre-lenguaje. En paper v0.13 (`56`) se renombra *stimulus
+> generalization* y los controles quedan como pilotos que requieren N=30 (pre-registrado `63`).
+
 > **Ejecutado:** 29 Ago 2026 19:10 UTC - `python3 framework/rigor_controles.py` (MPS)
 > **Pre-registrado:** `46-plan-rigor-cientifico.md:1` con criterios de refutación ANTES de correr.
 

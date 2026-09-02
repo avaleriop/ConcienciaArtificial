@@ -1,5 +1,9 @@
 # 19 - Batería H4 M2 - Resultados 5/5 PASA (Toy 200 pasos, 2 min) - Iter2 Corregido
 
+> **⚠️ RETIRADO COMO EVIDENCIA (2026-09-02, ver CHANGELOG "Claims retirados"):**
+> `bateria_H4_toy.py` implementa su resultado (T1 monotonía inyectada, T2 Bernoullis
+> hardcodeados, T3 string aleatorio como PCI). No citar como test de H4.
+
 > **Ejecutado:** 29 Ago 2026 14:00 UTC (iter1 4/5) y 14:05 UTC (iter2 5/5 corregido)
 > **Framework:** `framework/bateria_H4_toy.py` 200 pasos, sin GPU, umbrales toy escalados `k>2.5 Δ>0.12 Acc>65%`
 > **Comando:** `python3 framework/bateria_H4_toy.py` (x2)

@@ -11,7 +11,7 @@ Diseño (4 fases):
 Criterio: P(visita B|F3) < 0.5 * P(visita B|F1 naive)  => plasticidad en W, no memoria.
 Ejecuta: python3 framework/m4_local_m3b.py
 """
-import sys, math, random, time
+import os, sys, math, random, time
 import numpy as np
 import torch
 import torch.nn as nn
@@ -19,6 +19,8 @@ import torch.nn as nn
 random.seed(7); np.random.seed(7); torch.manual_seed(7)
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 SAFE_GB = 8.0
+REPO_RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODELO_LLM = os.path.join(REPO_RAIZ, "models", "LFM2.5-1.2B-MLX-8bit")
 FOOD_B = [17, 17]  # comida venenosa
 
 def mem_gb():
@@ -135,7 +137,7 @@ def cargar_llm():
     global _LLM, _TOK
     if _LLM is None:
         from mlx_lm import load
-        _LLM, _TOK = load('/Users/adrianvalerio/Desktop/ConcienciaArtificial/models/LFM2.5-1.2B-MLX-8bit')
+        _LLM, _TOK = load(MODELO_LLM)
     return _LLM, _TOK
 
 def traducir(H, pos, envenenado_antes, envenenado_ahora):

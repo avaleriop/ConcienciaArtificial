@@ -1,5 +1,9 @@
 # 14 - Experimento Toy de Solidez - 29 Ago 2026 13:25 UTC - EJECUTADO
 
+> **⚠️ RETIRADO COMO EVIDENCIA (2026-09-02, ver CHANGELOG "Claims retirados"):** el dict-vs-FIFO
+> y el BFS-vs-DFS replican sus condiciones por construcción; no son tests de H1/H2 como se
+> publicaron. Se conserva como registro histórico.
+
 > **Objetivo:** Probar ya si H1 y H2 tienen solidez falsable mínima, sin GPU ni mundo real, antes de montar framework 24/7.
 > **Método:** Toy simulation puramente lógica en Python (`/tmp/test_solidez.py`), sin inventar datos, replica estructura de papers 2024-25.
 > **Resultado:** H1 y H2 SOBREVIVEN a sus falsadores fuertes. Teoría lista para NMV.

@@ -7,8 +7,8 @@ authors:
     orcid: "https://orcid.org/0009-0003-8445-2214"
     affiliation: "Independent Researcher, San José, Costa Rica"
     email: "adrian_valerio@valeriogroup.co"
-version: "0.12"
-date-released: 2026-08-29
+version: "0.13"
+date-released: 2026-09-02
 license: "MIT"
 keywords:
   - embodied cognition
@@ -27,8 +27,8 @@ preferred-citation:
       given-names: "Adrián"
   journal: "Preprint. Intended submission to arXiv cs.AI and q-bio.NC"
   year: 2026
-  month: 8
-  url: "https://arxiv.org/abs/xxxx.xxxxx"
+  month: 9
+  url: "https://github.com/avaleriop/ConcienciaArtificial"
   doi: 10.5281/zenodo.22191728
 references:
   - type: article

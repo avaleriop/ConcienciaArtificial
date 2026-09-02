@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """
+[RETIRADO COMO EVIDENCIA — 2026-09-02, ver CHANGELOG "Claims retirados"]
+Piloto N=5 sin potencia: RND 2.8% gana al organismo 1.8%. Fuera de la Tabla del paper.
+Se conserva solo como registro histórico.
+
 FASE 3 BENCHMARK - MiniGrid DoorKey-8x8 vs baselines: Aleatorio, ICM, RND, Organismo (ECUS+sorpresa)
 Pre-registrado 46-plan-rigor-cientifico.md:1. Métricas: tasa de éxito, pasos medios, cobertura de estados.
 ICM: recompensa = extrínseca + η·||φ(s')-f(φ(s),a)||² (curiosidad por error de forward model)

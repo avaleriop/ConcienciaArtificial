@@ -12,7 +12,7 @@ Métricas de continuidad (lenguaje verificable):
   - LFM2.5 reporta en eventos reales (traducción del estado interno del núcleo).
 Ejecuta: python3 framework/organismo_completo.py --steps 20000
 """
-import sys, math, random, time, argparse
+import os, sys, math, random, time, argparse
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,7 +20,8 @@ import torch.nn as nn
 random.seed(7); np.random.seed(7); torch.manual_seed(7)
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 SIZE = 20
-MODELO_LLM = "/Users/adrianvalerio/Desktop/ConcienciaArtificial/models/LFM2.5-1.2B-MLX-8bit"
+REPO_RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODELO_LLM = os.path.join(REPO_RAIZ, "models", "LFM2.5-1.2B-MLX-8bit")
 
 class CuerpoMundo:
     def __init__(self):

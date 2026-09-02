@@ -1,5 +1,10 @@
 # 54 - Resumen Ejecutivo de Cierre (v0.12) - Estado Final del Proyecto
 
+> **⚠️ LENGUAJE RETIRADO (2026-09-02, ver CHANGELOG "Claims retirados"):** "mecanismos de
+> awareness ✅ FUERTE" y el d=−1.61 causal de este ejecutivo fueron recortados por el peer
+> review: Φ quedó confundido con la gate atencional (`61`,`62`) y los z-scores no son
+> awareness. Este doc es histórico; el claim actual está en el paper v0.13 (`56`).
+
 > **Fecha:** 29 Ago 2026 20:30 UTC — Cierre de fase solicitado por el usuario
 > **Estado:** 55 docs, 23 scripts, ~54 commits, 0€, todo local en M4 Pro
 

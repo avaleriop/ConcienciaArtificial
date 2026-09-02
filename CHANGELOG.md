@@ -1,5 +1,49 @@
 # CHANGELOG - Conciencia Artificial
 
+## [2026-09-02] - Frente público alineado al paper v0.13 (plan 64: C1 + C2 + B5)
+
+### Contexto
+Peer-review externo (2 Sep 2026): el frente del repo (README/INDEX/`39`/`54`) vendía claims
+que el paper `56` ya había recortado. Doc `64` (plan tres ejes) pide UNA cara pública. Esta
+entrada ejecuta la semana 1 del plan: higiene pública sin tocar claims experimentales.
+
+### Claims retirados de la cara pública (C2) — ya no se afirman en README/INDEX/abstract
+- 🚫 **Batería H4 5/5 (k14.22, FPR 0.00032):** T1 (presence = I·0.75·Π·ε inyecta monotonía),
+  T2 (Bernoullis 0.85/0.40/0.90/0.88 hardcodean Δ_global), T3 (PCI = string aleatorio sobre
+  LZc) implementan su resultado. `framework/bateria_H4_toy.py` queda como histórico.
+- 🚫 **Kael 100% vs 0% como test de H1** (dict vs FIFO ventana 20) — `14` histórico.
+- 🚫 **BFS 32-0 como test de H2** (Coconut es razonamiento en latente de un LM, no BFS).
+- 🚫 **FPR 0.00032 y Butlin 10/14** como medida — sin estimación independiente; solo
+  motivación teórica (`00`–`13`).
+- 🚫 **"El organismo vive" (`18`, `39`) y "mecanismos de awareness FUERTE" (`54`)** —
+  z-scores de error de predicción ≠ awareness; lenguaje ejecutivo retirado.
+- 🚫 **"5/6 PASA — CLAIM BLINDADO" (`47`)** — C3 falla (1.1 vs 0.9) desarma especificidad;
+  título corregido en INDEX a "pilotos seed 7 con un negativo".
+- 🚫 **Φ causal d=−1.61 (`53`)** — confundido con gate atencional (gate aleatoria reproduce
+  d=−0.43, `61`/`62`); no se publica hasta test 4-arm (v0.14).
+- 🚫 **EWC como mecanismo de persistencia** — λ inerte en interferencia misma-tarea (`62`);
+  tarea-distinta pre-registrada v0.14.
+- 🚫 **Benchmark Empty-8x8 organismo 1.8% > ICM 0.6%** — N=5, RND 2.8% gana; fuera del paper.
+- 🚫 **"24 h / 864k pasos" como test de H1** — pasos de simulador, no persistencia con
+  interferencia; `38` pasa a run de humo.
+- 🚫 **LLM=boca como resultado decisivo (`36`)** — consistente por diseño (el LLM nunca
+  controla la política); pasa a principio de diseño + future work.
+
+### Cambios (C1 + B5)
+- `README.md` reescrito: claim = habituación como update de modelo (Tabla = paper `56`),
+  pilotos † de 1 semilla marcados, benchmark MiniGrid retirado, N=30 vs piloto separados,
+  sin lenguaje de conciencia, paths relativos documentados.
+- `INDEX.md` reescrito: versión v0.13, tabla "estado de claims" con vivo/muerto/confundido/
+  retirado, docs históricos marcados, battery/Kael/BFS/FPR retirados.
+- `framework/organismo_completo.py:23` y `framework/m4_local_m3b.py:138`: paths absolutos
+  `/Users/adrianvalerio/Desktop/...` → `REPO_RAIZ` relativo (reproducción en clone fresco).
+- Nuevo `64-plan-tres-ejes-hoja-ruta.md` (plan v0.14, tres agentes A/B/C).
+
+### Estado
+- La versión del repo y la del paper coinciden en el claim (habituación + Φ offline con
+  caveats). Pendiente (plan `64`): batería Rankin N=30, 4-arm Φ, EWC tarea-distinta,
+  predictor factorizado + SVD, paper corto y Zenodo v0.14.
+
 ## [v0.13] - 2026-09-01 15:00 UTC - Peer-Review Revision (rigurosa, sin nuevos runs)
 
 ### Corregido (peer review Rankin/Thompson-Spencer / Friston / continual / diseño)

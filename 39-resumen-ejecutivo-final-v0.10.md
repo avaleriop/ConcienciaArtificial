@@ -1,5 +1,9 @@
 # 39 - RESUMEN EJECUTIVO FINAL v0.10 - El Organismo Vive
 
+> **⚠️ LENGUAJE RETIRADO (2026-09-02, ver CHANGELOG "Claims retirados"):** "el organismo vive"
+> y las inferencias a awareness de este ejecutivo fueron recortadas por el peer review y el
+> paper v0.13 (`56`). Este doc es histórico: se conserva como registro del estado v0.10.
+
 > **Fecha:** 29 Ago 2026 17:15 UTC — Cierre de la secuencia M1→M5, todo local, 0€
 > **Estado:** 41 docs, 12 scripts, 40 commits, ~6.000 líneas, 18 sub-agentes, 6 auditorías
 
