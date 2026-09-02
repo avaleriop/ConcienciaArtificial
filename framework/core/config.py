@@ -13,5 +13,6 @@ D_IN = 13          # 2 pos/W + 4 H/1.5 + 7 action one-hot
 D_ENC = 64
 N_ACT = 7
 N_CANALES = 6      # canales de error del predictor: x, y, E, C, U, S
+ACCIONES = tuple(range(N_ACT))
 SEEDS_RANKIN = range(4000, 4030)
 SEEDS_PHI = range(30)

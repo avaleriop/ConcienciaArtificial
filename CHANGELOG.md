@@ -1,5 +1,39 @@
 # CHANGELOG - Conciencia Artificial
 
+## [2026-09-02] - A1 Batería Rankin v0.14 (N=30) + fixes de revisión al núcleo
+
+### Añadido
+- `framework/bateria_rankin.py` (A1): N=30 seeds 4000–4029, solo importa `framework.core`,
+  z con baseline congelada por cabeza, S1–S5 + dishab + gap ISI + savings + SVD. 34 s en MPS.
+- `65-A1-rankin-resultados.md`: resultados completos con veredictos por hipótesis.
+- `results/v014_rankin.json`: datos por seed.
+
+### Resultados A1 (N=30) — texto íntegro en `65`
+- H2 habituación ✅: reducción z0→z_hab = 84% CI[78,89] (criterio >70%).
+- H1 detección ⚠️: z0=6.47 CI[5.30,7.70] — efecto real (CI no cruza 5), pero **no alcanza
+  el z>10 pre-registrado** en `63` (umbral mental calibrado contra grid, no transferible a
+  continuo). Se reporta sin recalibrar.
+- **H_A REFUTADA en continuo**: tras habituar (+2,+2), (−2,−2) re-dispara z=14.5 y (+2,−2)
+  10.4. El grid v0.13 generalizaba (C3, 1.1 vs 0.9); el continuo v0.14 NO: especificidad de
+  DIRECCIÓN (H_vec), magnitud mal estimada (S4 solo 2.84). Resultado de transferencia,
+  se reportan ambos regímenes sin promediar.
+- S5 interoceptivo dispara (9.4) → clase intacta. Rankin-8 dishabituación ❌ (reprobe 1.42 ≈
+  z_hab 1.14). Rankin-10 recuperación ISI ✅ (gap → 12.4). Savings débil (10.8 trials).
+- H_rank ✅: SVD ΔW f_pos ~1.4 singulares para 90% varianza (traza low-rank).
+
+### Fixes de revisión al núcleo (de la review del 2 Sep)
+- RNG por instancia (`np.random.default_rng`) en `Mundo` — 30 semillas no se pisan.
+- S5 = procedimiento con setup explícito a comida (nunca no-op por lejanía).
+- Attention: 6 canales de error (igual que Φ), no 7 acciones.
+- Pre-train muestrea la MISMA zona sin niebla que las sondas (antes el paseo *0.95 colapsaba
+  al origen y el predictor no cubría la zona de prueba).
+- Acciones 0–6 en todo (antes pre-train 0–3 vs sondas 0–6 → one-hots nunca vistos).
+- z por cabeza (pos vs H): teleport solo viola posición; z_total mezclado hunde la señal.
+
+### Estado
+- Plan `64` semana 2–3 (A1/A5 + fixes) completos. Siguiente: A2 (C1/C2/C4 a N=30), A3
+  (4-arm Φ), A4 (EWC tarea distinta), B4 (probe x>14).
+
 ## [2026-09-02] - B1 + B2: SPEC.md y núcleo único framework/core (plan 64)
 
 ### Añadido
@@ -8,23 +42,28 @@
   f_H 4), Φ por canal (log σ² NLL, 6 canales de error), z con baseline congelada,
   violaciones S1–S5, semillas, y lista explícita de lo que NO hay (LLM, E, EWC-λ=0, GWT…).
 - `framework/core/` (B2): paquete núcleo único —
-  - `config.py` constantes congeladas, `world.py` (Mundo continuo + violaciones S1–S5 +
-    entrada/target), `nets.py` (PredictorFactorizado, PhiCanal, Attention),
-    `surprise.py` (error por cabeza/canal, BaselineCongelada), `ewc.py` (Fisher diagonal),
-    `procedures.py` (pre-train prereg `63` §3).
-  - `framework/selftest_core.py`: smoke test OK — z_pos(S1)=22.8 cae a 8.1 con 10× estímulo
-    idéntico (habituación en pesos, baseline congelada), Φ NLL converge, EWC/attention OK.
+  - `config.py` constantes congeladas, `world.py` (Mundo continuo + S1–S4 por teleport puro,
+    S5 con setup explícito a comida), `nets.py` (PredictorFactorizado, PhiCanal, Attention
+    de 6 canales = mismos que Φ), `surprise.py` (error por cabeza/canal, BaselineCongelada),
+    `ewc.py` (Fisher diagonal), `procedures.py` (pre-train prereg `63` §3).
+  - `framework/selftest_core.py`: smoke test (verifica plumbing, NO es resultado).
+    Pasa: z_pos(S1)>baseline congelada y z_pos cae al repetir 10× el MISMO (s,a,S1) —
+    caso fácil (memorización de una transición), no habituación v0.14.
 
-### Decisiones
-- Mundo congelado: **continuo con niebla** (prereg `63`), no grid (resuelve contradicción con
-  plan `64` Agente B; el 4-arm mide % niebla, métrica que solo existe en continuo).
-- Φ por canal sobre los 6 dims de error del predictor [x,y,E,C,U,S]; desviación documentada
-  del "7 valores" del prereg (canal táctil no tiene target de error).
-- Violaciones = mutación pura del estado (teleport sin física extra) para que z mida la
-  magnitud programada.
+### Decisiones (fixes de revisión)
+- RNG por instancia en `Mundo` (`np.random.default_rng`), no global: 30 semillas no se pisan.
+- S5 (inversión de E) = procedimiento, no física: si el agente no está sobre comida, el
+  protocolo lo teletransporta a la comida más cercana ANTES de medir (setup explícito);
+  nunca S5 es no-op por estar lejos de comida.
+- Attention: 6 canales de error (mismos que Φ), no 7 "acciones". El pre-train la entrena
+  para que σ_implícito prediga ε escalar; su gate = confound a controlar en A3 (4-arm).
+- z de violación por CABEZA (pos vs H): el teleport solo viola posición; z_total mezclado
+  hunde la señal. Los docs futuros reportan z_pos y z_H por separado.
+- Mundo v0.14 = continuo con niebla (prereg `63`). Números grid v0.13 (z=20.6) NO son
+  comparables con z_pos v0.14; INDEX los etiqueta "grid v0.13, no transferible".
 
 ### Estado
-- Semanas 1–2 del plan `64` (C1/C2/C3/A5/B1/B5 + B2) completas. Siguiente: A1
+- Semanas 1–2 del plan `64` completas (C1/C2/C3/A5/B1/B5 + B2). Siguiente: A1
   (`bateria_rankin.py`, N=30) sobre `framework/core/`.
 
 ## [2026-09-02] - Frente público alineado al paper v0.13 (plan 64: C1 + C2 + B5)

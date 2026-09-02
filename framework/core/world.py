@@ -17,19 +17,18 @@ def fisica(pos, a):
     return [x, y], x > C.NIEBLA_X
 
 
-def ruido_canal(ch, niebla):
+def ruido_canal(ch, niebla, rng):
     base = C.RUIDO_BASE
     if niebla and ch in (0, 1, 2, 3, 4):
         base = C.RUIDO_NIEBLA
     if ch == 6:
         base = C.RUIDO_BASE * 0.5
-    return np.random.randn() * base
+    return rng.normal() * base
 
 
 class Mundo:
     def __init__(self, seed=None):
-        if seed is not None:
-            np.random.seed(seed)
+        self._rng = np.random.default_rng(seed)
         self.pos = [C.WORLD_SIZE / 2, C.WORLD_SIZE / 2]
         self.H = np.array(C.H_INIT, dtype=np.float32)
         self.foods = C.FOODS
@@ -69,7 +68,7 @@ class Mundo:
         if en_comida:
             dH[0] += 0.2
         for ch in range(7):
-            r = ruido_canal(ch, niebla)
+            r = ruido_canal(ch, niebla, self._rng)
             if ch < 4:
                 dH[ch] += r * 0.1
         if math.hypot(self.pos[0] - self.social[0], self.pos[1] - self.social[1]) < 0.5:
@@ -78,17 +77,29 @@ class Mundo:
         self.pos = np_pos
         return self.estado()
 
-    def aplicar_violacion(self, spec):
-        """Violación programada (S1-S5): mutación pura, devuelve s' sin física normal."""
+    def paso_con_comida_invertida(self, a_idx):
+        """S5 (interoceptiva): el agente COME y E baja. Procedimiento A1: si no está
+        sobre comida, primero se teletransporta encima de la comida más cercana
+        (setup explícito, NO se cuenta como violación de posición). Devuelve (s_antes, s').
+        """
+        cerca = any(math.hypot(self.pos[0] - fx, self.pos[1] - fy) < 0.5
+                    for fx, fy in self.foods)
+        if not cerca:
+            d = [math.hypot(self.pos[0] - fx, self.pos[1] - fy) for fx, fy in self.foods]
+            fx, fy = self.foods[int(np.argmin(d))]
+            self.pos = [float(fx), float(fy)]
+        s_antes = self.estado()
+        self.H[0] = np.clip(self.H[0] - 0.4, 0, 1.5)
+        return s_antes, self.estado()
+
+    def aplicar_violacion(self, spec, a_idx=None):
+        """Violación programada S1-S4: teleport puro. Devuelve s' sin física normal.
+        S5 no entra aquí: usar paso_con_comida_invertida (necesita acción de comer).
+        """
         self._registrar()
         dx, dy = spec.get("teleport", (0.0, 0.0))
         if dx or dy:
             self.teleport(dx, dy)
-        if spec.get("invertir_comida"):
-            en_comida = any(math.hypot(self.pos[0] - fx, self.pos[1] - fy) < 0.5
-                            for fx, fy in self.foods)
-            if en_comida:
-                self.H[0] = np.clip(self.H[0] - 0.4, 0, 1.5)
         return self.estado()
 
 

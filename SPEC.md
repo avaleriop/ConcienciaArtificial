@@ -8,9 +8,13 @@
 
 - Estado `s = [x, y, E, C, U, S] ∈ R⁶`, posiciones continuas en `[0, 20]`.
 - Set-point homeostático `H* = [0.8, 0.9, 0.2, 0.7]`; drive `D = ||H − H*||₂`.
-- 7 canales sensoriales: `0..1` = posición (x,y), `2..5` = interocepción (E,C,U,S),
-  `6` = táctil (choque/social). Ruido base σ=0.15; **en niebla** (x>14) σ=0.60 en canales
-  0–4; canal 6 σ=0.075.
+- Canales de ERROR del predictor (6): `[x, y, E, C, U, S]`. La posición es determinista
+  (sin ruido); el ruido se aplica a la interocepción: en cada paso normal,
+  `dH_ch += N(0, σ_ch)·0.1` con σ=0.15 siempre y **σ=0.60 en niebla** (x>14) sobre
+  E,C,U,S. Consecuencia: la niebla sube el error interoceptivo, no el de posición.
+  (El código heredado dibuja 7 ruidos por "canal sensorial" y solo aplica los 4 primeros
+  a dH — se conserva como está, ver `world.ruido_canal`; el canal 6 táctil no tiene
+  target de error.)
 - Dinámica por paso (acción `a ∈ {0..6}`, one-hot 7): `pos += a_vec·0.8; pos *= 0.95; clip[0,20]`,
   donde `a_vec = one-hot(a)`. Solo `a=0` (eje x) y `a=1` (eje y) desplazan; `a=2..6` solo
   aplican fricción 0.95 y dinámica de H (semántica heredada de `organismo_final.py` v0.12,

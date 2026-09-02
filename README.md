@@ -12,7 +12,7 @@ sin visión ni audición, solo canales corporales. Un LLM local (LFM2.5-1.2B) ac
 > e inspiración de diseño, no lo que el código mide. Los claims retirados están listados en el
 > [CHANGELOG](CHANGELOG.md) (entrada 2026-09-02, "Claims retirados de la cara pública").
 
-## Resultados (v0.13 — batería grid, N=30)
+## Resultados (v0.13 — batería grid, N=30; NO transferibles al mundo continuo v0.14)
 
 | Claim | Resultado | Estadístico |
 | :--- | :--- | :--- |
@@ -29,11 +29,11 @@ sin visión ni audición, solo canales corporales. Un LLM local (LFM2.5-1.2B) ac
 | Φ calibrado (MSE escalar a \|ε\|) | r=0.701 | Spearman |
 | Φ generaliza OOD (r_cross) | 0.730 | fuera de distribución |
 | Φ funcional (offline) | ratio 0.13 | separación 7.7× |
-| Φ causal aislado‡ | 15.0% vs 28.1% niebla | d=−1.61 |
 
 † piloto de **una semilla** (seed 7) — no entra a inferencias sin N=30 (pre-registrado v0.14).
-‡ confundido con la gate atencional: gate aleatoria reproduce d=−0.43 (docs `61`–`62`). No se
-publica Φ como causal hasta el test de 4 brazos (v0.14).
+
+**Fuera de la tabla (retirado/confundido):** Φ causal d=−1.61 — aislado, sin modelar la gate
+atencional; gate aleatoria reproduce d=−0.43 (`61`–`62`). Se testea con el 4-arm v0.14.
 
 **Resultado negativo conservado (C3):** habituar a (+5,+5) también habitua (−5,−5). La
 habituación es de *magnitud de desplazamiento*, no de vector — "learning without distinguishing"

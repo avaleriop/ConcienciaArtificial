@@ -65,7 +65,14 @@ class PhiCanal(nn.Module):
 
 
 class Attention(nn.Module):
-    def __init__(self, d_in=C.D_IN, d_h=32, n=C.N_ACT):
+    """Gate atencional sobre los 6 canales de error [x,y,E,C,U,S] (mismo espacio que Φ).
+
+    Solo se usa en el 4-arm (A3). Entrena para que σ_implícito = RUIDO_BASE +
+    (RUIDO_NIEBLA−RUIDO_BASE)·w prediga |ε| por canal. Su gate (w alto → desconfiar) es el
+    confound a controlar contra Φ (docs `61`/`62`): puede ser gate de ACCIÓN epistémica.
+    """
+
+    def __init__(self, d_in=C.D_IN, d_h=32, n=C.N_CANALES):
         super().__init__()
         self.net = nn.Sequential(nn.Linear(d_in, d_h), nn.ReLU(), nn.Linear(d_h, n))
 

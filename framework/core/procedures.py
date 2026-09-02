@@ -11,7 +11,7 @@ def device():
     return "mps" if torch.backends.mps.is_available() else "cpu"
 
 
-def transiciones_normal(mundo, n=1200, acciones=(0, 1, 2, 3)):
+def transiciones_normal(mundo, n=1200, acciones=C.ACCIONES):
     """Genera (s_antes, s_despues, a) de física normal. Pura: avanza el mundo."""
     out = []
     for _ in range(n):
@@ -22,11 +22,19 @@ def transiciones_normal(mundo, n=1200, acciones=(0, 1, 2, 3)):
     return out
 
 
-def preentrenar_predictor(pred, mundo, n_trans=1200, n_steps=400, batch=64):
+def preentrenar_predictor(pred, mundo, n_trans=1200, n_steps=400, batch=64,
+                          zona=None, acciones=C.ACCIONES):
+    """Pre-train offline. Si zona=(x0,x1,y0,y1), cada transición arranca en una
+    posición uniforme de esa zona (evita que la física *0.95 colapse el paseo al
+    origen y deje sin cobertura la zona de sondas). Las acciones deben cubrir el
+    mismo rango que usan calibración y sondas (si no, hay one-hots nunca vistos)."""
     dev = device()
     X, Y = [], []
     for _ in range(n_trans):
-        a = int(np.random.choice((0, 1, 2, 3)))
+        a = int(np.random.choice(acciones))
+        if zona is not None:
+            x0, x1, y0, y1 = zona
+            mundo.pos = [float(np.random.uniform(x0, x1)), float(np.random.uniform(y0, y1))]
         s_a = mundo.estado()
         s_d = mundo.paso_normal(a)
         X.append(entrada(s_a, a))
@@ -50,7 +58,7 @@ def preentrenar_phi(phi, pred, mundo, n=500, batch=64, n_muestra=800):
     datos = []
     hist = []
     for _ in range(n_muestra):
-        a = int(np.random.choice((0, 1, 2, 3)))
+        a = int(np.random.choice(C.ACCIONES))
         s_a = mundo.estado()
         s_d = mundo.paso_normal(a)
         x = torch.tensor(entrada(s_a, a), dtype=torch.float32, device=dev).unsqueeze(0)
@@ -75,28 +83,26 @@ def preentrenar_phi(phi, pred, mundo, n=500, batch=64, n_muestra=800):
 
 
 def preentrenar_attention(att, pred, mundo, n=300, batch=64):
-    """Atención aprende sigma implicado por canal ≈ ε real (mismo esquema que v0.12)."""
+    """Atención (6 canales): aprende σ_implícito por canal ≈ |ε| por canal.
+
+    sigma_canal = RUIDO_BASE + (RUIDO_NIEBLA − RUIDO_BASE)·w_c. Objetivo: la media de
+    sigma_canal debe predecir ε escalar; gate resultante = confound a controlar en A3.
+    """
     dev = device()
     Xp, Yp = [], []
     for _ in range(800):
-        a = int(np.random.choice((0, 1, 2, 3)))
+        a = int(np.random.choice(C.ACCIONES))
         s_a = mundo.estado()
         s_d = mundo.paso_normal(a)
-        x = torch.tensor(entrada(s_a, a), dtype=torch.float32, device=dev).unsqueeze(0)
-        y = torch.tensor(objetivo(s_d), dtype=torch.float32, device=dev).unsqueeze(0)
-        with torch.no_grad():
-            p_pos, p_H = pred(x)
-            eps = ((p_pos - y[:, :2]).pow(2).mean() + (p_H - y[:, 2:]).pow(2).mean()).sqrt()
         Xp.append(entrada(s_a, a))
-        Yp.append(float(eps))
+        Yp.append(_eps_escalar(pred, s_a, s_d, a, dev))
     Xpt = torch.tensor(np.array(Xp), dtype=torch.float32, device=dev)
     Ypt = torch.tensor(np.array(Yp), dtype=torch.float32, device=dev).unsqueeze(1)
     opt = torch.optim.Adam(att.parameters(), lr=1e-3)
     for _ in range(n):
         idx = torch.randint(0, Xpt.shape[0], (batch,))
-        aw = att(Xpt[idx])
+        aw = att(Xpt[idx])  # (batch, 6)
         sigma_canal = C.RUIDO_BASE + (C.RUIDO_NIEBLA - C.RUIDO_BASE) * aw
-        sigma_canal[:, 6] = C.RUIDO_BASE * 0.5
         sigma_mean = sigma_canal.mean(dim=1, keepdim=True)
         loss = (sigma_mean - Ypt[idx]).pow(2).mean()
         entropy = -(aw * torch.log(aw + 1e-8)).sum(dim=1).mean()
@@ -104,6 +110,14 @@ def preentrenar_attention(att, pred, mundo, n=300, batch=64):
         (loss - 0.01 * entropy).backward()
         opt.step()
     return att
+
+
+def _eps_escalar(pred, s_a, s_d, a, dev):
+    x = torch.tensor(entrada(s_a, a), dtype=torch.float32, device=dev).unsqueeze(0)
+    y = torch.tensor(objetivo(s_d), dtype=torch.float32, device=dev).unsqueeze(0)
+    with torch.no_grad():
+        p_pos, p_H = pred(x)
+        return float(((p_pos - y[:, :2]).pow(2).mean() + (p_H - y[:, 2:]).pow(2).mean()).sqrt())
 
 
 def seed_todo(seed):

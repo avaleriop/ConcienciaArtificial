@@ -3,28 +3,30 @@
 > **Última actualización:** 2 Sep 2026
 > **Versión:** v0.13 (paper v0.13) — preregistro v0.14 en `63`, plan de tres ejes en `64`
 > **Una línea:** habituación como update de modelo en pesos, sin memoria explícita y sin
-> especificidad fina, en un agente mínimo encarnado (grid 20×20). Marco teórico `00`–`13` =
-> motivación, no claim.
+> especificidad fina, en un agente mínimo encarnado. Marco teórico `00`–`13` = motivación,
+> no claim. v0.14 cambia de mundo: **continuo con niebla** (prereg `63`); los números de
+> grid (z=20.6) son v0.13, **no transferibles** a v0.14.
 
-## Estado de claims (lo que hoy se puede afirmar)
+## Estado de claims (board del plan `64`)
 
-| Claim | Estado | Evidencia |
-| :--- | :--- | :--- |
-| Detección acción-condicionada | ✅ vivo (N=30) | `49`, z=20.6 CI[16.0,25.5] |
-| Habituación grosera en pesos | ✅ vivo (N=30) | `49`, 86%, d=3.5; C4a/b/c piloto `47` |
-| Persistencia en W sin memoria E | ✅ vivo (N=30) | `49`, post/pre 0.02 |
-| Homeostasis con política | ✅ vivo | `50`, E=0.85, 100% seeds |
-| Φ calibrado / generaliza (offline) | ✅ vivo | `52`, r=0.701, r_cross=0.730 |
-| Especificidad fina del estímulo | ❌ muerto (C3) | `47`: 1.1 vs 0.9 — generaliza a −5,−5 |
-| Φ causal (d=−1.61) | ⚠️ confundido | `53`,`61`,`62`: gate atencional; 4-arm v0.14 |
-| EWC como mecanismo de persistencia | ⚠️ herido | `62`: λ inerte misma-tarea; tarea-distinta v0.14 |
-| LLM=boca (demostrado) | 🚫 tautológico por diseño | `36` es consistente, no decisivo; fuera de v0.14 |
-| Batería H4 5/5 (T1–T3) | 🚫 retirado | scripts implementan el resultado; ver CHANGELOG |
-| Kael 100% vs 0% como H1 | 🚫 retirado | dict vs FIFO; doc `14` histórico |
-| BFS 32-0 como H2 | 🚫 retirado | category error; ver CHANGELOG |
-| FPR 0.00032 / Butlin 10/14 | 🚫 retirado | sin medida; solo motivación teórica |
-| Benchmark Empty-8x8 (1.8%) | 🚫 retirado | N=5, RND 2.8% gana; fuera del paper |
-| 24 h / 864k pasos como H1 | 🚫 retirado | run largo = humo, no test de persistencia |
+| Claim | Estado | Evidencia | Nota |
+| :--- | :--- | :--- | :--- |
+| **Detección** (violación inyectada eleva ε) | ✅ vivo (N=30) | `49`, z=20.6 CI[16.0,25.5] | **grid v0.13**; v0.14 = continuo, sin comparar |
+| **C1 condicionamiento a la acción** (acción real > barajada) | ⚠️ piloto 1 semilla | `47`: 7× | C1 ≠ detección: son dos claims |
+| Habituación grosera en pesos | ✅ vivo (N=30) | `49`, 86%, d=3.5; C4a/b/c piloto `47` | grid v0.13 |
+| Persistencia en W sin memoria E | ✅ vivo (N=30) | `49`, post/pre 0.02 | grid v0.13 |
+| Homeostasis con política | ✅ vivo | `50`, E=0.85, 100% seeds | grid v0.13 |
+| Φ calibrado / generaliza (offline) | ✅ vivo | `52`, r=0.701, r_cross=0.730 | escalar; por canal en v0.14 |
+| Especificidad fina del estímulo | ❌ muerto (C3) | `47`: 1.1 vs 0.9 — generaliza a −5,−5 | renombrado *stimulus generalization* |
+| Φ causal (d=−1.61) | ⚠️ confundido | `53`,`61`,`62`: gate atencional; 4-arm v0.14 | **fuera de la tabla del README** |
+| EWC como mecanismo de persistencia | ⚠️ herido | `62`: λ inerte misma-tarea; tarea-distinta v0.14 | |
+| LLM=boca (demostrado) | 🚫 tautológico por diseño | `36` es consistente, no decisivo; fuera de v0.14 | |
+| Batería H4 5/5 (T1–T3) | 🚫 retirado | scripts implementan el resultado; ver CHANGELOG | |
+| Kael 100% vs 0% como H1 | 🚫 retirado | dict vs FIFO; doc `14` histórico | |
+| BFS 32-0 como H2 | 🚫 retirado | category error; ver CHANGELOG | |
+| FPR 0.00032 / Butlin 10/14 | 🚫 retirado | sin medida; solo motivación teórica | |
+| Benchmark Empty-8x8 (1.8%) | 🚫 retirado | N=5, RND 2.8% gana; fuera del paper | |
+| 24 h / 864k pasos como H1 | 🚫 retirado | run largo = humo, no test de persistencia | |
 
 **Awareness/conciencia fenoménica: NO afirmadas.** (docs `18`,`39`,`54` anteriores lo decían;
 ver CHANGELOG v0.14 "Claims retirados").
@@ -94,7 +96,7 @@ Núcleo v0.14 (única fuente de números, SPEC.md en raíz):
 | `SPEC.md` | Especificación del sistema v0.14 (mundo, redes, qué NO hay) | ✅ B1 |
 | `framework/core/` | Paquete núcleo: world, PredictorFactorizado, PhiCanal, z congelado, EWC | ✅ B2 |
 | `framework/selftest_core.py` | Smoke test del núcleo | ✅ |
-| `framework/bateria_rankin.py` | Batería Rankin N=30 (S1–S5 + dishab + savings) | ❌ A1 pendiente |
+| `framework/bateria_rankin.py` | Batería Rankin N=30 (S1–S5 + dishab + savings + SVD) | ✅ A1 ejecutada (`65`) |
 | `framework/factorizado_phi_canal.py` | Φ por canal + 4-arm + SVD | ❌ A3/B4 pendiente |
 
 Scripts que producen números del paper v0.13 (históricos, mundo grid/continuo v0.12):
@@ -115,12 +117,14 @@ resultado), `m4_local_*.py` tempranos, `benchmark_doorkey.py` (N=5).
 
 ## Vivo → muerto (resumen)
 
-- **Hecho (plan 64 semana 1-2):** C1/C2/C3+A5 (frente alineado), B1 `SPEC.md`, B2
-  `framework/core/` (mundo continuo + predictor factorizado + Φ por canal + z congelado + EWC),
-  smoke test OK (`selftest_core.py`: z(S1) alto → caída con estímulo idéntico).
-- **Activo v0.14 (plan `64`, prereg `63`):** A1 `bateria_rankin.py` N=30 (Rankin S1–S5 +
-  dishab + savings), A2 C1–C4 a N=30, A3 4-arm Φ (A/B/C/D), B3 predictor factorizado + SVD,
-  B4 Φ por canal + probe x>14, A4 EWC tarea-distinta, C4 paper corto + C5 Zenodo v0.14.
+- **Hecho (plan 64):** C1/C2/C3+A5 (frente alineado), B1 `SPEC.md`, B2 `framework/core/`,
+  **A1 batería Rankin N=30 ejecutada** (`65`, `results/v014_rankin.json`): habituación 84%
+  ✅, especificidad de dirección en continuo (H_A grid no se transfiere), S5 intacto,
+  Rankin-8 negativo, Rankin-10 ✅, H1 bajo umbral prereg (z0=6.47 < z>10) reportado sin
+  recalibrar.
+- **Activo v0.14 (plan `64`, prereg `63`):** A2 C1–C4 a N=30, A3 4-arm Φ (A/B/C/D),
+  A4 EWC tarea-distinta, B3 predictor factorizado + SVD (parcial: SVD ya en JSON), B4 Φ por
+  canal + probe x>14, C4 paper corto + C5 Zenodo v0.14.
 - **Prohibido hasta nuevo aviso:** hipótesis nuevas (H7+), V-JEPA/Mamba/GWT en el loop,
   ejecutivos "el organismo vive", simular peer review externo.
 
