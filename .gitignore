@@ -3,3 +3,15 @@ models/
 *.safetensors
 paper-viewer.html
 .DS_Store
+**/.DS_Store
+
+# LaTeX temporales (no subir)
+paper/*.log
+paper/*.aux
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+# Mantener solo PDFs de release versionados (ej. main_v13.pdf), ignorar compilaciones locales
+paper/main.pdf
