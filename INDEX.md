@@ -87,7 +87,17 @@ ver CHANGELOG v0.14 "Claims retirados").
 
 ## Framework
 
-Scripts que producen números del paper:
+Núcleo v0.14 (única fuente de números, SPEC.md en raíz):
+
+| Archivo | Rol | Estado |
+| :--- | :--- | :--- |
+| `SPEC.md` | Especificación del sistema v0.14 (mundo, redes, qué NO hay) | ✅ B1 |
+| `framework/core/` | Paquete núcleo: world, PredictorFactorizado, PhiCanal, z congelado, EWC | ✅ B2 |
+| `framework/selftest_core.py` | Smoke test del núcleo | ✅ |
+| `framework/bateria_rankin.py` | Batería Rankin N=30 (S1–S5 + dishab + savings) | ❌ A1 pendiente |
+| `framework/factorizado_phi_canal.py` | Φ por canal + 4-arm + SVD | ❌ A3/B4 pendiente |
+
+Scripts que producen números del paper v0.13 (históricos, mundo grid/continuo v0.12):
 
 | Script | Rol | Estado |
 | :--- | :--- | :--- |
@@ -105,9 +115,12 @@ resultado), `m4_local_*.py` tempranos, `benchmark_doorkey.py` (N=5).
 
 ## Vivo → muerto (resumen)
 
-- **Activo v0.14 (plan `64`, prereg `63`):** batería Rankin N=30 con z congelado (A1/A2),
-  4-arm Φ vs gate (A3/B4), EWC tarea-distinta (A4), predictor factorizado + SVD (B3),
-  Φ por canal log-varianza (B4), paper corto + Zenodo v0.14 (C4/C5).
+- **Hecho (plan 64 semana 1-2):** C1/C2/C3+A5 (frente alineado), B1 `SPEC.md`, B2
+  `framework/core/` (mundo continuo + predictor factorizado + Φ por canal + z congelado + EWC),
+  smoke test OK (`selftest_core.py`: z(S1) alto → caída con estímulo idéntico).
+- **Activo v0.14 (plan `64`, prereg `63`):** A1 `bateria_rankin.py` N=30 (Rankin S1–S5 +
+  dishab + savings), A2 C1–C4 a N=30, A3 4-arm Φ (A/B/C/D), B3 predictor factorizado + SVD,
+  B4 Φ por canal + probe x>14, A4 EWC tarea-distinta, C4 paper corto + C5 Zenodo v0.14.
 - **Prohibido hasta nuevo aviso:** hipótesis nuevas (H7+), V-JEPA/Mamba/GWT en el loop,
   ejecutivos "el organismo vive", simular peer review externo.
 

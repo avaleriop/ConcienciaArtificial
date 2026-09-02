@@ -83,6 +83,8 @@ test de H2. Ver CHANGELOG (entrada 2026-09-02).
 - `00`–`64` docs numerados: `00`–`13` teoría (motivación), `14`–`55` experimentos y resultados
   (varios con claims ya retirados — leer con el CHANGELOG), `56` paper v0.13, `57` plan,
   `61`–`62` panel, `63` pre-registro v0.14, `64` plan de tres ejes
+- `SPEC.md` especificación del sistema v0.14 (única fuente de números)
+- `framework/core/` núcleo v0.14 (mundo, predictor factorizado, Φ por canal, z, EWC)
 - `framework/` scripts ejecutables
 - `results/` JSON con los números
 - `paper/` LaTeX (main.tex v0.13, main_v13.pdf)

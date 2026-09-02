@@ -1,5 +1,32 @@
 # CHANGELOG - Conciencia Artificial
 
+## [2026-09-02] - B1 + B2: SPEC.md y núcleo único framework/core (plan 64)
+
+### Añadido
+- `SPEC.md` (B1): especificación del sistema v0.14 — un mundo continuo con niebla (x>14,
+  física heredada de `organismo_final.py` v0.12), predictor factorizado 13→64→(f_pos 2,
+  f_H 4), Φ por canal (log σ² NLL, 6 canales de error), z con baseline congelada,
+  violaciones S1–S5, semillas, y lista explícita de lo que NO hay (LLM, E, EWC-λ=0, GWT…).
+- `framework/core/` (B2): paquete núcleo único —
+  - `config.py` constantes congeladas, `world.py` (Mundo continuo + violaciones S1–S5 +
+    entrada/target), `nets.py` (PredictorFactorizado, PhiCanal, Attention),
+    `surprise.py` (error por cabeza/canal, BaselineCongelada), `ewc.py` (Fisher diagonal),
+    `procedures.py` (pre-train prereg `63` §3).
+  - `framework/selftest_core.py`: smoke test OK — z_pos(S1)=22.8 cae a 8.1 con 10× estímulo
+    idéntico (habituación en pesos, baseline congelada), Φ NLL converge, EWC/attention OK.
+
+### Decisiones
+- Mundo congelado: **continuo con niebla** (prereg `63`), no grid (resuelve contradicción con
+  plan `64` Agente B; el 4-arm mide % niebla, métrica que solo existe en continuo).
+- Φ por canal sobre los 6 dims de error del predictor [x,y,E,C,U,S]; desviación documentada
+  del "7 valores" del prereg (canal táctil no tiene target de error).
+- Violaciones = mutación pura del estado (teleport sin física extra) para que z mida la
+  magnitud programada.
+
+### Estado
+- Semanas 1–2 del plan `64` (C1/C2/C3/A5/B1/B5 + B2) completas. Siguiente: A1
+  (`bateria_rankin.py`, N=30) sobre `framework/core/`.
+
 ## [2026-09-02] - Frente público alineado al paper v0.13 (plan 64: C1 + C2 + B5)
 
 ### Contexto
