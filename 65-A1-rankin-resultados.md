@@ -1,79 +1,96 @@
-# 65 - A1 Batería Rankin v0.14 — Resultados (N=30, seeds 4000–4029)
+# 65 - A1 Batería Rankin v0.14 — Resultados (rev.2 tras peer review)
 
-> **Ejecutado:** 2 Sep 2026, `python3 framework/bateria_rankin.py --seeds 30` (34 s, MPS).
-> **Pre-registrado:** `63` (Rankin S1–S5 + dishab + ISI + savings + SVD), `SPEC.md`.
-> **Sistema:** mundo continuo con niebla (x>14), predictor factorizado 13→64→(f_pos 2, f_H 4),
-> z por cabeza con baseline CONGELADA (100 pasos sin eventos, nunca re-estimada), contexto de
-> sondas en zona sin niebla x∈[5,13], y∈[5,15] (la niebla es dominio del 4-arm, A3).
-> **Regla:** ningún umbral se movió tras ver datos; seed con σ base <1e-4 se excluye (0/30).
+> **Ejecutado:** 2 Sep 2026 (2 corridas N=30 + 1 control N=30, ~2 min en MPS).
+> **Pre-registrado:** `63`, `SPEC.md`. **Corregido por peer review** (2 Sep): el protocolo
+> v1 (OFFSET) inyectaba un offset +2,+2 incondicional; los números de la rev.1 (84%,
+> S2=14.5) quedan **invalidados como habituación** (ver §0 y `bateria_control_habituacion.py`).
+> **Regla:** umbrales fijos; nada se recalibró; z por cabeza pos con baseline CONGELADA.
 
-## Resumen (N=30 incluidas)
+## §0. Por qué se corrigió el protocolo (control decisivo, N=30)
 
-| Hipótesis (63 §2) | Métrica | Resultado | Criterio prereg | Veredicto |
+El peer review señaló: "el target siempre es posición+(2,2) sin la física de a" = inyectar un
+sesgo. Se corrió un control con 3 brazos de habituación (12 eventos c/u, mismo pre-train):
+
+| Brazo | z_NORM post (integridad) | z_S1 | z_S2 | Lectura |
 |---|---|---|---|---|
-| H1 detección | z0(S1, 1ª violación) | **6.47** CI[5.30, 7.70] | z>10 y CI no cruza 5 | ⚠️ **no alcanza z>10**; CI no cruza 5 |
-| H2 habituación | z0→z_hab (últ 4 de 12) | **84%** CI[78%, 89%] | reducción >70% | ✅ PASA |
-| z(S1) habituado | z_hab | 1.14 CI[0.76, 1.52] | — | bajo (habituado) |
-| H_A learning-without-distinguishing | z(S2) = (−2,−2) | **14.54** CI[12.4, 16.8] | H_A: S2/S3 bajos (<2) | ❌ **H_A REFUTADA en continuo** |
-| H_vec (especificidad de dirección) | z(S3) = (+2,−2) | **10.35** CI[8.5, 12.2] | H_vec: S2/S3 altos | ✅ consistente |
-| Magnitud ×2 | z(S4) = (+4,+4) | 2.84 CI[2.3, 3.4] | — | parcial (aprende dirección, magnitud mal estimada) |
-| Clase interoceptiva intacta | z(S5) (comer baja E) | **9.38** CI[8.2, 10.6] | S5 debe disparar (no se entrenó) | ✅ |
-| Rankin 8 dishabituación | z_reprobe tras S5 | 1.42 CI[0.88, 2.04], d=0.16 vs z_hab | z_re > 1.5·z_hab | ❌ **NO hay dishabituación** |
-| Rankin 10 recuperación ISI | z_gap tras 2000 pasos | **12.42** CI[11.1, 13.9] | z_gap > z_hab | ✅ SÍ recupera |
-| Savings | trials a <50% de z0 | 10.8 CI[9.7, 12.0] (n_hab=12) | — | savings débil/nulo |
-| H_rank SVD ΔW f_pos | sing. para 90% var | **1.4** | 1–2 singulares | ✅ low-rank |
+| **OFFSET** (v1: teleport puro) | **8.25** ❌ modelo roto | 1.43 | 13.42 | offset incondicional; S2>S1 es la firma del sesgo, NO especificidad |
+| **CONTING** (física de a + teleport, sin vida entre eventos) | **7.04** ❌ | 1.15 | 13.31 | 12 eventos seguidos siguen dominando el gradiente |
+| **INTERCAL** (física + teleport, 5 pasos normales CON updates entre eventos) | **0.81** ✅ | 3.51 | 6.20 | modelo sigue siendo P(s'\|s,a); única base válida |
 
-## Qué dice esto (con frialdad)
+**Conclusión del control:** la rev.1 entrenaba solo violaciones → el MLP dejaba de predecir
+la física normal (z_NORM≈8). Todo lo que se mida con un modelo roto no decide H_vec vs H_A.
+La rev.2 usa INTERCAL (violación SOBRE la contingencia real + vida normal entre eventos).
 
-1. **Detección real pero más débil que en grid.** z0=6.47 con CI [5.30,7.70]: el efecto existe
-   (CI no cruza 0, ni 5 por poco) pero **no alcanza el z>10 pre-registrado en `63`**. La
-   batería grid v0.13 (teleport ±5 de 20 = 25% del mundo) daba z=20.6; el teleport continuo
-   +2 de 20 = 10% da ~1/3 de señal. H1 según su umbral **no pasa**; según el criterio de
-   muerte del plan `64`-A1 (CI inferior <5) **sobrevive por margen mínimo**. Se reporta tal
-   cual, sin recalibrar. Desviación anotada: el umbral z>10 del prereg se calibró mentalmente
-   contra el grid y no se transfiere al continuo.
+## §1. Resultados rev.2 (INTERCAL, N=30 seeds 4000–4029)
 
-2. **El hallazgo grande: en continuo, la habituación NO es "learning without distinguishing".**
-   Tras habituar a (+2,+2), sondear (−2,−2) re-dispara z=14.5 (¡> z0 inicial!) y (+2,−2) da
-   10.4. Esto **contradice C3 grid v0.13** (1.1 vs 0.9), donde la habituación generalizaba a
-   la dirección opuesta. H_A muere en continuo; H_vec sobrevive. El mecanismo aparente: el
-   predictor aprende el *sesgo direccional* "+x,+y" y la física normal lo deshace en el gap
-   (z_gap=12.4 = recuperación). La magnitud se estima mal (S4 solo 2.84): dirección sí,
-   distancia no.
+Dos densidades de evento (sweep explícito; no hay ratio pre-registrado, se reportan ambos):
 
-3. **No hay deshabituación Rankin-8**: exponer a la clase interoceptiva S5 (que dispara 9.4)
-   NO revive S1 (z_reprobe 1.42 ≈ z_hab). Es un negativo honesto: la traza no es reactivable
-   por novedad de otra clase.
+| Métrica | k=10 (evento c/11 pasos) | k=5 (evento c/6 pasos) | Criterio prereg |
+|---|---|---|---|
+| z0 detección S1 (pre-aprendizaje) | 5.44 CI[4.5,6.4] | 5.44 CI[4.5,6.4] | z>10 y CI no cruza 5 → **⚠️ no pasa** |
+| **Reducción z0→z_hab (habituación)** | **8%** CI[0%,17%] | **28%** CI[12%,43%] | >70% → **❌ no pasa** |
+| z_NORM_0 (integridad inicial) | 0.03 | 0.03 | ≈0 ✅ |
+| **z_NORM post-habituación** | **0.02** ✅ intacto | **0.45** (sube poco) | si alto → modelo roto |
+| z(S2) −2,−2 | 5.59 (≈z0) | 6.34 | — |
+| z(S3) +2,−2 | 5.07 (≈z0) | 5.53 | — |
+| z(S4) +4,+4 | 11.64 | 10.90 | escala con magnitud |
+| z(S5) interoceptivo (setup comida) | 16.39 | 16.34 | dispara ✅ |
+| Rankin-8 dishabituación (reprobe tras S5) | 6.39 ≈ z_hab | 5.56 vs 3.99 (d≈0.9) | parcial, no concluyente |
+| Rankin-10 ISI (gap 2000 pasos, pesos FROZEN) | 4.90 ≈ z_hab 5.05 | 4.13 ≈ z_hab 3.99 | **❌ sin recuperación espontánea** |
+| Savings | ~9 | ~7 | débil |
+| SVD ΔW f_pos (90% var) | ~1.9 | ~1.8 | low-rank |
 
-4. **Rankin-10 sí**: tras 2000 pasos de física normal con updates, S1 vuelve a disparar
-   (12.4). La traza de pesos es frágil frente al re-aprendizaje de física normal — consistente
-   con SVD low-rank (1.4 singulares, "ignore large L2").
+## §2. Qué se puede afirmar AHORA (lede honesto)
 
-5. **Comparación grid vs continuo = resultado de transferencia, no bug.** Grid v0.13:
-   generalización de magnitud (C3 negativo). Continuo v0.14: especificidad de dirección, sin
-   dishabituación, con recuperación. Dos regímenes distintos; el paper v0.14 debe reportar
-   ambos y NO promediarlos (regla del peer review).
+1. **La habituación fuerte (84%) de la rev.1 era un artefacto de procedimiento.** Cuando la
+   violación es un salto puro entrenado sin física intercalada, el MLP aprende un offset
+   +2,+2 incondicional: deja de predecir la física normal (z_NORM=8.25) y S2>S1 es la firma
+   del sesgo. El control N=30 lo demuestra (brazos OFFSET/CONTING vs INTERCAL).
+2. **Con el protocolo que preserva P(s'|s,a) (INTERCAL), la habituación del MLP 13→64 es
+   débil**: 8% (evento cada 11 pasos) a 28% (evento cada 6). Lejos del 70% pre-registrado.
+   A densidades plausibles de evento (violaciones raras), el efecto tiende a 0. Esto
+   **invalida la extrapolación grid v0.13 → continuo** y pone el claim de habituación
+   sobre una base mucho más frágil.
+3. **Detección continua débil**: z0=5.44 CI[4.5,6.4], bajo el z>10 pre-registrado (el
+   umbral se pensó desde el grid ±5; el teleport continuo +2 da ~1/3 de señal). Efecto
+   real (CI no cruza 5 por poco), magnitud modesta.
+4. **Rankin-8 no demostrado** y **Rankin-10 no**: en reposo con pesos congelados no hay
+   recuperación espontánea (Δgap≈0). La "recuperación" de la rev.1 era desaprendizaje del
+   offset por re-entreno de física normal, no ISI.
+5. **S5 interoceptivo dispara fuerte (z_H≈16)** — la detección de inversión causal de la
+   comida existe y no se contamina. Esto es un resultado positivo independiente.
+6. **No hay decisión H_vec vs H_A sobre base sólida.** En k=5, S2 (6.3) > S1_hab (4.0) con
+   el modelo casi intacto (z_NORM=0.45): *sugiere* especificidad direccional residual, pero
+   la habituación base es tan débil (28%) que no sostiene el claim. En k=10 no hay
+   diferencia (S2≈z0). El título honesto NO puede ser "H_A refutada".
 
-## Comparación con v0.13 grid (no mezclar)
+## §3. Comparación con v0.13 grid (no mezclar; reportar por separado)
 
-| Medida | grid v0.13 (z=20.6, ±5) | continuo v0.14 (teleport +2) |
-|---|---|---|
-| z0 detección | 20.6 CI[16,25.5] | 6.47 CI[5.3,7.7] |
-| Habituación | 86% (60 viol.) | 84% (12 viol.) |
-| Generalización dirección opuesta | SÍ (1.1 vs 0.9, C3) | **NO** (zS2=14.5) |
-| Especificidad interoceptiva | no testeada limpia | S5 dispara 9.4 |
-| Recuperación ISI | no testeada | 12.4 (sí) |
-| Dishabituación Rankin 8 | no testeada | no (1.42≈1.14) |
+| Medida | grid v0.13 (±5, 60 viol.) | continuo v0.14 rev.1 OFFSET | continuo v0.14 rev.2 INTERCAL |
+|---|---|---|---|
+| Protocolo | violación tras física, 60 seguidas | salto puro, 12 seguidas | física+salto, 12 con vida entre |
+| z0 | 20.6 | 6.47 | 5.44 |
+| Habituación | 86% | 84% (artefacto) | **8–28%** |
+| Modelo intacto (z_NORM) | no medido | roto (8.25) | ✅ 0.02–0.45 |
+| Generalización dir. opuesta | sí (C3: 1.1 vs 0.9) | "no" (era el sesgo) | no concluyente |
 
-## Archivos
+El grid v0.13 **no midió z_NORM post-habituación**: su "86% con modelo intacto" nunca se
+verificó. La rev.2 sugiere que la habituación reportada en v0.12/v0.13 pudo ser en parte
+sobre-ajuste al evento inyectado. Esto es un hallazgo metodológico que hay que escribir con
+cuidado (el grid entrenaba 60 violaciones seguidas — mismo patrón que OFFSET/CONTING).
 
-- Datos: `results/v014_rankin.json` (por seed: z0, z_hab, reducción, z_S2/S3/S4/S5,
-  z_reprobe, z_gap, savings, hab_zpos, SVD por capa).
-- Código: `framework/bateria_rankin.py` (solo importa `framework.core`).
-- Preregistro: `63`. Especificación: `SPEC.md`.
+## §4. Archivos
 
-## Pendiente (no tocar umbrales)
+- `framework/bateria_control_habituacion.py` + `results/v014_control_habituacion.json`:
+  control de interpretación (OFFSET/CONTING/INTERCAL + ISI frozen), N=30.
+- `framework/bateria_rankin.py` (rev.2, INTERCAL, `--kintercal`) +
+  `results/v014_rankin.json` (k=10, default) + `results/v014_rankin_k5.json`.
+- v1 OFFSET: `results/v014_rankin_v1_offset.json` no se conserva como evidencia (números en
+  git history del doc); los JSON actuales son rev.2.
 
-A2: C1/C2/C4 a N=30 en el mismo mundo. A3: 4-arm Φ (presence acoplada/desacoplada/shuffle/
-gate). B3: SVD por cabeza ya volcado en el JSON; falta probe de zona x>14 (B4) y EWC
-tarea-distinta (A4). Nada de esto cambia los números de arriba.
+## §5. Siguiente
+
+A2 (C1/C2/C4 a N=30) debe usar INTERCAL, no OFFSET. A3 (4-arm) y A4 (EWC tarea distinta)
+seguirán sobre el mundo continuo. Antes de cualquier claim de habituación publicable hay que
+decidir el ratio de eventos con justificación (no post-hoc): el sweep k∈{5,10} muestra que
+el efecto depende críticamente de la densidad de evento — eso es un resultado en sí mismo.

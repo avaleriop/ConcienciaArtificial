@@ -14,6 +14,29 @@ sin visión ni audición, solo canales corporales. Un LLM local (LFM2.5-1.2B) ac
 
 ## Resultados (v0.13 — batería grid, N=30; NO transferibles al mundo continuo v0.14)
 
+## v0.14 A1 (continuo con niebla, N=30) — no comparar con grid
+
+Ejecutado tras peer review (doc `65`). El protocolo inicial (salto puro entrenado sin
+física intercalada) resultó un **artefacto**: inyecta un offset +2,+2 y rompe el modelo
+(z_NORM=8.25 — control `bateria_control_habituacion.py`, N=30). Con el protocolo corregido
+(INTERCAL: violación sobre la contingencia real + vida normal entre eventos):
+
+| Métrica (N=30) | Valor | Veredicto |
+| :--- | :--- | :--- |
+| Detección S1 (z0 pre-aprendizaje) | 5.44 CI[4.5,6.4] | real, bajo el z>10 prereg |
+| Habituación (k=10 / k=5) | 8% CI[0,17] / 28% CI[12,43] | débil; no pasa >70% |
+| Integridad del modelo (z_NORM) | 0.02–0.45 | ✅ se preserva con INTERCAL |
+| S5 interoceptivo (inversión de comida) | z_H≈16.4 | ✅ dispara |
+| Rankin-8 dishabituación | no demostrado | — |
+| Rankin-10 ISI (pesos congelados) | Δ≈0 | sin recuperación espontánea |
+| SVD ΔW f_pos (90% var) | ~1.8–1.9 | low-rank |
+
+**Lectura:** la "habituación 84%" de v0.12/v0.13 no sobrevive al protocolo que preserva
+P(s'|s,a); a densidades de evento plausibles el efecto tiende a 0. H_vec vs H_A queda sin
+decidir. La rev.2 es el claim actual.
+
+## Tabla v0.13 (grid, histórica — ver INDEX para el board actual)
+
 | Claim | Resultado | Estadístico |
 | :--- | :--- | :--- |
 | Detección de violaciones inyectadas (teleport ±5) | z=20.6 | CI [16.0, 25.5], N=30 |

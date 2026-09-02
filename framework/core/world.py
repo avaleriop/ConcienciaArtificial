@@ -102,6 +102,15 @@ class Mundo:
             self.teleport(dx, dy)
         return self.estado()
 
+    def paso_con_violacion(self, a_idx, dx, dy):
+        """Violación SOBRE la contingencia real: primero física normal de a_idx,
+        LUEGO el teleport. El target incluye la acción (P(s'|s,a) no se rompe).
+        Es el diseño que el peer review pidió (vs aplicar_violacion = salto puro).
+        """
+        self.paso_normal(a_idx)
+        self.teleport(dx, dy)
+        return self.estado()
+
 
 VIOLACIONES = {
     "S1": {"teleport": (2.0, 2.0), "invertir_comida": False},   # motor habitual (+2,+2)

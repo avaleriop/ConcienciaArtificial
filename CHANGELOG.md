@@ -1,5 +1,39 @@
 # CHANGELOG - Conciencia Artificial
 
+## [2026-09-02] - A1 rev.2: el peer review tenía razón (offset inyectado) — control N=30 + protocolo INTERCAL
+
+### Control de interpretación (decisivo, N=30)
+- `framework/bateria_control_habituacion.py` + `results/v014_control_habituacion.json`.
+- Brazo OFFSET (rev.1: salto puro, 12 seguidas): z_NORM post = **8.25** → el modelo deja de
+  predecir la física normal. S2>S1 (13.4 vs 1.4) era la firma del offset +2,+2, no
+  especificidad.
+- Brazo CONTING (física de a + teleport, 12 seguidas): z_NORM = 7.04 → también rompe (el
+  evento domina el gradiente sin vida normal entre medias).
+- Brazo INTERCAL (física + teleport, 5 pasos normales CON updates entre eventos): z_NORM =
+  0.81 ✅ → el modelo sigue siendo P(s'|s,a). Única base válida para medir habituación.
+- Rankin-10 con pesos CONGELADOS en el gap: Δ=0.61 → sin recuperación espontánea (la
+  "recuperación" de la rev.1 era desaprendizaje del offset, no ISI).
+
+### A1 rev.2 (INTERCAL, N=30 seeds 4000–4029) — `framework/bateria_rankin.py` reescrito
+- Violación = paso_normal(a) + teleport DESPUÉS (contingencia real); K pasos normales con
+  updates entre eventos (`--kintercal`, default 10); z0 medido PRE-aprendizaje; z_NORM como
+  control de integridad; reducción con z_hab recortado a ≥0.
+- Resultados: detección z0=5.44 CI[4.5,6.4] (bajo el z>10 prereg, real); **habituación 8%
+  CI[0,17] (k=10) a 28% CI[12,43] (k=5)** — lejos del >70% prereg; z_NORM 0.02 (k=10) e
+  0.45 (k=5); S5 z_H≈16.4 dispara; Rankin-8 no; Rankin-10 frozen no; SVD ~1.8–1.9.
+- JSON: `results/v014_rankin.json` (k=10), `results/v014_rankin_k5.json`.
+- **Lede honesto (doc `65` §2):** la "habituación 84%" de v0.12/v0.13 no sobrevive al
+  protocolo que preserva P(s'|s,a). El grid v0.13 nunca midió z_NORM post-habituación — su
+  86% pudo ser en parte sobre-ajuste al evento inyectado (60 violaciones seguidas, mismo
+  patrón que OFFSET/CONTING). H_vec vs H_A NO decidido.
+- `65-A1-rankin-resultados.md` reescrito con la rev.2 y la comparación de protocolos.
+
+### Estado
+- A1 v1 queda invalidado como habituación (offset). La rev.2 es el claim actual: habituación
+  débil dependiente de la densidad de evento (resultado en sí mismo), detección continua
+  modesta, S5 positivo, sin Rankin-8/10. Siguiente: justificar ratio de evento, A2 (C1–C4
+  N=30 con INTERCAL), A3 4-arm.
+
 ## [2026-09-02] - A1 Batería Rankin v0.14 (N=30) + fixes de revisión al núcleo
 
 ### Añadido

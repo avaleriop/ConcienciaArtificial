@@ -2,10 +2,25 @@
 
 > **Última actualización:** 2 Sep 2026
 > **Versión:** v0.13 (paper v0.13) — preregistro v0.14 en `63`, plan de tres ejes en `64`
-> **Una línea:** habituación como update de modelo en pesos, sin memoria explícita y sin
-> especificidad fina, en un agente mínimo encarnado. Marco teórico `00`–`13` = motivación,
-> no claim. v0.14 cambia de mundo: **continuo con niebla** (prereg `63`); los números de
-> grid (z=20.6) son v0.13, **no transferibles** a v0.14.
+> **Una línea:** agente mínimo con predictor acción-condicionado; el claim vivo v0.14 está
+> **por decidir** tras la rev.2 de A1 (la "habituación 84%" de la rev.1 era un artefacto de
+> offset; con el protocolo corregido es 8–28%). Marco teórico `00`–`13` = motivación.
+> v0.14 usa el mundo continuo con niebla (prereg `63`); números grid v0.13 no transferibles.
+
+## v0.14 A1 — bloque actual (continuo, NO comparar con grid)
+
+Resumen ejecutivo de `65` (A1 rev.2 INTERCAL, N=30):
+
+- **Detección S1**: z0=5.44 CI[4.5,6.4] — efecto real, bajo el z>10 prereg (umbral pensado
+  desde grid ±5; teleport continuo +2 da menos señal).
+- **Habituación**: 8% (k=10) a 28% (k=5) — la rev.1 (84%) quedó invalidada: entrenar salto
+  puro sin física intercalada rompe el modelo (z_NORM=8.25) e inyecta un offset +2,+2.
+- **Modelo intacto** (z_NORM≈0–0.45) solo con INTERCAL (violación sobre la contingencia +
+  vida normal entre eventos).
+- **Rankin-8**: no demostrado. **Rankin-10 (pesos congelados)**: sin recuperación espontánea.
+- **S5 interoceptivo dispara (z_H≈16)** — positivo independiente.
+- **H_vec vs H_A: NO decidido** sobre base sólida (la señal direccional en k=5 es sugestiva
+  pero la habituación base es demasiado débil).
 
 ## Estado de claims (board del plan `64`)
 
@@ -96,7 +111,8 @@ Núcleo v0.14 (única fuente de números, SPEC.md en raíz):
 | `SPEC.md` | Especificación del sistema v0.14 (mundo, redes, qué NO hay) | ✅ B1 |
 | `framework/core/` | Paquete núcleo: world, PredictorFactorizado, PhiCanal, z congelado, EWC | ✅ B2 |
 | `framework/selftest_core.py` | Smoke test del núcleo | ✅ |
-| `framework/bateria_rankin.py` | Batería Rankin N=30 (S1–S5 + dishab + savings + SVD) | ✅ A1 ejecutada (`65`) |
+| `framework/bateria_rankin.py` | Batería Rankin rev.2 INTERCAL (S1–S5, dishab, ISI frozen, savings, SVD, `--kintercal`) | ✅ A1 rev.2 (`65`) |
+| `framework/bateria_control_habituacion.py` | Control de interpretación OFFSET/CONTING/INTERCAL (N=30) | ✅ decisivo |
 | `framework/factorizado_phi_canal.py` | Φ por canal + 4-arm + SVD | ❌ A3/B4 pendiente |
 
 Scripts que producen números del paper v0.13 (históricos, mundo grid/continuo v0.12):
@@ -118,13 +134,14 @@ resultado), `m4_local_*.py` tempranos, `benchmark_doorkey.py` (N=5).
 ## Vivo → muerto (resumen)
 
 - **Hecho (plan 64):** C1/C2/C3+A5 (frente alineado), B1 `SPEC.md`, B2 `framework/core/`,
-  **A1 batería Rankin N=30 ejecutada** (`65`, `results/v014_rankin.json`): habituación 84%
-  ✅, especificidad de dirección en continuo (H_A grid no se transfiere), S5 intacto,
-  Rankin-8 negativo, Rankin-10 ✅, H1 bajo umbral prereg (z0=6.47 < z>10) reportado sin
-  recalibrar.
-- **Activo v0.14 (plan `64`, prereg `63`):** A2 C1–C4 a N=30, A3 4-arm Φ (A/B/C/D),
-  A4 EWC tarea-distinta, B3 predictor factorizado + SVD (parcial: SVD ya en JSON), B4 Φ por
-  canal + probe x>14, C4 paper corto + C5 Zenodo v0.14.
+  A1 rev.1 + **control de interpretación N=30** (OFFSET/CONTING rompen el modelo;
+  INTERCAL lo preserva) + **A1 rev.2 INTERCAL N=30** (`65`, JSONs en `results/`). La rev.1
+  queda invalidada como habituación (offset inyectado); la rev.2 muestra habituación 8–28%
+  y detección z0=5.44. Resultado metodológico mayor: el grid v0.13 nunca midió z_NORM
+  post-habituación — su "86%" pudo ser en parte sobre-ajuste al evento.
+- **Activo v0.14 (plan `64`, prereg `63`):** decidir ratio de evento de A1 con justificación
+  (no post-hoc), A2 C1–C4 a N=30 (protocolo INTERCAL), A3 4-arm Φ, A4 EWC tarea-distinta,
+  B4 Φ por canal + probe x>14, C4 paper corto + C5 Zenodo v0.14.
 - **Prohibido hasta nuevo aviso:** hipótesis nuevas (H7+), V-JEPA/Mamba/GWT en el loop,
   ejecutivos "el organismo vive", simular peer review externo.
 
